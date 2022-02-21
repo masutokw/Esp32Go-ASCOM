@@ -12,10 +12,10 @@ unit Esp32go_TLB;
 // ************************************************************************ //
 
 // $Rev: 98336 $
-// File generated on 18/02/2022 21:43:17 from Type Library described below.
+// File generated on 21/02/2022 20:15:45 from Type Library described below.
 
 // ************************************************************************  //
-// Type Lib: C:\Users\masut\Documents\Embarcadero\Studio\Projects\esp32go\esp32go (1)
+// Type Lib: C:\Users\masut\Documents\Embarcadero\Studio\Projects\Esp32Go-ASCOM\esp32go (1)
 // LIBID: {1E06C881-9ACE-461A-AE17-0A0981B24AB1}
 // LCID: 0
 // Helpfile:

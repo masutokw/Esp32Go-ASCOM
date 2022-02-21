@@ -218,6 +218,7 @@ object Esp32frm: TEsp32frm
       Height = 20
       Caption = 'M1'
       TabOrder = 2
+      OnClick = ButtonM1Click
     end
     object ButtonM2: TButton
       Left = 32
@@ -282,5 +283,11 @@ object Esp32frm: TEsp32frm
     OnTimer = Timer1Timer
     Left = 29
     Top = 247
+  end
+  object adpInstanceControl1: TadpInstanceControl
+    Enabled = True
+    MaxInstances = 1
+    Left = 80
+    Top = 211
   end
 end

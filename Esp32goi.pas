@@ -5,8 +5,10 @@ unit Esp32goi;
 interface
 
 uses
-  dialogs,ComObj, ActiveX, Esp32go_TLB, StdVcl,CPort,shared,classes,Windows;
-  const
+  dialogs, ComObj, ActiveX, Esp32go_TLB, StdVcl, CPort, shared, classes,
+  Windows;
+
+const
   DRIVER_NAME = 'Esp32go';
   DRIVER_ID = DRIVER_NAME + '.Telescope';
 
@@ -81,11 +83,13 @@ type
     procedure CommandBlind(const Command: WideString; Raw: WordBool); safecall;
     procedure CommandBool(const Command: WideString; Raw: Integer); safecall;
     procedure CommandString(const Command: WideString; Raw: WordBool); safecall;
-    procedure DestinationSideOfPier(RightAscension, Declination: Double); safecall;
+    procedure DestinationSideOfPier(RightAscension,
+      Declination: Double); safecall;
     procedure FindHome; safecall;
     procedure MoveAxis(Axis: TelescopeAxes; Rate: Double); safecall;
     procedure Park; safecall;
-    procedure PulseGuide(Direction: GuideDirections; Duration: Integer); safecall;
+    procedure PulseGuide(Direction: GuideDirections;
+      Duration: Integer); safecall;
     procedure Set_Connected(Value: WordBool); safecall;
     procedure Set_DeclinationRate(Value: Double); safecall;
     procedure Set_DoesRefraction(Value: WordBool); safecall;
@@ -107,7 +111,8 @@ type
     procedure SlewToAltAz(Azimut, Altitude: Double); safecall;
     procedure SlewToAltAzAsync(Azimut, Altitude: Double); safecall;
     procedure SlewToCoordinates(RightAscension, Declination: Double); safecall;
-    procedure SlewToCoordinatesAsync(RightAscension, Declination: Double); safecall;
+    procedure SlewToCoordinatesAsync(RightAscension,
+      Declination: Double); safecall;
     procedure SlewToTarget; safecall;
     procedure SlewToTargetAsync; safecall;
     procedure SyncToAltAz(Azimuth, Altitude: Double); safecall;
@@ -119,18 +124,17 @@ type
 
 implementation
 
-
 uses ComServ, sysutils;
 
 var
 
- //ComPort2: TComPort;
+  // ComPort2: TComPort;
   ProfileObject, ASCOMexcept: Variant;
-   trackr: TTrackingRates;
+  trackr: TTrackingRates;
   ratearr: array [0 .. 3] of DriveRates;
-  dec:double ;
-  lastdec,lastar:double;
-  lastguideTimestamp :longint;
+  dec: Double;
+  lastdec, lastar: Double;
+  lastguideTimestamp: longint;
 
 function TTelescope.CanMoveAxis(Axis: TelescopeAxes): WordBool;
 begin
@@ -154,7 +158,7 @@ end;
 
 function TTelescope.Get_ApertureDiameter: Double;
 begin
-    result:=1000
+  result := 1000
 end;
 
 function TTelescope.Get_AtHome: WordBool;
@@ -184,7 +188,7 @@ end;
 
 function TTelescope.Get_CanPulseGuide: WordBool;
 begin
-      result:=true;
+  result := true;
 end;
 
 function TTelescope.Get_CanSetDeclinationRate: WordBool;
@@ -214,68 +218,70 @@ end;
 
 function TTelescope.Get_CanSetTracking: WordBool;
 begin
-   result:=true;
+  result := true;
 end;
 
 function TTelescope.Get_CanSlew: WordBool;
 begin
-  result:=true;
+  result := true;
 end;
 
 function TTelescope.Get_CanSlewAltAz: WordBool;
 begin
- result:=true;
+  result := true;
 end;
 
 function TTelescope.Get_CanSlewAltAzAsync: WordBool;
 begin
-    result:=true;
+  result := true;
 end;
 
 function TTelescope.Get_CanSlewAsync: WordBool;
 begin
-   result:=true;
+  result := true;
 end;
 
 function TTelescope.Get_CanSync: WordBool;
 begin
-    result:=true;
+  result := true;
 end;
 
 function TTelescope.Get_CanSyncAltAz: WordBool;
 begin
-   result:=true;
+  result := true;
 end;
 
 function TTelescope.Get_CanUnpark: WordBool;
 begin
-   result:=true;
+  result := true;
 end;
 
 function TTelescope.Get_Connected: WordBool;
 begin
-  result:=true;
+  result := true;
 end;
 
 function TTelescope.Get_Declination: Double;
-var str:string;
- n,s:integer;
+var
+  str: string;
+  n, s: Integer;
 begin
- comport2.ClearBuffer(true,false);
+  comport2.ClearBuffer(true, false);
   comport2.WriteStr('#:GD#');
-  while (comport2.InputCount< 10) and (s<100)  do
-begin
-  sleep(5);
-  inc(s);
- end;
+  while (comport2.InputCount < 10) and (s < 100) do
+  begin
+    sleep(5);
+    inc(s);
+  end;
 
- If  (comport2.ReadStr(str,10)=10) and (char(str[10])='#') then begin
-       n:=LX200dectoint(str,true);
-      comport2.ClearBuffer(true,false);
-       lastdec :=(n/(3600.0)) ;
+  If (comport2.ReadStr(str, 10) = 10) and (char(str[10]) = '#') then
+  begin
+    n := LX200dectoint(str, true);
+    comport2.ClearBuffer(true, false);
+    lastdec := (n / (3600.0));
 
-end;
- result:= lastdec ;
+  end;
+  result := lastdec;
 end;
 
 function TTelescope.Get_DeclinationRate: Double;
@@ -290,7 +296,7 @@ end;
 
 function TTelescope.Get_DoesRefraction: WordBool;
 begin
-      result:=false;
+  result := false;
 end;
 
 function TTelescope.Get_DriverInfo: WideString;
@@ -309,10 +315,11 @@ begin
 end;
 
 function TTelescope.Get_FocalLength: Double;
-var str:string;
-n:integer;
+var
+  str: string;
+  n: Integer;
 begin
-      result:=10000;
+  result := 10000;
 
 end;
 
@@ -333,8 +340,7 @@ end;
 
 function TTelescope.Get_IsPulseGuiding: WordBool;
 begin
-  result:=(lastguideTimestamp> GetTickCount);
-  ;
+  result := (lastguideTimestamp > GetTickCount);;
 end;
 
 function TTelescope.Get_Name: WideString;
@@ -344,23 +350,25 @@ end;
 
 function TTelescope.Get_RightAscension: Double;
 
-var str:string;
-n,s:integer;
+var
+  str: string;
+  n, s: Integer;
 begin
-comport2.ClearBuffer(true,false);
-comport2.WriteStr(':GR#');
-  while (comport2.InputCount< 9) and (s<100)  do
-begin
-  sleep(5);
-  inc(s);
- end;
+  comport2.ClearBuffer(true, false);
+  comport2.WriteStr(':GR#');
+  while (comport2.InputCount < 11) and (s < 100) do
+  begin
+    sleep(5);
+    inc(s);
+  end;
 
- If  (comport2.ReadStr(str,9)>=9) then begin
-       n:=LX200artoint(str,true);
-     lastar:=(n/(15*3600.0)) ;
+  If (comport2.ReadStr(str, 11) >= 11) then
+  begin
+    n := LX200artoint(str, true);
+    lastar := (n / (15 * 3600.0));
 
-end;
-result:=lastar;
+  end;
+  result := lastar;
 
 end;
 
@@ -416,7 +424,7 @@ end;
 
 function TTelescope.Get_Tracking: WordBool;
 begin
-result:=true;
+  result := true;
 end;
 
 function TTelescope.Get_TrackingRate: DriveRates;
@@ -446,7 +454,7 @@ end;
 
 procedure TTelescope.CommandBlind(const Command: WideString; Raw: WordBool);
 begin
-    comport2.WriteStr(command);
+  comport2.WriteStr(Command);
 end;
 
 procedure TTelescope.CommandBool(const Command: WideString; Raw: Integer);
@@ -480,39 +488,40 @@ begin
 end;
 
 procedure TTelescope.PulseGuide(Direction: GuideDirections; Duration: Integer);
-var durStr:string;
-durPchar:PCHAR;
+var
+  durStr: string;
+  durPchar: PCHAR;
 
 begin
-durpchar := StrAlloc(15);
-StrFmt(durPchar, '%0.4d#',[duration]);
-     durStr:=string(durPchar);
+  durPchar := StrAlloc(15);
+  StrFmt(durPchar, '%0.4d#', [Duration]);
+  durStr := string(durPchar);
   Case Direction of
     guideNorth:
-         comport2.writestr('#:Mgn'+durStr);
+      comport2.WriteStr('#:Mgn' + durStr);
     guideSouth:
-         comport2.writestr('#:Mgs'+durStr);
+      comport2.WriteStr('#:Mgs' + durStr);
     guideEast:
-        comport2.writestr('#:Mge'+durStr);
+      comport2.WriteStr('#:Mge' + durStr);
     guideWest:
-        comport2.writestr('#:Mgw'+durStr);
-     end;
-     lastguideTimestamp:=gettickcount+duration ;
-      StrDispose(durpchar);
+      comport2.WriteStr('#:Mgw' + durStr);
+  end;
+  lastguideTimestamp := GetTickCount + Duration;
+  StrDispose(durPchar);
 end;
 
 procedure TTelescope.Set_Connected(Value: WordBool);
 begin
 
-ComPort2.Parity.Bits := prNone;
-comport2.BaudRate:=br115200       ;
-comport2.Timeouts.ReadInterval:=100;
-comport2.Timeouts.ReadTotalMultiplier:=1;
-comport2.Timeouts.ReadTotalConstant:=100;
-comport2.Timeouts.WriteTotalMultiplier:=1;
-comport2.Timeouts.WriteTotalConstant:=1000;
-comport2.TriggersOnRxChar:=false;
-comport2.Connected:=TRUE;
+  comport2.Parity.Bits := prNone;
+  comport2.BaudRate := br115200;
+  comport2.Timeouts.ReadInterval := 100;
+  comport2.Timeouts.ReadTotalMultiplier := 1;
+  comport2.Timeouts.ReadTotalConstant := 100;
+  comport2.Timeouts.WriteTotalMultiplier := 1;
+  comport2.Timeouts.WriteTotalConstant := 1000;
+  comport2.TriggersOnRxChar := false;
+  comport2.Connected := true;
 
 end;
 
@@ -567,24 +576,26 @@ begin
 end;
 
 procedure TTelescope.Set_TargetDeclination(Value: Double);
-var str:string;
-n:integer;
+var
+  str: string;
+  n: Integer;
 begin
- if abs(Value) < 90 then
+  if abs(Value) < 90 then
   begin
-     comport2.WriteStr(':Sd' + DoubletoLXdec(Value, 1));
-  //  dec_target := Value;
+    comport2.WriteStr(':Sd' + DoubletoLXdec(Value, 1));
+    // dec_target := Value;
   end
   else
     raise EOLEexception.Create('Value Not Set 1', $80040402, 'none', '0', 0);
 end;
 
 procedure TTelescope.Set_TargetRightAscension(Value: Double);
-var str:string;
-n:integer;
+var
+  str: string;
+  n: Integer;
 begin
-   comport2.WriteStr(':Sr' + DoubleToLXAr(Value, 1));
- // ra_target := Value;
+  comport2.WriteStr(':Sr' + DoubleToLXAr(Value, 1));
+  // ra_target := Value;
   raise EOLEexception.Create('Not Implemented', $80040400, 'none', '0', 0);
   // raise Exception.Create('Not Implemented');
 end;
@@ -626,28 +637,29 @@ end;
 
 procedure TTelescope.SlewToCoordinates(RightAscension, Declination: Double);
 begin
-    comport2.WriteStr(':Sr' + DoubleToLXAr(RightAscension, 1));
-   comport2.WriteStr(':Sd' + DoubletoLXdec(Declination, 1));
-   comport2.WriteStr(':MS#');
+  comport2.WriteStr(':Sr' + DoubleToLXAr(RightAscension, 1));
+  comport2.WriteStr(':Sd' + DoubletoLXdec(Declination, 1));
+  comport2.WriteStr(':MS#');
 end;
 
-procedure TTelescope.SlewToCoordinatesAsync(RightAscension, Declination: Double);
+procedure TTelescope.SlewToCoordinatesAsync(RightAscension,
+  Declination: Double);
 
 begin
-    comport2.WriteStr(':Sr' + DoubleToLXAr(RightAscension, 1));
-   comport2.WriteStr(':Sd' + DoubletoLXdec(Declination, 1));
-   comport2.WriteStr(':MS#');
+  comport2.WriteStr(':Sr' + DoubleToLXAr(RightAscension, 1));
+  comport2.WriteStr(':Sd' + DoubletoLXdec(Declination, 1));
+  comport2.WriteStr(':MS#');
 
 end;
 
 procedure TTelescope.SlewToTarget;
 begin
-    comport2.writestr(':MS#');
+  comport2.WriteStr(':MS#');
 end;
 
 procedure TTelescope.SlewToTargetAsync;
 begin
-   comport2.writestr(':MS#');
+  comport2.WriteStr(':MS#');
 end;
 
 procedure TTelescope.SyncToAltAz(Azimuth, Altitude: Double);
@@ -657,14 +669,14 @@ end;
 
 procedure TTelescope.SyncToCoordinates(RightAscension, Declination: Double);
 begin
- comport2.WriteStr(':Sr' + DoubleToLXAr(RightAscension, 1));
-   comport2.WriteStr(':Sd' + DoubletoLXdec(Declination, 1));
-   comport2.WriteStr(':CM#');
+  comport2.WriteStr(':Sr' + DoubleToLXAr(RightAscension, 1));
+  comport2.WriteStr(':Sd' + DoubletoLXdec(Declination, 1));
+  comport2.WriteStr(':CM#');
 end;
 
 procedure TTelescope.SyncToTarget;
 begin
-  comport2.writestr(':CM#');
+  comport2.WriteStr(':CM#');
 
 end;
 
@@ -672,6 +684,7 @@ procedure TTelescope.Unpark;
 begin
 
 end;
+
 procedure RegisterThySelf;
 { -------------------------------------------------------------- }
 // Test id this interface is registered int he ASCOM registry area
@@ -694,7 +707,6 @@ begin
   // ASCOMExcept:=CreateOLEObject('ASCOM.exceptions');
 
 end;
-
 
 function TTrackingRates.Get_Count: Integer; safecall;
 begin
@@ -720,10 +732,7 @@ begin
   result := self as IEnumVARIANT;
 end;
 
-
 initialization
-
-
 
 CoInitializeex(nil, COINIT_APARTMENTTHREADED);
 RegisterThySelf;

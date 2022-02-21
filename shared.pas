@@ -1,10 +1,10 @@
 unit shared;
 
-
 interface
 
-uses Windows, SysUtils, Classes, Controls,cport;
- var
+uses Windows, SysUtils, Classes, Controls, cport;
+
+var
   ComPort2: TComPort;
 
 function FormatString(StringIn, DivideAt: String): TStringList;
@@ -138,7 +138,6 @@ begin
     // Aplication.ProcessMessages;
 end;
 
-
 function LX200Dectoint(dec: String; prec: Boolean): Integer;
 var
   temp, Signo: Integer;
@@ -148,13 +147,13 @@ begin
   else
     Signo := 1;
 
- // temp := strtoint(Copy(dec, 2, 2)) * 3600 + strtoint(Copy(dec, 5, 2)) *
-  //  60 * Signo;
-  temp:=((ord(dec[2])-48)*10+(ord(dec[3])-48))*3600 +((ord(dec[5])-48)*10+
-   (ord(dec[6])-48))*60  ;
+  // temp := strtoint(Copy(dec, 2, 2)) * 3600 + strtoint(Copy(dec, 5, 2)) *
+  // 60 * Signo;
+  temp := ((ord(dec[2]) - 48) * 10 + (ord(dec[3]) - 48)) * 3600 +
+    ((ord(dec[5]) - 48) * 10 + (ord(dec[6]) - 48)) * 60;
   if prec then
-   // temp := temp + strtoint(Copy(dec, 8, 2)) * Signo;
-temp:=(temp+((ord(dec[8])-48)*10+(ord(dec[9])-48))) * Signo ;
+    // temp := temp + strtoint(Copy(dec, 8, 2)) * Signo;
+    temp := (temp + ((ord(dec[8]) - 48) * 10 + (ord(dec[9]) - 48))) * Signo;
   LX200Dectoint := temp;
 end;
 
@@ -164,11 +163,13 @@ var
 begin
 
   if prec then
-   // temp := (strtoint(Copy(ar, 1, 2)) * 3600 + strtoint(Copy(ar, 4, 2)) * 60 +
-   //   strtoint(Copy(ar, 7, 2))) * 15
-   begin temp:=(((ord(ar[1])-48)*10+(ord(ar[2])-48))*3600 +((ord(ar[4])-48)*10+
-   (ord(ar[5])-48))*60 +((ord(ar[7])-48)*10+(ord(ar[8])-48))) *15
-   end
+  // temp := (strtoint(Copy(ar, 1, 2)) * 3600 + strtoint(Copy(ar, 4, 2)) * 60 +
+  // strtoint(Copy(ar, 7, 2))) * 15
+  begin
+    temp := (((ord(ar[1]) - 48) * 10 + (ord(ar[2]) - 48)) * 3600 +
+      ((ord(ar[4]) - 48) * 10 + (ord(ar[5]) - 48)) * 60 +
+      ((ord(ar[7]) - 48) * 10 + (ord(ar[8]) - 48))) * 15
+  end
   else
     temp := (strtoint(Copy(ar, 4, 2)) * 3600 + strtoint(Copy(ar, 7,
       2) + Copy(ar, 10, 1)) * 6) * 15;
