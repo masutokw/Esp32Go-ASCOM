@@ -4,9 +4,8 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
-  System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, CPort,
-  esp32goi, shared, inifiles,
+  System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
+  Vcl.StdCtrls, Vcl.ExtCtrls, CPort, esp32goi, shared, inifiles,
   EnhEdits, CPortCtl, adpInstanceControl;
 
 type
@@ -36,6 +35,17 @@ type
     LabelFocusCount: TLabel;
     labelAR: TLabel;
     adpInstanceControl1: TadpInstanceControl;
+    GroupBoxserial: TGroupBox;
+    GroupBox4: TGroupBox;
+    ComComboBox2: TComComboBox;
+    ComComboBox1: TComComboBox;
+    Label1: TLabel;
+    Label3: TLabel;
+    GroupBox3: TGroupBox;
+    EditAddr: TEdit;
+    LongEditPort: TLongEdit;
+    Button1: TButton;
+    Button2: TButton;
     procedure FormCreate(Sender: TObject);
     procedure Button_NMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
@@ -43,14 +53,17 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure Timer1Timer(Sender: TObject);
 
-
-
     procedure ReadSettings;
+    procedure WriteSettings;
     procedure ButtonInMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure ButtonInMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure ButtonM1Click(Sender: TObject);
+    procedure ButtonM2Click(Sender: TObject);
+    procedure ButtonM4Click(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -68,6 +81,25 @@ implementation
 
 {$R *.dfm}
 
+procedure TEsp32frm.Button1Click(Sender: TObject);
+begin
+  WriteSettings;
+end;
+
+procedure TEsp32frm.Button2Click(Sender: TObject);
+begin
+comport2.Connected:=false;
+ comport2.Port := ComComboBox1.Text; // 'COM13';//serialport;
+  comport2.baudrate := tbaudrate(ComComboBox2.ItemIndex);;
+  ComComboBox1.ComPort := comport2;
+  comport2.Connected:=true;
+ if comport2.Connected then
+  begin
+
+    fullconnect := check_connection();
+    Timer1.Enabled := fullconnect;
+  end;
+end;
 
 procedure TEsp32frm.ButtonInMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
@@ -88,7 +120,17 @@ end;
 
 procedure TEsp32frm.ButtonM1Click(Sender: TObject);
 begin
-   telescope.CommandBlind(':FP-00300#', TRUE);
+  telescope.CommandBlind(':FA-00300#', TRUE);
+end;
+
+procedure TEsp32frm.ButtonM2Click(Sender: TObject);
+begin
+  telescope.CommandBlind(':FLS1+00900#', TRUE);
+end;
+
+procedure TEsp32frm.ButtonM4Click(Sender: TObject);
+begin
+  GroupBoxserial.Visible := not GroupBoxserial.Visible
 end;
 
 procedure TEsp32frm.Button_NMouseDown(Sender: TObject; Button: TMouseButton;
@@ -134,7 +176,6 @@ end;
 procedure TEsp32frm.Button_NMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 
-
 begin
 
   case TButton(Sender).tag of
@@ -158,12 +199,19 @@ begin
   inifile_name := 'esp32go.ini';
   SetWindowPos(Handle, HWND_TOPMOST, Left, Top, Width, Height, 0);
   ReadSettings;
-
   comport2 := TComPort.Create(nil);
-  comport2.Port := serialport;
+  comport2.Port := ComComboBox1.Text; // 'COM13';//serialport;
+  comport2.baudrate := tbaudrate(ComComboBox2.ItemIndex);;
+  ComComboBox1.ComPort := comport2;
   telescope := Ttelescope.Create();
   telescope.Set_Connected(TRUE);
-  Timer1.Enabled := TRUE;
+
+  if comport2.Connected then
+  begin
+
+    fullconnect := check_connection();
+    Timer1.Enabled := fullconnect;
+  end;
 
 end;
 
@@ -174,15 +222,15 @@ var
 begin
   comport2.ClearBuffer(TRUE, false);
   comport2.WriteStr('#:GR#:GD#');
-  n:=0;
-  while (comport2.InputCount < 21) and (n < 100) do
+  n := 0;
+  while (comport2.InputCount < coor_pack) and (n < 100) do
   begin
     sleep(5);
     inc(n);
   end;
   Label2.caption := inttostr(comport2.InputCount) + '   ' + inttostr(n);
 
-  if comport2.ReadStr(str, 21) >= 21 then
+  if comport2.ReadStr(str, coor_pack) >= coor_pack then
   begin
 
     str := StringReplace(str, '#', #10#13 + 'DE:', [rfIgnoreCase]);
@@ -194,17 +242,18 @@ begin
   if (comport2.InputCount) > 0 then
     comport2.ClearBuffer(TRUE, false);
   comport2.WriteStr(':Fp#');
-  while (comport2.InputCount < 7) and (n < 100) do
+  while (comport2.InputCount < 6) and (n < 100) do
   begin
     sleep(5);
     inc(n);
   end;
-  if comport2.ReadStr(str, 7) >= 7 then
+  if comport2.ReadStr(str, 6) >= 6 then
   begin
-    str := StringReplace(str, ':', '', [rfReplaceAll, rfIgnoreCase]);
+    str := StringReplace(str, '#', '', [rfReplaceAll]);
+    n := StrToIntDef(str, 0);
 
-    LabelFocusCount.caption := StringReplace(str, '#', '',
-      [rfReplaceAll, rfIgnoreCase]);
+    // LabelFocusCount.caption := StringReplace(str, '#', '',[rfReplaceAll]);
+    LabelFocusCount.caption := Format('%0.5d', [n]);
   end;
 
 end;
@@ -212,11 +261,24 @@ end;
 procedure TEsp32frm.ReadSettings;
 var
   inifile: TiniFile;
- begin
+begin
   inifile := TiniFile.Create(s_inipath + inifile_name);
   with inifile do
   begin
-    Serialport := ReadString('Serial_Port', 'Port', 'com14');
+    ComComboBox1.Text := ReadString('Serial_Port', 'Port', 'com14');
+    ComComboBox2.Text := ReadString('Serial_Port', 'BaudRate', '57600');
+  end;
+end;
+
+procedure TEsp32frm.WriteSettings;
+var
+  inifile: TiniFile;
+begin
+  inifile := TiniFile.Create(s_inipath + inifile_name);
+  with inifile do
+  begin
+    writeString('Serial_Port', 'Port', ComComboBox1.Text);
+    writeString('Serial_Port', 'BaudRate', ComComboBox2.Text);
   end;
 end;
 

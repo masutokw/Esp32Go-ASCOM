@@ -3,7 +3,7 @@ unit Esp32gofi;
 interface
 
 uses
-  ComObj, ActiveX, Esp32go_TLB ;
+  ComObj, ActiveX, Esp32go_TLB;
 
 const
   DRIVER_NAME = 'Esp32Go';
@@ -34,7 +34,7 @@ type
 
 implementation
 
-uses ComServ, sysutils, Dialogs, Controls, ShellAPI;
+uses ComServ, sysutils, Dialogs, Controls, ShellAPI, shared;
 
 var
   fCOMPort: integer;
@@ -60,6 +60,7 @@ function TFocuser.Get_MaxIncrement: integer;
 begin
   Get_MaxIncrement := 1000;
 end;
+
 function TFocuser.Get_Position: integer;
 begin
 
@@ -91,21 +92,19 @@ end;
 
 procedure TFocuser.Halt;
 begin
-
+  comport2.writestr(':FQ#');
 end;
 
 procedure TFocuser.move(val: integer);
 begin
-
-
-
+      comport2.writestr(Format(':FP-%+0.5d#', [val]))
 end;
 
 { -------------------------------------------------------------- }
 procedure TFocuser.SetupDialog;
 { -------------------------------------------------------------- }
-//var
- //fSetupForm: TSetupForm;
+// var
+// fSetupForm: TSetupForm;
 
 begin
   // fSetupForm := TSetupForm.Create(nil);
@@ -119,7 +118,7 @@ begin
   // fCOMPort := fSetupForm.COMPortCombo.ItemIndex + 1;
   // end;
   // fSetupForm.Free;
-   ShowMessage('Setup done');
+  ShowMessage('Setup done');
 end;
 
 { -------------------------------------------------------------- }
@@ -161,7 +160,7 @@ var
 begin
   ProfileObject := CreateOLEObject('ASCOM.Utilities.Profile');
 
- //  ProfileObject := CreateOLEObject('DriverHelper.Profile');
+  // ProfileObject := CreateOLEObject('DriverHelper.Profile');
   ProfileObject.DeviceType := 'Focuser';
 
   if (not ProfileObject.IsRegistered(DRIVER_ID)) then
@@ -177,7 +176,7 @@ initialization
 
 CoInitializeex(nil, COINIT_APARTMENTTHREADED);
 RegisterThySelf;
-TAutoObjectFactory.Create(ComServer, TFocuser, Class_Focuser,
-  cimultiInstance, tmApartment);
+TAutoObjectFactory.Create(ComServer, TFocuser, Class_Focuser, cimultiInstance,
+  tmApartment);
 
 end.

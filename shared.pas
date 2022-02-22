@@ -3,9 +3,12 @@ unit shared;
 interface
 
 uses Windows, SysUtils, Classes, Controls, cport;
-
+  const ra_pack = 11 ;
+        dec_pack=10 ;
+        coor_pack= ra_pack+dec_pack;
 var
   ComPort2: TComPort;
+  fullconnect:boolean;
 
 function FormatString(StringIn, DivideAt: String): TStringList;
 function Inttodec(de: Integer; prec: Byte): String;
@@ -23,6 +26,7 @@ function Signof1(f: Double): Integer;
 function DoubletoLXdec(de: Double; prec: Byte): string;
 function DoubleToLXAr(ra: Double; prec: Byte): string;
 function GetEnvVarValue(const VarName: string): string;
+ function check_connection(): boolean;
 
 implementation
 
@@ -337,5 +341,27 @@ begin
     // No such environment variable
     Result := '';
 end;
+  function check_connection: boolean;
+var
+  str: string;
+  n, s: Integer;
+begin
+
+if (comport2.connected) then
+begin
+  comport2.ClearBuffer(true, false);
+  comport2.WriteStr('#:GD#');
+  while (comport2.InputCount < dec_pack) and (s < 10) do
+  begin
+    sleep(5);
+    inc(s);
+  end;
+
+  result:=(comport2.ReadStr(str, dec_pack) =dec_pack) and (char(str[dec_pack]) = '#')
+end
+  else result:=false;
+end;
+
+
 
 end.

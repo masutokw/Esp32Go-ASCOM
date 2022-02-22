@@ -143,7 +143,7 @@ end;
 
 function TTelescope.Get_AlignmentMode: AlignmentModes;
 begin
-
+ result:=algPolar;
 end;
 
 function TTelescope.Get_Altitude: Double;
@@ -163,7 +163,7 @@ end;
 
 function TTelescope.Get_AtHome: WordBool;
 begin
-
+  result:=false
 end;
 
 function TTelescope.Get_AtPark: WordBool;
@@ -178,12 +178,12 @@ end;
 
 function TTelescope.Get_CanFindHome: WordBool;
 begin
-
+   result:=false
 end;
 
 function TTelescope.Get_CanPark: WordBool;
 begin
-
+     result:=false
 end;
 
 function TTelescope.Get_CanPulseGuide: WordBool;
@@ -193,27 +193,27 @@ end;
 
 function TTelescope.Get_CanSetDeclinationRate: WordBool;
 begin
-
+    result:=false;
 end;
 
 function TTelescope.Get_CanSetGuideRates: WordBool;
 begin
-
+   result:=false;
 end;
 
 function TTelescope.Get_CanSetPark: WordBool;
 begin
-
+    result:=false;
 end;
 
 function TTelescope.Get_CanSetPierSide: WordBool;
 begin
-
+    result:=false;
 end;
 
 function TTelescope.Get_CanSetRightAscensionRate: WordBool;
 begin
-
+    result:=false;
 end;
 
 function TTelescope.Get_CanSetTracking: WordBool;
@@ -258,6 +258,9 @@ end;
 
 function TTelescope.Get_Connected: WordBool;
 begin
+//if  not check_connection() then
+// ShowMessage('Comport not responding');
+
   result := true;
 end;
 
@@ -266,21 +269,24 @@ var
   str: string;
   n, s: Integer;
 begin
+if fullconnect then begin
+
   comport2.ClearBuffer(true, false);
   comport2.WriteStr('#:GD#');
-  while (comport2.InputCount < 10) and (s < 100) do
+  while (comport2.InputCount < dec_pack) and (s < 10) do
   begin
     sleep(5);
     inc(s);
   end;
 
-  If (comport2.ReadStr(str, 10) = 10) and (char(str[10]) = '#') then
+  If (comport2.ReadStr(str, dec_pack) =dec_pack) and (char(str[dec_pack]) = '#') then
   begin
     n := LX200dectoint(str, true);
     comport2.ClearBuffer(true, false);
     lastdec := (n / (3600.0));
 
   end;
+end;
   result := lastdec;
 end;
 
@@ -354,20 +360,22 @@ var
   str: string;
   n, s: Integer;
 begin
+if fullconnect then begin
   comport2.ClearBuffer(true, false);
   comport2.WriteStr(':GR#');
-  while (comport2.InputCount < 11) and (s < 100) do
+  while (comport2.InputCount < ra_pack) and (s < 10) do
   begin
     sleep(5);
     inc(s);
   end;
 
-  If (comport2.ReadStr(str, 11) >= 11) then
+  If (comport2.ReadStr(str, ra_pack) >= ra_pack) then
   begin
     n := LX200artoint(str, true);
     lastar := (n / (15 * 3600.0));
 
   end;
+end;
   result := lastar;
 
 end;

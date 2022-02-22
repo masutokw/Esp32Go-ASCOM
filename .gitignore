@@ -3,5 +3,5 @@ esp32go.dproj.local
 Win32/Debug/CPort.dcu
 *.dcu
 *.~1~
-*.~2~
+*.~*~
 Esp32Go Setup.iss

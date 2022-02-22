@@ -4,7 +4,7 @@ object Esp32frm: TEsp32frm
   AutoSize = True
   Caption = 'Esp32go'
   ClientHeight = 239
-  ClientWidth = 120
+  ClientWidth = 269
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -227,6 +227,7 @@ object Esp32frm: TEsp32frm
       Height = 20
       Caption = 'M2'
       TabOrder = 3
+      OnClick = ButtonM2Click
     end
     object ButtonM3: TButton
       Left = 61
@@ -243,6 +244,7 @@ object Esp32frm: TEsp32frm
       Height = 20
       Caption = 'M4'
       TabOrder = 5
+      OnClick = ButtonM4Click
     end
   end
   object GroupBox2: TGroupBox
@@ -278,16 +280,119 @@ object Esp32frm: TEsp32frm
       StyleElements = [seBorder]
     end
   end
+  object GroupBoxserial: TGroupBox
+    Left = 122
+    Top = 0
+    Width = 147
+    Height = 235
+    Caption = 'Config'
+    TabOrder = 4
+    Visible = False
+    object GroupBox4: TGroupBox
+      Left = -1
+      Top = 15
+      Width = 142
+      Height = 78
+      Caption = 'Serial'
+      TabOrder = 0
+      object Label1: TLabel
+        Left = 10
+        Top = 21
+        Width = 20
+        Height = 13
+        Caption = 'Port'
+      end
+      object Label3: TLabel
+        Left = 10
+        Top = 46
+        Width = 24
+        Height = 13
+        Caption = 'Baud'
+      end
+      object ComComboBox2: TComComboBox
+        Left = 42
+        Top = 43
+        Width = 93
+        Height = 21
+        ComProperty = cpBaudRate
+        Text = '57600'
+        Style = csDropDownList
+        ItemIndex = 12
+        TabOrder = 0
+      end
+      object ComComboBox1: TComComboBox
+        Left = 41
+        Top = 17
+        Width = 94
+        Height = 21
+        ComProperty = cpPort
+        Text = 'COM1'
+        Style = csDropDownList
+        ItemIndex = 0
+        TabOrder = 1
+      end
+    end
+    object GroupBox3: TGroupBox
+      Left = 0
+      Top = 91
+      Width = 143
+      Height = 52
+      Caption = 'IP Settings.'
+      TabOrder = 1
+      object EditAddr: TEdit
+        Left = 5
+        Top = 22
+        Width = 72
+        Height = 19
+        Ctl3D = False
+        ParentCtl3D = False
+        TabOrder = 0
+        Text = '192.168.1.14'
+      end
+      object LongEditPort: TLongEdit
+        Left = 84
+        Top = 22
+        Width = 44
+        Height = 19
+        Hint = '0..100000'
+        Ctl3D = False
+        ParentCtl3D = False
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 1
+        Value = 10001
+        MaxValue = 100000
+      end
+    end
+    object Button1: TButton
+      Left = 86
+      Top = 145
+      Width = 48
+      Height = 26
+      Caption = 'Save'
+      TabOrder = 2
+      OnClick = Button1Click
+    end
+    object Button2: TButton
+      Left = 18
+      Top = 146
+      Width = 62
+      Height = 24
+      Caption = 'Reconnect'
+      TabOrder = 3
+      OnClick = Button2Click
+    end
+  end
   object Timer1: TTimer
     Enabled = False
     OnTimer = Timer1Timer
-    Left = 29
-    Top = 247
+    Left = 131
+    Top = 203
   end
   object adpInstanceControl1: TadpInstanceControl
     Enabled = True
     MaxInstances = 1
-    Left = 80
-    Top = 211
+    Left = 172
+    Top = 194
   end
 end
