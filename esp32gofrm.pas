@@ -88,12 +88,12 @@ end;
 
 procedure TEsp32frm.Button2Click(Sender: TObject);
 begin
-comport2.Connected:=false;
- comport2.Port := ComComboBox1.Text; // 'COM13';//serialport;
+  comport2.Connected := false;
+  comport2.Port := ComComboBox1.Text; // 'COM13';//serialport;
   comport2.baudrate := tbaudrate(ComComboBox2.ItemIndex);;
   ComComboBox1.ComPort := comport2;
-  comport2.Connected:=true;
- if comport2.Connected then
+  comport2.Connected := true;
+  if comport2.Connected then
   begin
 
     fullconnect := check_connection();
@@ -106,9 +106,9 @@ procedure TEsp32frm.ButtonInMouseDown(Sender: TObject; Button: TMouseButton;
 begin
   case TButton(Sender).tag of
     0:
-      telescope.CommandBlind(':F+#', TRUE);
+      telescope.CommandBlind(':F+#', true);
     1:
-      telescope.CommandBlind(':F-#', TRUE);
+      telescope.CommandBlind(':F-#', true);
   end;
 end;
 
@@ -120,12 +120,12 @@ end;
 
 procedure TEsp32frm.ButtonM1Click(Sender: TObject);
 begin
-  telescope.CommandBlind(':FA-00300#', TRUE);
+  telescope.CommandBlind(':FA-00300#', true);
 end;
 
 procedure TEsp32frm.ButtonM2Click(Sender: TObject);
 begin
-  telescope.CommandBlind(':FLS1+00900#', TRUE);
+  telescope.CommandBlind(':FLS1+00900#', true);
 end;
 
 procedure TEsp32frm.ButtonM4Click(Sender: TObject);
@@ -140,37 +140,35 @@ begin
 
   case RadioGroup1.ItemIndex of
     0:
-      telescope.CommandBlind('#:RS#', TRUE);
+     Command_Blind('#:RS#', true);
     1:
-      telescope.CommandBlind('#:RM#', TRUE);
+      Command_Blind('#:RM#', true);
     2:
-      telescope.CommandBlind('#:RC#', TRUE);
+      Command_Blind('#:RC#', true);
     3:
-      telescope.CommandBlind('#:RG#', TRUE);
+      Command_Blind('#:RG#', true);
   end;
 
   case TButton(Sender).tag of
     0:
-      telescope.CommandBlind('#:Mn#', TRUE);
+      Command_Blind('#:Mn#', true);
     1:
-      telescope.CommandBlind('#:Ms#', TRUE);
+      Command_Blind('#:Ms#', true);
     2:
-      telescope.CommandBlind('#:Me#', TRUE);
+      Command_Blind('#:Me#', true);
     3:
-      telescope.CommandBlind('#:Mw#', TRUE);
+      Command_Blind('#:Mw#', true);
     4:
-      telescope.CommandBlind('#:Mn#:Me#', TRUE);
+     Command_Blind('#:Mn#:Me#', true);
     5:
-      telescope.CommandBlind('#:Ms#:Me#', TRUE);
+      Command_Blind('#:Ms#:Me#', true);
     6:
-      telescope.CommandBlind('#:Ms#:Mw#', TRUE);
+      Command_Blind('#:Ms#:Mw#', true);
     7:
-      telescope.CommandBlind('#:Mn#:Mw#', TRUE);
+      Command_Blind('#:Mn#:Mw#', true);
 
   end;
-  comport2.WriteStr(':RS#');
 
-  ;
 end;
 
 procedure TEsp32frm.Button_NMouseUp(Sender: TObject; Button: TMouseButton;
@@ -180,15 +178,15 @@ begin
 
   case TButton(Sender).tag of
     0:
-      telescope.CommandBlind('#:Qn#', TRUE);
+      Command_Blind('#:Qn#', true);
     1:
-      telescope.CommandBlind('#:Qs#', TRUE);
+      Command_Blind('#:Qs#', true);
     2:
-      telescope.CommandBlind('#:Qe#', TRUE);
+      Command_Blind('#:Qe#', true);
     3:
-      telescope.CommandBlind('#:Qw#', TRUE);
+      Command_Blind('#:Qw#', true);
     4, 5, 6, 7:
-      telescope.CommandBlind('#:Qn#:Qw#', TRUE);
+      Command_Blind('#:Qn#:Qw#', true);
   end;
 
 end;
@@ -204,7 +202,7 @@ begin
   comport2.baudrate := tbaudrate(ComComboBox2.ItemIndex);;
   ComComboBox1.ComPort := comport2;
   telescope := Ttelescope.Create();
-  telescope.Set_Connected(TRUE);
+  telescope.Set_Connected(true);
 
   if comport2.Connected then
   begin
@@ -220,7 +218,7 @@ var
   str: string;
   n: Integer;
 begin
-  comport2.ClearBuffer(TRUE, false);
+  comport2.ClearBuffer(true, false);
   comport2.WriteStr('#:GR#:GD#');
   n := 0;
   while (comport2.InputCount < coor_pack) and (n < 100) do
@@ -240,7 +238,7 @@ begin
   end;
   n := 0;
   if (comport2.InputCount) > 0 then
-    comport2.ClearBuffer(TRUE, false);
+    comport2.ClearBuffer(true, false);
   comport2.WriteStr(':Fp#');
   while (comport2.InputCount < 6) and (n < 100) do
   begin
@@ -267,6 +265,9 @@ begin
   begin
     ComComboBox1.Text := ReadString('Serial_Port', 'Port', 'com14');
     ComComboBox2.Text := ReadString('Serial_Port', 'BaudRate', '57600');
+    EditAddr.Text := ReadString('Host', 'Address', '192.168.1.1');
+    LongEditPort.Value := ReadInteger('Host', 'Port', 10001);
+
   end;
 end;
 
@@ -279,6 +280,8 @@ begin
   begin
     writeString('Serial_Port', 'Port', ComComboBox1.Text);
     writeString('Serial_Port', 'BaudRate', ComComboBox2.Text);
+    writeString('Host', 'Address', EditAddr.Text);
+    writeInteger('Host', 'Port', LongEditPort.Value);
   end;
 end;
 

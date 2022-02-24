@@ -131,24 +131,23 @@ var
   // ComPort2: TComPort;
   ProfileObject, ASCOMexcept: Variant;
   trackr: TTrackingRates;
-  ratearr: array [0 .. 3] of DriveRates;
-  dec: Double;
-  lastdec, lastar: Double;
+ // ratearr: array [0 .. 3] of DriveRates;
+
   lastguideTimestamp: longint;
 
 function TTelescope.CanMoveAxis(Axis: TelescopeAxes): WordBool;
 begin
-
+  result := true;
 end;
 
 function TTelescope.Get_AlignmentMode: AlignmentModes;
 begin
- result:=algPolar;
+  result := algPolar;
 end;
 
 function TTelescope.Get_Altitude: Double;
 begin
-
+  result := Get_Alt();
 end;
 
 function TTelescope.Get_ApertureArea: Double;
@@ -163,7 +162,7 @@ end;
 
 function TTelescope.Get_AtHome: WordBool;
 begin
-  result:=false
+  result := false
 end;
 
 function TTelescope.Get_AtPark: WordBool;
@@ -173,17 +172,17 @@ end;
 
 function TTelescope.Get_Azimuth: Double;
 begin
-
+  result := Get_Az();
 end;
 
 function TTelescope.Get_CanFindHome: WordBool;
 begin
-   result:=false
+  result := false
 end;
 
 function TTelescope.Get_CanPark: WordBool;
 begin
-     result:=false
+  result := false
 end;
 
 function TTelescope.Get_CanPulseGuide: WordBool;
@@ -193,27 +192,27 @@ end;
 
 function TTelescope.Get_CanSetDeclinationRate: WordBool;
 begin
-    result:=false;
+  result := false;
 end;
 
 function TTelescope.Get_CanSetGuideRates: WordBool;
 begin
-   result:=false;
+  result := false;
 end;
 
 function TTelescope.Get_CanSetPark: WordBool;
 begin
-    result:=false;
+  result := false;
 end;
 
 function TTelescope.Get_CanSetPierSide: WordBool;
 begin
-    result:=false;
+  result := false;
 end;
 
 function TTelescope.Get_CanSetRightAscensionRate: WordBool;
 begin
-    result:=false;
+  result := false;
 end;
 
 function TTelescope.Get_CanSetTracking: WordBool;
@@ -228,12 +227,12 @@ end;
 
 function TTelescope.Get_CanSlewAltAz: WordBool;
 begin
-  result := true;
+  result := false;
 end;
 
 function TTelescope.Get_CanSlewAltAzAsync: WordBool;
 begin
-  result := true;
+  result := false;
 end;
 
 function TTelescope.Get_CanSlewAsync: WordBool;
@@ -248,7 +247,7 @@ end;
 
 function TTelescope.Get_CanSyncAltAz: WordBool;
 begin
-  result := true;
+  result := false;
 end;
 
 function TTelescope.Get_CanUnpark: WordBool;
@@ -258,36 +257,16 @@ end;
 
 function TTelescope.Get_Connected: WordBool;
 begin
-//if  not check_connection() then
-// ShowMessage('Comport not responding');
+  // if  not check_connection() then
+  // ShowMessage('Comport not responding');
 
   result := true;
 end;
 
 function TTelescope.Get_Declination: Double;
-var
-  str: string;
-  n, s: Integer;
+
 begin
-if fullconnect then begin
-
-  comport2.ClearBuffer(true, false);
-  comport2.WriteStr('#:GD#');
-  while (comport2.InputCount < dec_pack) and (s < 10) do
-  begin
-    sleep(5);
-    inc(s);
-  end;
-
-  If (comport2.ReadStr(str, dec_pack) =dec_pack) and (char(str[dec_pack]) = '#') then
-  begin
-    n := LX200dectoint(str, true);
-    comport2.ClearBuffer(true, false);
-    lastdec := (n / (3600.0));
-
-  end;
-end;
-  result := lastdec;
+  result := Get_Dec();
 end;
 
 function TTelescope.Get_DeclinationRate: Double;
@@ -331,12 +310,12 @@ end;
 
 function TTelescope.Get_GuideRateDeclination: Double;
 begin
-
+  result := 1.0;
 end;
 
 function TTelescope.Get_GuideRateRightAscension: Double;
 begin
-
+  result := 0.7;
 end;
 
 function TTelescope.Get_InterfaceVersion: SYSINT;
@@ -351,32 +330,13 @@ end;
 
 function TTelescope.Get_Name: WideString;
 begin
-
+  result := 'Esp32go'
 end;
 
 function TTelescope.Get_RightAscension: Double;
 
-var
-  str: string;
-  n, s: Integer;
 begin
-if fullconnect then begin
-  comport2.ClearBuffer(true, false);
-  comport2.WriteStr(':GR#');
-  while (comport2.InputCount < ra_pack) and (s < 10) do
-  begin
-    sleep(5);
-    inc(s);
-  end;
-
-  If (comport2.ReadStr(str, ra_pack) >= ra_pack) then
-  begin
-    n := LX200artoint(str, true);
-    lastar := (n / (15 * 3600.0));
-
-  end;
-end;
-  result := lastar;
+  result := Get_RA();
 
 end;
 
@@ -397,7 +357,7 @@ end;
 
 function TTelescope.Get_SiteElevation: Double;
 begin
-
+  result := 0;
 end;
 
 function TTelescope.Get_SiteLatitude: Double;
@@ -417,7 +377,7 @@ end;
 
 function TTelescope.Get_SlewSettleTime: SYSINT;
 begin
-
+  result := 0;
 end;
 
 function TTelescope.Get_TargetDeclination: Double;
@@ -452,7 +412,7 @@ end;
 
 procedure TTelescope.AbortSlew;
 begin
-
+  abort_slew();
 end;
 
 procedure TTelescope.AxisRates(Axis: TelescopeAxes);
@@ -462,7 +422,7 @@ end;
 
 procedure TTelescope.CommandBlind(const Command: WideString; Raw: WordBool);
 begin
-  comport2.WriteStr(Command);
+  command_blind(Command, Raw);
 end;
 
 procedure TTelescope.CommandBool(const Command: WideString; Raw: Integer);
@@ -497,32 +457,30 @@ end;
 
 procedure TTelescope.PulseGuide(Direction: GuideDirections; Duration: Integer);
 var
-  durStr: string;
-  durPchar: PCHAR;
+  GuideCommand, durStr: string;
 
 begin
-  durPchar := StrAlloc(15);
-  StrFmt(durPchar, '%0.4d#', [Duration]);
-  durStr := string(durPchar);
+  durStr := Format('%0.4d', [Duration]) + '#';
+
   Case Direction of
     guideNorth:
-      comport2.WriteStr('#:Mgn' + durStr);
+      GuideCommand := '#:Mgn' + durStr;
     guideSouth:
-      comport2.WriteStr('#:Mgs' + durStr);
+      GuideCommand := '#:Mgn' + durStr;
     guideEast:
-      comport2.WriteStr('#:Mge' + durStr);
+      GuideCommand := '#:Mge' + durStr;
     guideWest:
-      comport2.WriteStr('#:Mgw' + durStr);
+      GuideCommand := '#:Mgw' + durStr;
   end;
+  Pulse_Guide(GuideCommand);
   lastguideTimestamp := GetTickCount + Duration;
-  StrDispose(durPchar);
+
 end;
 
 procedure TTelescope.Set_Connected(Value: WordBool);
 begin
 
   comport2.Parity.Bits := prNone;
-  comport2.BaudRate := br115200;
   comport2.Timeouts.ReadInterval := 100;
   comport2.Timeouts.ReadTotalMultiplier := 1;
   comport2.Timeouts.ReadTotalConstant := 100;
@@ -590,8 +548,7 @@ var
 begin
   if abs(Value) < 90 then
   begin
-    comport2.WriteStr(':Sd' + DoubletoLXdec(Value, 1));
-    // dec_target := Value;
+    Set_TargetDec(Value);
   end
   else
     raise EOLEexception.Create('Value Not Set 1', $80040402, 'none', '0', 0);
@@ -600,11 +557,9 @@ end;
 procedure TTelescope.Set_TargetRightAscension(Value: Double);
 var
   str: string;
-  n: Integer;
 begin
-  comport2.WriteStr(':Sr' + DoubleToLXAr(Value, 1));
-  // ra_target := Value;
-  raise EOLEexception.Create('Not Implemented', $80040400, 'none', '0', 0);
+  Set_TargetRA(Value);
+  // raise EOLEexception.Create('Not Implemented', $80040400, 'none', '0', 0);
   // raise Exception.Create('Not Implemented');
 end;
 
@@ -645,29 +600,25 @@ end;
 
 procedure TTelescope.SlewToCoordinates(RightAscension, Declination: Double);
 begin
-  comport2.WriteStr(':Sr' + DoubleToLXAr(RightAscension, 1));
-  comport2.WriteStr(':Sd' + DoubletoLXdec(Declination, 1));
-  comport2.WriteStr(':MS#');
+  Slew_ToCoor(RightAscension, Declination);
 end;
 
 procedure TTelescope.SlewToCoordinatesAsync(RightAscension,
   Declination: Double);
 
 begin
-  comport2.WriteStr(':Sr' + DoubleToLXAr(RightAscension, 1));
-  comport2.WriteStr(':Sd' + DoubletoLXdec(Declination, 1));
-  comport2.WriteStr(':MS#');
+  Slew_ToCoor(RightAscension, Declination);
 
 end;
 
 procedure TTelescope.SlewToTarget;
 begin
-  comport2.WriteStr(':MS#');
+  Slew_ToCoor();
 end;
 
 procedure TTelescope.SlewToTargetAsync;
 begin
-  comport2.WriteStr(':MS#');
+  Slew_ToCoor();
 end;
 
 procedure TTelescope.SyncToAltAz(Azimuth, Altitude: Double);
@@ -677,15 +628,12 @@ end;
 
 procedure TTelescope.SyncToCoordinates(RightAscension, Declination: Double);
 begin
-  comport2.WriteStr(':Sr' + DoubleToLXAr(RightAscension, 1));
-  comport2.WriteStr(':Sd' + DoubletoLXdec(Declination, 1));
-  comport2.WriteStr(':CM#');
+  SyncTo_Coord(RightAscension, Declination);
 end;
 
 procedure TTelescope.SyncToTarget;
 begin
-  comport2.WriteStr(':CM#');
-
+  SyncTo_Coord();
 end;
 
 procedure TTelescope.Unpark;

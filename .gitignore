@@ -5,3 +5,9 @@ Win32/Debug/CPort.dcu
 *.~1~
 *.~*~
 Esp32Go Setup.iss
+Win32/Debug/esp32go.exe
+Win32/Debug/Output/Esp32Go_Installer.exe
+Win32/Debug/esp32go.ini
+Win32/Debug/Output/Esp32Go_Installer.exe
+Win32/Debug/esp32go.ini
+Win32/Debug/Output/Esp32Go_Installer.exe

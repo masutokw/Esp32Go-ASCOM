@@ -3,18 +3,22 @@ unit shared;
 interface
 
 uses Windows, SysUtils, Classes, Controls, cport;
-  const ra_pack = 11 ;
-        dec_pack=10 ;
-        coor_pack= ra_pack+dec_pack;
+
+const
+  ra_pack = 11;
+  dec_pack = 10;
+  coor_pack = ra_pack + dec_pack;
+
 var
   ComPort2: TComPort;
-  fullconnect:boolean;
+  fullconnect: boolean;
+  lastdec, lastar, lastaz, lastalt: Double;
 
 function FormatString(StringIn, DivideAt: String): TStringList;
 function Inttodec(de: Integer; prec: Byte): String;
 function IntToAr(ar: Integer; prec: Byte): String;
-function LX200Dectoint(dec: String; prec: Boolean): Integer;
-function LX200Artoint(ar: String; prec: Boolean): Integer;
+function LX200Dectoint(dec: String; prec: boolean): Integer;
+function LX200Artoint(ar: String; prec: boolean): Integer;
 function Artoint(ar: String): Integer;
 function longitudetohr(ar: String): Extended;
 function longitudetodeg(ar: String): Extended;
@@ -25,14 +29,31 @@ function Signof(f: Double): Double;
 function Signof1(f: Double): Integer;
 function DoubletoLXdec(de: Double; prec: Byte): string;
 function DoubleToLXAr(ra: Double; prec: Byte): string;
+function LX200AZtoint(az: String; prec: boolean): Integer;
 function GetEnvVarValue(const VarName: string): string;
- function check_connection(): boolean;
+function check_connection(): boolean;
+function Get_Dec: Double;
+function Get_RA: Double;
+procedure Pulse_Guide(StrCommand: string);
+function Get_Alt(): Double;
+function Get_Az(): Double;
+procedure Set_TargetDec(Value: Double);
+procedure Set_TargetRA(Value: Double);
+procedure Abort_Slew();
+procedure Command_Blind(const Command: WideString; Raw: WordBool);
+procedure SyncTo_Coord(RightAscension, Declination: Double); overload;
+procedure SyncTo_Coord(); overload;
+procedure Slew_ToCoor(RightAscension, Declination: Double); overload;
+procedure Slew_ToCoor();
+overload
 
-implementation
+  implementation
 
 function FormatString(StringIn, DivideAt: String): TStringList;
+
 var
   Lop, StartAt: Integer;
+
 begin
 
   Result := TStringList.Create;
@@ -55,6 +76,7 @@ end;
 
 // ----------------------------------------------------------------------------
 function Inttodec(de: Integer; prec: Byte): String;
+
 var
   g, m, s, tmp, sg: Integer;
   sig: Char;
@@ -96,6 +118,7 @@ end;
 
 // ------------------------------------------------------------------------
 function IntToAr(ar: Integer; prec: Byte): String;
+
 var
   h, m, s, tmp, de: Integer;
   arstr: Pchar;
@@ -134,6 +157,7 @@ begin
 end;
 
 procedure GoSleepp(SleepSecs: Integer);
+
 var
   StartValue: Longint;
 begin
@@ -142,7 +166,8 @@ begin
     // Aplication.ProcessMessages;
 end;
 
-function LX200Dectoint(dec: String; prec: Boolean): Integer;
+function LX200Dectoint(dec: String; prec: boolean): Integer;
+
 var
   temp, Signo: Integer;
 begin
@@ -151,17 +176,31 @@ begin
   else
     Signo := 1;
 
-  // temp := strtoint(Copy(dec, 2, 2)) * 3600 + strtoint(Copy(dec, 5, 2)) *
-  // 60 * Signo;
   temp := ((ord(dec[2]) - 48) * 10 + (ord(dec[3]) - 48)) * 3600 +
     ((ord(dec[5]) - 48) * 10 + (ord(dec[6]) - 48)) * 60;
   if prec then
-    // temp := temp + strtoint(Copy(dec, 8, 2)) * Signo;
+
     temp := (temp + ((ord(dec[8]) - 48) * 10 + (ord(dec[9]) - 48))) * Signo;
   LX200Dectoint := temp;
 end;
 
-function LX200Artoint(ar: String; prec: Boolean): Integer;
+function LX200AZtoint(az: String; prec: boolean): Integer;
+
+var
+  temp, Signo: Integer;
+begin
+
+  temp := (((ord(az[1]) - 48) * 100) + (ord(az[2]) - 48) * 10 +
+    (ord(az[3]) - 48)) * 3600 +
+    ((ord(az[5]) - 48) * 10 + (ord(az[6]) - 48)) * 60;
+  if prec then
+
+    temp := (temp + ((ord(az[8]) - 48) * 10 + (ord(az[9]) - 48)));
+  LX200AZtoint := temp;
+end;
+
+function LX200Artoint(ar: String; prec: boolean): Integer;
+
 var
   temp: Integer;
 begin
@@ -181,6 +220,7 @@ begin
 end;
 
 function Artoint(ar: String): Integer;
+
 var
   temp: Integer;
 begin
@@ -191,6 +231,7 @@ begin
 end;
 
 function longitudetohr(ar: String): Extended;
+
 var
   temp: Integer;
 begin
@@ -201,6 +242,7 @@ begin
 end;
 
 function longitudetodeg(ar: String): Extended;
+
 var
   temp: Integer;
 begin
@@ -211,6 +253,7 @@ begin
 end;
 
 function latitudetodeg(ar: String): Extended;
+
 var
   temp: Integer;
 begin
@@ -256,6 +299,7 @@ end;
 // #:Sr 11:46.3#:Sd +50ß33#
 // #:Sr 12:24:11#:Sd +51ß32:41#
 function DoubletoLXdec(de: Double; prec: Byte): string;
+
 var
   g, m, s, sg: Integer;
   tmp: Double;
@@ -297,6 +341,7 @@ begin
 End;
 
 function DoubleToLXAr(ra: Double; prec: Byte): string;
+
 var
   h, m, s, de: Integer;
   tmp: Double;
@@ -326,6 +371,7 @@ begin
 end;
 
 function GetEnvVarValue(const VarName: string): string;
+
 var
   BufSize: Integer; // buffer size required for value
 begin
@@ -341,27 +387,198 @@ begin
     // No such environment variable
     Result := '';
 end;
-  function check_connection: boolean;
+
+function check_connection: boolean;
+
 var
   str: string;
   n, s: Integer;
 begin
 
-if (comport2.connected) then
-begin
-  comport2.ClearBuffer(true, false);
-  comport2.WriteStr('#:GD#');
-  while (comport2.InputCount < dec_pack) and (s < 10) do
+  if (ComPort2.connected) then
   begin
-    sleep(5);
-    inc(s);
-  end;
+    ComPort2.ClearBuffer(true, false);
+    ComPort2.WriteStr('#:GD#');
+    while (ComPort2.InputCount < dec_pack) and (s < 10) do
+    begin
+      sleep(5);
+      inc(s);
+    end;
 
-  result:=(comport2.ReadStr(str, dec_pack) =dec_pack) and (char(str[dec_pack]) = '#')
-end
-  else result:=false;
+    Result := (ComPort2.ReadStr(str, dec_pack) = dec_pack) and
+      (Char(str[dec_pack]) = '#')
+  end
+  else
+    Result := false;
 end;
 
+function Get_Dec(): Double;
 
+var
+  str: string;
+  n, s: Integer;
+begin
+  if fullconnect then
+  begin
+
+    ComPort2.ClearBuffer(true, false);
+    ComPort2.WriteStr('#:GD#');
+    while (ComPort2.InputCount < dec_pack) and (s < 10) do
+    begin
+      sleep(5);
+      inc(s);
+    end;
+
+    If (ComPort2.ReadStr(str, dec_pack) = dec_pack) and
+      (Char(str[dec_pack]) = '#') then
+    begin
+      n := LX200Dectoint(str, true);
+      ComPort2.ClearBuffer(true, false);
+      lastdec := (n / (3600.0));
+
+    end;
+  end;
+  Result := lastdec;
+end;
+
+function Get_RA: Double;
+
+var
+  str: string;
+  n, s: Integer;
+begin
+  if fullconnect then
+  begin
+    ComPort2.ClearBuffer(true, false);
+    ComPort2.WriteStr(':GR#');
+    while (ComPort2.InputCount < ra_pack) and (s < 10) do
+    begin
+      sleep(5);
+      inc(s);
+    end;
+
+    If (ComPort2.ReadStr(str, ra_pack) >= ra_pack) then
+    begin
+      n := LX200Artoint(str, true);
+      lastar := (n / (15 * 3600.0));
+
+    end;
+  end;
+  Result := lastar;
+
+end;
+
+function Get_Alt(): Double;
+
+var
+  str: string;
+  n, s: Integer;
+begin
+  if fullconnect then
+  begin
+
+    ComPort2.ClearBuffer(true, false);
+    ComPort2.WriteStr('#:GA#');
+    while (ComPort2.InputCount < dec_pack) and (s < 10) do
+    begin
+      sleep(5);
+      inc(s);
+    end;
+
+    If (ComPort2.ReadStr(str, dec_pack) = dec_pack) and
+      (Char(str[dec_pack]) = '#') then
+    begin
+      n := LX200Dectoint(str, true);
+      ComPort2.ClearBuffer(true, false);
+      lastalt := (n / (3600.0));
+
+    end;
+  end;
+  Result := lastalt;
+end;
+
+function Get_Az(): Double;
+
+var
+  str: string;
+  n, s: Integer;
+begin
+  if fullconnect then
+  begin
+
+    ComPort2.ClearBuffer(true, false);
+    ComPort2.WriteStr('#:GZ#');
+    while (ComPort2.InputCount < dec_pack) and (s < 10) do
+    begin
+      sleep(5);
+      inc(s);
+    end;
+
+    If (ComPort2.ReadStr(str, dec_pack) = dec_pack) and
+      (Char(str[dec_pack]) = '#') then
+    begin
+      n := LX200AZtoint(str, true);
+      ComPort2.ClearBuffer(true, false);
+      lastaz := (n / (3600.0));
+
+    end;
+  end;
+  Result := lastaz;
+end;
+
+procedure Set_TargetDec(Value: Double);
+
+var
+  response: Char;
+begin
+  ComPort2.WriteStr(':Sd' + DoubletoLXdec(Value, 1));
+  ComPort2.Read(response, 1);
+end;
+
+procedure Set_TargetRA(Value: Double);
+
+var
+  response: Char;
+
+begin
+  ComPort2.WriteStr(':Sr' + DoubleToLXAr(Value, 1));
+  ComPort2.Read(response, 1);
+end;
+
+procedure Abort_Slew();
+begin
+  ComPort2.WriteStr('#:Qn#:Qw#');
+end;
+
+procedure Pulse_Guide(StrCommand: string);
+begin
+  ComPort2.WriteStr(StrCommand);
+end;
+
+procedure Command_Blind(const Command: WideString; Raw: WordBool);
+begin
+  ComPort2.WriteStr(Command);
+end;
+procedure SyncTo_Coord(RightAscension, Declination: Double);
+begin
+  Set_TargetDec(Declination);
+  Set_TargetRA(RightAscension);
+  ComPort2.WriteStr(':CM#');
+end;
+procedure SyncTo_Coord();
+begin
+  ComPort2.WriteStr(':CM#');
+end;
+
+procedure Slew_ToCoor(RightAscension, Declination: Double);
+begin
+  Set_TargetDec(Declination);
+  Set_TargetRA(RightAscension);
+  ComPort2.WriteStr(':MS#');
+end;
+procedure Slew_ToCoor();
+begin
+  ComPort2.WriteStr(':MS#');
+end;
 
 end.
