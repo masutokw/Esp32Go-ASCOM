@@ -111,8 +111,7 @@ type
     procedure SlewToAltAz(Azimut, Altitude: Double); safecall;
     procedure SlewToAltAzAsync(Azimut, Altitude: Double); safecall;
     procedure SlewToCoordinates(RightAscension, Declination: Double); safecall;
-    procedure SlewToCoordinatesAsync(RightAscension,
-      Declination: Double); safecall;
+    procedure SlewToCoordinatesAsync(RightAscension,Declination: Double); safecall;
     procedure SlewToTarget; safecall;
     procedure SlewToTargetAsync; safecall;
     procedure SyncToAltAz(Azimuth, Altitude: Double); safecall;
@@ -128,7 +127,7 @@ uses ComServ, sysutils;
 
 var
 
-  // ComPort2: TComPort;
+
   ProfileObject, ASCOMexcept: Variant;
   trackr: TTrackingRates;
  // ratearr: array [0 .. 3] of DriveRates;
@@ -171,8 +170,10 @@ begin
 end;
 
 function TTelescope.Get_Azimuth: Double;
+var d:double;
 begin
-  result := Get_Az();
+result:=Get_Az;
+
 end;
 
 function TTelescope.Get_CanFindHome: WordBool;
@@ -480,14 +481,8 @@ end;
 procedure TTelescope.Set_Connected(Value: WordBool);
 begin
 
-  comport2.Parity.Bits := prNone;
-  comport2.Timeouts.ReadInterval := 100;
-  comport2.Timeouts.ReadTotalMultiplier := 1;
-  comport2.Timeouts.ReadTotalConstant := 100;
-  comport2.Timeouts.WriteTotalMultiplier := 1;
-  comport2.Timeouts.WriteTotalConstant := 1000;
-  comport2.TriggersOnRxChar := false;
-  comport2.Connected := true;
+
+
 
 end;
 

@@ -1268,6 +1268,7 @@ object Esp32frm: TEsp32frm
       Height = 20
       Caption = 'M3'
       TabOrder = 4
+      OnClick = ButtonM3Click
     end
     object ButtonM4: TButton
       Left = 90
@@ -1298,7 +1299,7 @@ object Esp32frm: TEsp32frm
       Top = 13
       Width = 43
       Height = 15
-      Caption = 'ASCOM'
+      Caption = 'Waiting'
       Color = clBlack
       Font.Charset = ANSI_CHARSET
       Font.Color = clRed
@@ -1358,7 +1359,7 @@ object Esp32frm: TEsp32frm
         Width = 94
         Height = 21
         ComProperty = cpPort
-        Text = 'COM13'
+        Text = 'COM1'
         Style = csDropDownList
         ItemIndex = 0
         TabOrder = 1
@@ -1396,35 +1397,47 @@ object Esp32frm: TEsp32frm
         MaxValue = 100000
       end
     end
-    object Button1: TButton
-      Left = 86
-      Top = 145
+    object ButtonSave: TButton
+      Left = 92
+      Top = 201
       Width = 48
       Height = 26
       Caption = 'Save'
       TabOrder = 2
-      OnClick = Button1Click
+      OnClick = ButtonSaveClick
     end
-    object Button2: TButton
-      Left = 18
-      Top = 146
+    object ButtonRecon: TButton
+      Left = 28
+      Top = 202
       Width = 62
       Height = 24
       Caption = 'Reconnect'
       TabOrder = 3
-      OnClick = Button2Click
+      OnClick = ButtonReconClick
+    end
+    object RadioGroupcom: TRadioGroup
+      Left = 2
+      Top = 142
+      Width = 138
+      Height = 44
+      Caption = 'Interface'
+      Columns = 2
+      Items.Strings = (
+        'TCP'
+        'Serial')
+      TabOrder = 4
     end
   end
   object Timer1: TTimer
     Enabled = False
     OnTimer = Timer1Timer
-    Left = 131
-    Top = 203
+    Left = 191
+    Top = 213
   end
   object adpInstanceControl1: TadpInstanceControl
     Enabled = True
     MaxInstances = 1
-    Left = 172
-    Top = 194
+    Left = 231
+    Top = 211
   end
 end

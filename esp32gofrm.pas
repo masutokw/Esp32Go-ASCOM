@@ -44,8 +44,9 @@ type
     GroupBox3: TGroupBox;
     EditAddr: TEdit;
     LongEditPort: TLongEdit;
-    Button1: TButton;
-    Button2: TButton;
+    ButtonSave: TButton;
+    ButtonRecon: TButton;
+    RadioGroupcom: TRadioGroup;
     procedure FormCreate(Sender: TObject);
     procedure Button_NMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
@@ -62,8 +63,9 @@ type
     procedure ButtonM1Click(Sender: TObject);
     procedure ButtonM2Click(Sender: TObject);
     procedure ButtonM4Click(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
-    procedure Button2Click(Sender: TObject);
+    procedure ButtonSaveClick(Sender: TObject);
+    procedure ButtonReconClick(Sender: TObject);
+    procedure ButtonM3Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -81,19 +83,19 @@ implementation
 
 {$R *.dfm}
 
-procedure TEsp32frm.Button1Click(Sender: TObject);
+procedure TEsp32frm.ButtonSaveClick(Sender: TObject);
 begin
   WriteSettings;
 end;
 
-procedure TEsp32frm.Button2Click(Sender: TObject);
+procedure TEsp32frm.ButtonReconClick(Sender: TObject);
 begin
-  comport2.Connected := false;
-  comport2.Port := ComComboBox1.Text; // 'COM13';//serialport;
-  comport2.baudrate := tbaudrate(ComComboBox2.ItemIndex);;
-  ComComboBox1.ComPort := comport2;
-  comport2.Connected := true;
-  if comport2.Connected then
+  ComPortBT_USB.Connected := false;
+  ComPortBT_USB.Port := ComComboBox1.Text; // 'COM13';//serialport;
+  ComPortBT_USB.baudrate := tbaudrate(ComComboBox2.ItemIndex);;
+  ComComboBox1.ComPort := ComPortBT_USB;
+  ComPortBT_USB.Connected := true;
+  if ComPortBT_USB.Connected then
   begin
 
     fullconnect := check_connection();
@@ -115,7 +117,7 @@ end;
 procedure TEsp32frm.ButtonInMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  comport2.WriteStr(':FQ#');
+  send(':FQ#');
 end;
 
 procedure TEsp32frm.ButtonM1Click(Sender: TObject);
@@ -126,6 +128,16 @@ end;
 procedure TEsp32frm.ButtonM2Click(Sender: TObject);
 begin
   telescope.CommandBlind(':FLS1+00900#', true);
+end;
+
+procedure TEsp32frm.ButtonM3Click(Sender: TObject);
+var
+focus,count:integer;
+begin
+count:=7;
+  labelar.Caption:=get_coordstpc(focus,count) ;
+    LabelFocusCount.caption := Format('%0.5d', [focus]);
+   label2.Caption:= inttostr(count);
 end;
 
 procedure TEsp32frm.ButtonM4Click(Sender: TObject);
@@ -193,67 +205,38 @@ end;
 
 procedure TEsp32frm.FormCreate(Sender: TObject);
 begin
+  serial:=(true);
   s_inipath := ExtractFilePath(Application.EXEName);
   inifile_name := 'esp32go.ini';
   SetWindowPos(Handle, HWND_TOPMOST, Left, Top, Width, Height, 0);
   ReadSettings;
-  comport2 := TComPort.Create(nil);
-  comport2.Port := ComComboBox1.Text; // 'COM13';//serialport;
-  comport2.baudrate := tbaudrate(ComComboBox2.ItemIndex);;
-  ComComboBox1.ComPort := comport2;
+   serial:=(true);
+  ComPortBT_USB.Port := ComComboBox1.Text; // 'COM13';//serialport;
+  ComPortBT_USB.baudrate := tbaudrate(ComComboBox2.ItemIndex);;
+  ComComboBox1.ComPort := ComPortBT_USB;
+  ComPortBT_USB.Connected := true;
   telescope := Ttelescope.Create();
   telescope.Set_Connected(true);
 
-  if comport2.Connected then
+  if comportbt_usb.Connected then
   begin
 
-    fullconnect := check_connection();
-    Timer1.Enabled := fullconnect;
+    fullconnect:= check_connection();
+    Timer1.Enabled :=true;
   end;
-
+    // fullconnect:=true;
+    // Timer1.Enabled :=true;
 end;
 
 procedure TEsp32frm.Timer1Timer(Sender: TObject);
 var
   str: string;
-  n: Integer;
+  focus,count: Integer;
+
 begin
-  comport2.ClearBuffer(true, false);
-  comport2.WriteStr('#:GR#:GD#');
-  n := 0;
-  while (comport2.InputCount < coor_pack) and (n < 100) do
-  begin
-    sleep(5);
-    inc(n);
-  end;
-  Label2.caption := inttostr(comport2.InputCount) + '   ' + inttostr(n);
-
-  if comport2.ReadStr(str, coor_pack) >= coor_pack then
-  begin
-
-    str := StringReplace(str, '#', #10#13 + 'DE:', [rfIgnoreCase]);
-    str := StringReplace(str, '#', '', [rfIgnoreCase]);
-    labelAR.caption := 'RA:' + StringReplace(str, 'á', 'º',
-      [rfReplaceAll, rfIgnoreCase]);
-  end;
-  n := 0;
-  if (comport2.InputCount) > 0 then
-    comport2.ClearBuffer(true, false);
-  comport2.WriteStr(':Fp#');
-  while (comport2.InputCount < 6) and (n < 100) do
-  begin
-    sleep(5);
-    inc(n);
-  end;
-  if comport2.ReadStr(str, 6) >= 6 then
-  begin
-    str := StringReplace(str, '#', '', [rfReplaceAll]);
-    n := StrToIntDef(str, 0);
-
-    // LabelFocusCount.caption := StringReplace(str, '#', '',[rfReplaceAll]);
-    LabelFocusCount.caption := Format('%0.5d', [n]);
-  end;
-
+    labelar.Caption:=get_coords(focus,count) ;
+    LabelFocusCount.caption := Format('%0.5d', [focus]);
+   label2.Caption:= inttostr(count);
 end;
 
 procedure TEsp32frm.ReadSettings;

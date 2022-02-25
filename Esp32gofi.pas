@@ -92,12 +92,12 @@ end;
 
 procedure TFocuser.Halt;
 begin
-  comport2.writestr(':FQ#');
+  send(':FQ#');
 end;
 
 procedure TFocuser.move(val: integer);
 begin
-      comport2.writestr(Format(':FP-%+0.5d#', [val]))
+      send(Format(':FP-%+0.5d#', [val]))
 end;
 
 { -------------------------------------------------------------- }

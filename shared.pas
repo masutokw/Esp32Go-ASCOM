@@ -2,7 +2,7 @@ unit shared;
 
 interface
 
-uses Windows, SysUtils, Classes, Controls, cport;
+uses Windows, SysUtils, Classes, Controls, cport, dialogs, System.Win.ScktComp;
 
 const
   ra_pack = 11;
@@ -10,35 +10,52 @@ const
   coor_pack = ra_pack + dec_pack;
 
 var
-  ComPort2: TComPort;
+  ComPortBT_USB: TComPort;
+  ClientSocket1: TClientSocket;
   fullconnect: boolean;
   lastdec, lastar, lastaz, lastalt: Double;
+  serial: boolean;
+  send: function(values: String): integer;
+  recv: function(var value: string; count: integer): integer;
+  inbuff: function: integer;
+  clearBuff: procedure(input, output: boolean);
 
+function sendserial(value: string): integer;
+function recvserial(var value: string; count: integer): integer;
+function sendtcp(value: string): integer;
+function recvtcp(var value: string; count: integer): integer;
+function inputcountserial(): integer;
+function inputcounttcp(): integer;
+procedure clearbuffSerial(input, output: boolean);
+procedure clearbufftcp(input, output: boolean);
+Function get_coords(var focus, count: integer): string;
+Function get_coordstpc(var focus, count: integer): string;
 function FormatString(StringIn, DivideAt: String): TStringList;
-function Inttodec(de: Integer; prec: Byte): String;
-function IntToAr(ar: Integer; prec: Byte): String;
-function LX200Dectoint(dec: String; prec: boolean): Integer;
-function LX200Artoint(ar: String; prec: boolean): Integer;
-function Artoint(ar: String): Integer;
+function Inttodec(de: integer; prec: Byte): String;
+function IntToAr(ar: integer; prec: Byte): String;
+function LX200Dectoint(dec: String; prec: boolean): integer;
+function LX200Artoint(ar: String; prec: boolean): integer;
+function Artoint(ar: String): integer;
 function longitudetohr(ar: String): Extended;
 function longitudetodeg(ar: String): Extended;
 function latitudetodeg(ar: String): Extended;
-procedure GoSleepp(SleepSecs: Integer);
-function Signo(n: Integer): Integer;
+procedure GoSleepp(SleepSecs: integer);
+function Signo(n: integer): integer;
 function Signof(f: Double): Double;
-function Signof1(f: Double): Integer;
+function Signof1(f: Double): integer;
 function DoubletoLXdec(de: Double; prec: Byte): string;
 function DoubleToLXAr(ra: Double; prec: Byte): string;
-function LX200AZtoint(az: String; prec: boolean): Integer;
+function LX200AZtoint(az: String; prec: boolean): integer;
 function GetEnvVarValue(const VarName: string): string;
 function check_connection(): boolean;
-function Get_Dec: Double;
+
+function Get_Dec(): Double;
 function Get_RA: Double;
 procedure Pulse_Guide(StrCommand: string);
 function Get_Alt(): Double;
 function Get_Az(): Double;
-procedure Set_TargetDec(Value: Double);
-procedure Set_TargetRA(Value: Double);
+procedure Set_TargetDec(value: Double);
+procedure Set_TargetRA(value: Double);
 procedure Abort_Slew();
 procedure Command_Blind(const Command: WideString; Raw: WordBool);
 procedure SyncTo_Coord(RightAscension, Declination: Double); overload;
@@ -49,14 +66,78 @@ overload
 
   implementation
 
+var
+  strmain: string;
+function sendserial(value: string): integer;
+begin
+  result := ComPortBT_USB.writestr(value)
+end;
+function sendtcp(value: string): integer;
+begin
+
+  result := ClientSocket1.socket.SendText(value)
+
+end;
+
+function recvserial(var value: string; count: integer): integer;
+
+var
+  str: string;
+  n: cardinal;
+begin
+  value := '                     ';
+  n := ComPortBT_USB.Readstr(value, count);
+  setlength(value, n);
+  result := n;
+end;
+function inputcountserial(): integer;
+begin
+  inputcountserial := ComPortBT_USB.InputCount
+end;
+function inputcounttcp(): integer;
+
+var
+  n: integer;
+begin
+  n := 0;
+  n := ClientSocket1.socket.ReceiveLength();
+  result := n
+end;
+
+procedure clearbuffSerial(input, output: boolean);
+begin
+  ComPortBT_USB.ClearBuffer(input, output)
+end;
+procedure clearbufftcp(input, output: boolean);
+
+var
+  str: string;
+begin
+  str := ' ';
+  if (ClientSocket1.socket.ReceiveLength() > 0) and input then
+    str := ClientSocket1.socket.ReceiveText();
+
+end;
+
+function recvtcp(var value: string; count: integer): integer;
+
+var
+  str: ansistring;
+begin
+
+  // count:=clientSocket1.socket.ReceiveLength();
+  value := ClientSocket1.socket.ReceiveText();
+  setlength(value, count);
+   result := count
+end;
 function FormatString(StringIn, DivideAt: String): TStringList;
 
 var
-  Lop, StartAt: Integer;
+  Lop, StartAt: integer;
 
 begin
 
-  Result := TStringList.Create;
+  result := TStringList.Create;
   (* First clear the Starting Point, it should set to 1, as
     the Copy() function picks the first character twice when
     Starting at 0. *)
@@ -67,18 +148,18 @@ begin
     if Copy(StringIn, Lop, Length(DivideAt)) = DivideAt then
     begin
       (* The adding starts here: *)
-      Result.Add(Copy(StringIn, StartAt, Lop - StartAt));
+      result.Add(Copy(StringIn, StartAt, Lop - StartAt));
       (* Redefine StartAt, to the Current point + Length of DivideAt: *)
       StartAt := Lop + Length(DivideAt);
     end (* If the 'DivideAt' variable is found, add the text to the stringlist: *);
-  Result.Add(Copy(StringIn, StartAt, Lop - StartAt + 1));
+  result.Add(Copy(StringIn, StartAt, Lop - StartAt + 1));
 end;
 
 // ----------------------------------------------------------------------------
-function Inttodec(de: Integer; prec: Byte): String;
+function Inttodec(de: integer; prec: Byte): String;
 
 var
-  g, m, s, tmp, sg: Integer;
+  g, m, s, tmp, sg: integer;
   sig: Char;
   destr: Pchar;
 begin
@@ -117,10 +198,10 @@ begin
 end;
 
 // ------------------------------------------------------------------------
-function IntToAr(ar: Integer; prec: Byte): String;
+function IntToAr(ar: integer; prec: Byte): String;
 
 var
-  h, m, s, tmp, de: Integer;
+  h, m, s, tmp, de: integer;
   arstr: Pchar;
 begin
   arstr := StrAlloc(100);
@@ -156,7 +237,7 @@ begin
   StrDispose(arstr);
 end;
 
-procedure GoSleepp(SleepSecs: Integer);
+procedure GoSleepp(SleepSecs: integer);
 
 var
   StartValue: Longint;
@@ -166,10 +247,10 @@ begin
     // Aplication.ProcessMessages;
 end;
 
-function LX200Dectoint(dec: String; prec: boolean): Integer;
+function LX200Dectoint(dec: String; prec: boolean): integer;
 
 var
-  temp, Signo: Integer;
+  temp, Signo: integer;
 begin
   if (dec[1] = '-') then
     Signo := -1
@@ -184,10 +265,10 @@ begin
   LX200Dectoint := temp;
 end;
 
-function LX200AZtoint(az: String; prec: boolean): Integer;
+function LX200AZtoint(az: String; prec: boolean): integer;
 
 var
-  temp, Signo: Integer;
+  temp, Signo: integer;
 begin
 
   temp := (((ord(az[1]) - 48) * 100) + (ord(az[2]) - 48) * 10 +
@@ -199,10 +280,10 @@ begin
   LX200AZtoint := temp;
 end;
 
-function LX200Artoint(ar: String; prec: boolean): Integer;
+function LX200Artoint(ar: String; prec: boolean): integer;
 
 var
-  temp: Integer;
+  temp: integer;
 begin
 
   if prec then
@@ -219,10 +300,10 @@ begin
   LX200Artoint := temp;
 end;
 
-function Artoint(ar: String): Integer;
+function Artoint(ar: String): integer;
 
 var
-  temp: Integer;
+  temp: integer;
 begin
 
   temp := 15 * (strtoint(Copy(ar, 1, 2)) * 3600 + strtoint(Copy(ar, 4, 2)) * 60
@@ -233,7 +314,7 @@ end;
 function longitudetohr(ar: String): Extended;
 
 var
-  temp: Integer;
+  temp: integer;
 begin
 
   temp := (strtoint(Copy(ar, 2, 3)) * 3600 + strtoint(Copy(ar, 6, 2)) * 60 +
@@ -244,7 +325,7 @@ end;
 function longitudetodeg(ar: String): Extended;
 
 var
-  temp: Integer;
+  temp: integer;
 begin
 
   temp := (strtoint(Copy(ar, 2, 3)) * 3600 + strtoint(Copy(ar, 6, 2)) * 60 +
@@ -255,7 +336,7 @@ end;
 function latitudetodeg(ar: String): Extended;
 
 var
-  temp: Integer;
+  temp: integer;
 begin
 
   temp := (strtoint(Copy(ar, 2, 2)) * 3600 + strtoint(Copy(ar, 5, 2)) * 60 +
@@ -301,7 +382,7 @@ end;
 function DoubletoLXdec(de: Double; prec: Byte): string;
 
 var
-  g, m, s, sg: Integer;
+  g, m, s, sg: integer;
   tmp: Double;
   sig: Char;
   destr: Pchar;
@@ -343,7 +424,7 @@ End;
 function DoubleToLXAr(ra: Double; prec: Byte): string;
 
 var
-  h, m, s, de: Integer;
+  h, m, s, de: integer;
   tmp: Double;
   arstr: Pchar;
 begin
@@ -373,98 +454,209 @@ end;
 function GetEnvVarValue(const VarName: string): string;
 
 var
-  BufSize: Integer; // buffer size required for value
+  BufSize: integer; // buffer size required for value
 begin
   // Get required buffer size (inc. terminal #0)
   BufSize := GetEnvironmentVariable(Pchar(VarName), nil, 0);
   if BufSize > 0 then
   begin
     // Read env var value into result string
-    SetLength(Result, BufSize - 1);
-    GetEnvironmentVariable(Pchar(VarName), Pchar(Result), BufSize);
+    setlength(result, BufSize - 1);
+    GetEnvironmentVariable(Pchar(VarName), Pchar(result), BufSize);
   end
   else
     // No such environment variable
-    Result := '';
+    result := '';
 end;
 
 function check_connection: boolean;
 
 var
   str: string;
-  n, s: Integer;
-begin
+  n, s, count: integer;
 
-  if (ComPort2.connected) then
+begin
+  s := 0;
+  if (ComPortBT_USB.Connected) then
   begin
-    ComPort2.ClearBuffer(true, false);
-    ComPort2.WriteStr('#:GD#');
-    while (ComPort2.InputCount < dec_pack) and (s < 10) do
+    clearBuff(true, false);
+    send('#:GD#');
+    while (inbuff < dec_pack) and (s < 10) do
     begin
       sleep(5);
       inc(s);
     end;
+    result := (recv(str, dec_pack) = dec_pack) and (Char(str[dec_pack]) = '#')
 
-    Result := (ComPort2.ReadStr(str, dec_pack) = dec_pack) and
-      (Char(str[dec_pack]) = '#')
   end
   else
-    Result := false;
+    result := false;
+end;
+Function get_coords(var focus, count: integer): string;
+
+var
+  str, coord_str: string;
+
+  n: integer;
+begin
+  clearBuff(true, false);
+  send('#:GR#:GD#');
+  n := 0;
+  while (inbuff < coor_pack) and (n < 100) do
+  begin
+    sleep(5);
+    inc(n);
+  end;
+  // Label2.caption := inttostr(inbuff) + '   ' + inttostr(n);
+  count := inbuff;
+  if recv(str, coor_pack) >= coor_pack then
+  begin
+
+    str := StringReplace(str, '#', #10#13 + 'DE:', [rfIgnoreCase]);
+    str := StringReplace(str, '#', '', [rfIgnoreCase]);
+    // labelAR.caption := 'RA:' + StringReplace(str, 'á', 'º',
+    coord_str := 'RA:' + StringReplace(str, 'á', 'º',
+      [rfReplaceAll, rfIgnoreCase]);
+  end;
+
+  n := 0;
+  if (inbuff) > 0 then
+    clearBuff(true, false);
+  send(':Fp#');
+  while (inbuff < 6) and (n < 100) do
+  begin
+    sleep(5);
+    inc(n);
+  end;
+  count := n;
+  if recv(str, 6) >= 6 then
+  begin
+    str := StringReplace(str, '#', '', [rfReplaceAll]);
+    focus := StrToIntDef(str, 0);
+
+    // LabelFocusCount.caption := StringReplace(str, '#', '',[rfReplaceAll]);
+    // LabelFocusCount.caption := Format('%0.5d', [n]);
+  end
+  else
+    count := 8888;
+  // focus := count;
+  result := coord_str;
+end;
+Function get_coordstpc(var focus, count: integer): string;
+
+var
+  str, coord_str: string;
+  n, coo: integer;
+begin
+  clearbufftcp(true, false);
+  sendtcp('#:GD#');
+  n := 0;
+
+  while (inputcounttcp() < dec_pack) and (n < 100) do
+  begin
+    sleep(5);
+    inc(n);
+  end;
+  // sleep(10);
+  if recvtcp(coord_str, dec_pack) >= dec_pack then
+  begin
+    // coo := LX200Dectoint(coord_str, true);
+    clearBuff(true, false);
+    // lastdec := coo / (3600.0);
+    // coord_str := StringReplace(coord_str, '#', #10#13 + 'DE:', [rfIgnoreCase]);
+    coord_str := StringReplace(coord_str, '#', '',
+      [rfReplaceAll, rfIgnoreCase]);
+    // labelAR.caption := 'RA:' + StringReplace(str, 'á', 'º',
+    // coord_str := 'RA:' + StringReplace(coord_str, 'á', 'º',
+    // [rfReplaceAll, rfIgnoreCase]);
+  end;
+  count := inputcounttcp;
+  clearbufftcp(true, false);
+
+  sendtcp(':GR#');
+  // clientSocket1.socket.SendText(':Fp#');
+  // count:= inputcounttcp;
+  str := '';
+  n := 0;
+  while (inputcounttcp() < ra_pack) and (n < 100) do
+  begin
+    sleep(5);
+    inc(n);
+  end;
+  // sleep(10);
+  n := recvtcp(str, ra_pack);
+  // count:= inputcounttcp;
+  if n >= ra_pack then
+  begin
+    // coo := LX200Artoint(str, true);
+    // lastar := (coo / (15 * 3600.0));
+    str := StringReplace(str, '#', '', [rfReplaceAll]);
+    n := StrToIntDef(str, 0);
+
+    // LabelFocusCount.caption := StringReplace(str, '#', '',[rfReplaceAll]);
+    // LabelFocusCount.caption := Format('%0.5d', [n]);
+  end
+  else
+    n := 8888;
+  focus := n;
+  result := coord_str + #10#13 + str;
 end;
 
 function Get_Dec(): Double;
 
 var
   str: string;
-  n, s: Integer;
+  n, s: integer;
 begin
+
+  // if fullconnect then
   if fullconnect then
   begin
-
-    ComPort2.ClearBuffer(true, false);
-    ComPort2.WriteStr('#:GD#');
-    while (ComPort2.InputCount < dec_pack) and (s < 10) do
+    s := 0;
+    clearBuff(true, false);
+    send(':GD#');
+    send(str);
+    while (inbuff < dec_pack) and (s < 100) do
     begin
       sleep(5);
       inc(s);
     end;
 
-    If (ComPort2.ReadStr(str, dec_pack) = dec_pack) and
-      (Char(str[dec_pack]) = '#') then
+    If (recv(str, dec_pack) >= dec_pack) and (Char(str[dec_pack]) = '#') then
     begin
       n := LX200Dectoint(str, true);
-      ComPort2.ClearBuffer(true, false);
+      clearBuff(true, false);
       lastdec := (n / (3600.0));
 
     end;
   end;
-  Result := lastdec;
+  result := lastdec;
 end;
 
 function Get_RA: Double;
 
 var
   str: string;
-  n, s: Integer;
+  n, s: integer;
 begin
-  if fullconnect then
+  if fullconnect  then
   begin
-    ComPort2.ClearBuffer(true, false);
-    ComPort2.WriteStr(':GR#');
-    while (ComPort2.InputCount < ra_pack) and (s < 10) do
+    s := 0;
+    clearBuff(true, false);
+    send(':GR#');
+    while (inbuff < ra_pack) and (s < 100) do
     begin
       sleep(5);
       inc(s);
     end;
-
-    If (ComPort2.ReadStr(str, ra_pack) >= ra_pack) then
+    If (recv(str, ra_pack) >= ra_pack) then
     begin
       n := LX200Artoint(str, true);
       lastar := (n / (15 * 3600.0));
 
     end;
   end;
-  Result := lastar;
+  result := lastar;
 
 end;
 
@@ -472,113 +664,138 @@ function Get_Alt(): Double;
 
 var
   str: string;
-  n, s: Integer;
+  n, s: integer;
 begin
-  if fullconnect then
+  if fullconnect  then
   begin
-
-    ComPort2.ClearBuffer(true, false);
-    ComPort2.WriteStr('#:GA#');
-    while (ComPort2.InputCount < dec_pack) and (s < 10) do
+    s := 0;
+    clearBuff(true, false);
+    send('#:GA#');
+    while (inbuff < dec_pack) and (s < 100) do
     begin
       sleep(5);
       inc(s);
     end;
-
-    If (ComPort2.ReadStr(str, dec_pack) = dec_pack) and
-      (Char(str[dec_pack]) = '#') then
+    // sleep(30);
+    If (recv(str, dec_pack) = dec_pack) and (Char(str[dec_pack]) = '#') then
     begin
       n := LX200Dectoint(str, true);
-      ComPort2.ClearBuffer(true, false);
+      clearBuff(true, false);
       lastalt := (n / (3600.0));
 
     end;
   end;
-  Result := lastalt;
+  result := lastalt;
 end;
 
 function Get_Az(): Double;
 
 var
-  str: string;
-  n, s: Integer;
-begin
-  if fullconnect then
-  begin
 
-    ComPort2.ClearBuffer(true, false);
-    ComPort2.WriteStr('#:GZ#');
-    while (ComPort2.InputCount < dec_pack) and (s < 10) do
+  str: string;
+  n, s: integer;
+begin
+  if fullconnect  then
+  begin
+    s := 0;
+    clearBuff(true, false);
+    send('#:GZ#');
+    while (inbuff < dec_pack) and (s < 100) do
     begin
       sleep(5);
       inc(s);
     end;
 
-    If (ComPort2.ReadStr(str, dec_pack) = dec_pack) and
-      (Char(str[dec_pack]) = '#') then
+    If (recv(str, dec_pack) = dec_pack) and (Char(str[dec_pack]) = '#') then
     begin
       n := LX200AZtoint(str, true);
-      ComPort2.ClearBuffer(true, false);
+      clearBuff(true, false);
       lastaz := (n / (3600.0));
-
     end;
   end;
-  Result := lastaz;
+  result := lastaz;
 end;
 
-procedure Set_TargetDec(Value: Double);
+procedure Set_TargetDec(value: Double);
 
 var
-  response: Char;
+  response: string;
+
 begin
-  ComPort2.WriteStr(':Sd' + DoubletoLXdec(Value, 1));
-  ComPort2.Read(response, 1);
+  send(':Sd' + DoubletoLXdec(value, 1));
+  recv(response, 1);
 end;
 
-procedure Set_TargetRA(Value: Double);
+procedure Set_TargetRA(value: Double);
 
 var
-  response: Char;
+  response: string;
 
 begin
-  ComPort2.WriteStr(':Sr' + DoubleToLXAr(Value, 1));
-  ComPort2.Read(response, 1);
+  send(':Sr' + DoubleToLXAr(value, 1));
+  recv(response, 1);
 end;
 
 procedure Abort_Slew();
 begin
-  ComPort2.WriteStr('#:Qn#:Qw#');
+  send('#:Qn#:Qw#');
 end;
 
 procedure Pulse_Guide(StrCommand: string);
 begin
-  ComPort2.WriteStr(StrCommand);
+  send(StrCommand);
 end;
 
 procedure Command_Blind(const Command: WideString; Raw: WordBool);
 begin
-  ComPort2.WriteStr(Command);
+  send(Command);
 end;
 procedure SyncTo_Coord(RightAscension, Declination: Double);
 begin
   Set_TargetDec(Declination);
   Set_TargetRA(RightAscension);
-  ComPort2.WriteStr(':CM#');
+  send(':CM#');
 end;
 procedure SyncTo_Coord();
 begin
-  ComPort2.WriteStr(':CM#');
+  send(':CM#');
 end;
 
 procedure Slew_ToCoor(RightAscension, Declination: Double);
 begin
   Set_TargetDec(Declination);
   Set_TargetRA(RightAscension);
-  ComPort2.WriteStr(':MS#');
+  send(':MS#');
 end;
 procedure Slew_ToCoor();
 begin
-  ComPort2.WriteStr(':MS#');
+  send(':MS#');
+
 end;
+
+initialization
+
+ComPortBT_USB := TComPort.Create(nil);
+ClientSocket1 := TClientSocket.Create(nil);
+ClientSocket1.Host := '192.168.1.41';
+ClientSocket1.Port := 10001;
+ClientSocket1.active := true;
+
+ send := sendserial;
+  recv := recvserial;
+  inbuff:= inputcountserial;
+  clearbuff:=clearbuffSerial;  {
+send := sendtcp;
+recv := recvtcp;
+inbuff := inputcounttcp;
+clearBuff := clearbufftcp;  }
+ComPortBT_USB.Events := [];
+ComPortBT_USB.Parity.Bits := prNone;
+ComPortBT_USB.Timeouts.ReadInterval := 100;
+ComPortBT_USB.Timeouts.ReadTotalMultiplier := 1;
+ComPortBT_USB.Timeouts.ReadTotalConstant := 100;
+ComPortBT_USB.Timeouts.WriteTotalMultiplier := 1;
+ComPortBT_USB.Timeouts.WriteTotalConstant := 1000;
+ComPortBT_USB.TriggersOnRxChar := true;
 
 end.
