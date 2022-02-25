@@ -1359,7 +1359,7 @@ object Esp32frm: TEsp32frm
         Width = 94
         Height = 21
         ComProperty = cpPort
-        Text = 'COM1'
+        Text = 'COM13'
         Style = csDropDownList
         ItemIndex = 0
         TabOrder = 1
@@ -1422,9 +1422,10 @@ object Esp32frm: TEsp32frm
       Height = 44
       Caption = 'Interface'
       Columns = 2
+      ItemIndex = 0
       Items.Strings = (
-        'TCP'
-        'Serial')
+        'Serial'
+        'TCP')
       TabOrder = 4
     end
   end

@@ -580,7 +580,7 @@ end;
 
 procedure TTelescope.SetUpDialog;
 begin
-
+   ShowMessage('Setup done');
 end;
 
 procedure TTelescope.SlewToAltAz(Azimut, Altitude: Double);

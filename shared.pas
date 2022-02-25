@@ -518,7 +518,9 @@ begin
     coord_str := 'RA:' + StringReplace(str, 'á', 'º',
       [rfReplaceAll, rfIgnoreCase]);
   end;
-
+  count := n;
+  if true then
+  begin
   n := 0;
   if (inbuff) > 0 then
     clearBuff(true, false);
@@ -528,7 +530,7 @@ begin
     sleep(5);
     inc(n);
   end;
-  count := n;
+  //count := n;
   if recv(str, 6) >= 6 then
   begin
     str := StringReplace(str, '#', '', [rfReplaceAll]);
@@ -539,7 +541,8 @@ begin
   end
   else
     count := 8888;
-  // focus := count;
+  end;
+   //focus := n;
   result := coord_str;
 end;
 Function get_coordstpc(var focus, count: integer): string;
@@ -777,18 +780,18 @@ initialization
 
 ComPortBT_USB := TComPort.Create(nil);
 ClientSocket1 := TClientSocket.Create(nil);
-ClientSocket1.Host := '192.168.1.41';
+ClientSocket1.Host := '192.168.1.31';
 ClientSocket1.Port := 10001;
 ClientSocket1.active := true;
 
- send := sendserial;
+{ send := sendserial;
   recv := recvserial;
   inbuff:= inputcountserial;
-  clearbuff:=clearbuffSerial;  {
+  clearbuff:=clearbuffSerial; } //{
 send := sendtcp;
 recv := recvtcp;
 inbuff := inputcounttcp;
-clearBuff := clearbufftcp;  }
+clearBuff := clearbufftcp; // }
 ComPortBT_USB.Events := [];
 ComPortBT_USB.Parity.Bits := prNone;
 ComPortBT_USB.Timeouts.ReadInterval := 100;

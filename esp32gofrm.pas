@@ -74,7 +74,7 @@ type
 
 var
   Esp32frm: TEsp32frm;
-  telescope: Ttelescope;
+//  telescope: Ttelescope;
   s_inipath: string;
   inifile_name: string;
   Serialport: string;
@@ -108,9 +108,9 @@ procedure TEsp32frm.ButtonInMouseDown(Sender: TObject; Button: TMouseButton;
 begin
   case TButton(Sender).tag of
     0:
-      telescope.CommandBlind(':F+#', true);
+      send(':F+#');
     1:
-      telescope.CommandBlind(':F-#', true);
+     send(':F-#');
   end;
 end;
 
@@ -122,22 +122,22 @@ end;
 
 procedure TEsp32frm.ButtonM1Click(Sender: TObject);
 begin
-  telescope.CommandBlind(':FA-00300#', true);
+  send(':FA-00300#');
 end;
 
 procedure TEsp32frm.ButtonM2Click(Sender: TObject);
 begin
-  telescope.CommandBlind(':FLS1+00900#', true);
+  send(':FLS1+00900#');
 end;
 
 procedure TEsp32frm.ButtonM3Click(Sender: TObject);
 var
-focus,count:integer;
+  focus, count: Integer;
 begin
-count:=7;
-  labelar.Caption:=get_coordstpc(focus,count) ;
-    LabelFocusCount.caption := Format('%0.5d', [focus]);
-   label2.Caption:= inttostr(count);
+  count := 7;
+  labelAR.Caption := get_coordstpc(focus, count);
+  LabelFocusCount.Caption := Format('%0.5d', [focus]);
+  Label2.Caption := inttostr(count);
 end;
 
 procedure TEsp32frm.ButtonM4Click(Sender: TObject);
@@ -152,32 +152,32 @@ begin
 
   case RadioGroup1.ItemIndex of
     0:
-     Command_Blind('#:RS#', true);
+      send('#:RS#');
     1:
-      Command_Blind('#:RM#', true);
+      send('#:RM#');
     2:
-      Command_Blind('#:RC#', true);
+      send('#:RC#');
     3:
-      Command_Blind('#:RG#', true);
+      send('#:RG#');
   end;
 
   case TButton(Sender).tag of
     0:
-      Command_Blind('#:Mn#', true);
+      send('#:Mn#');
     1:
-      Command_Blind('#:Ms#', true);
+     send('#:Ms#');
     2:
-      Command_Blind('#:Me#', true);
+     send('#:Me#');
     3:
-      Command_Blind('#:Mw#', true);
+     send('#:Mw#');
     4:
-     Command_Blind('#:Mn#:Me#', true);
+      send('#:Mn#:Me#');
     5:
-      Command_Blind('#:Ms#:Me#', true);
+      send('#:Ms#:Me#');
     6:
-      Command_Blind('#:Ms#:Mw#', true);
+      send('#:Ms#:Mw#');
     7:
-      Command_Blind('#:Mn#:Mw#', true);
+      send('#:Mn#:Mw#');
 
   end;
 
@@ -190,53 +190,53 @@ begin
 
   case TButton(Sender).tag of
     0:
-      Command_Blind('#:Qn#', true);
+      send('#:Qn#');
     1:
-      Command_Blind('#:Qs#', true);
+      send('#:Qs#');
     2:
-      Command_Blind('#:Qe#', true);
+      send('#:Qe#');
     3:
-      Command_Blind('#:Qw#', true);
+      send('#:Qw#');
     4, 5, 6, 7:
-      Command_Blind('#:Qn#:Qw#', true);
+      send('#:Qn#:Qw#');
   end;
 
 end;
 
 procedure TEsp32frm.FormCreate(Sender: TObject);
 begin
-  serial:=(true);
+  serial := (true);
   s_inipath := ExtractFilePath(Application.EXEName);
   inifile_name := 'esp32go.ini';
   SetWindowPos(Handle, HWND_TOPMOST, Left, Top, Width, Height, 0);
   ReadSettings;
-   serial:=(true);
+  serial := (true);
   ComPortBT_USB.Port := ComComboBox1.Text; // 'COM13';//serialport;
   ComPortBT_USB.baudrate := tbaudrate(ComComboBox2.ItemIndex);;
   ComComboBox1.ComPort := ComPortBT_USB;
   ComPortBT_USB.Connected := true;
-  telescope := Ttelescope.Create();
-  telescope.Set_Connected(true);
+ // telescope := Ttelescope.Create();
+ // telescope.Set_Connected(true);
 
-  if comportbt_usb.Connected then
+  if ComPortBT_USB.Connected then
   begin
 
-    fullconnect:= check_connection();
-    Timer1.Enabled :=true;
+   // fullconnect := check_connection();
+  //  Timer1.Enabled := true;
   end;
-    // fullconnect:=true;
-    // Timer1.Enabled :=true;
+   fullconnect:=true;
+   Timer1.Enabled :=true;
 end;
 
 procedure TEsp32frm.Timer1Timer(Sender: TObject);
 var
   str: string;
-  focus,count: Integer;
+  focus, count: Integer;
 
 begin
-    labelar.Caption:=get_coords(focus,count) ;
-    LabelFocusCount.caption := Format('%0.5d', [focus]);
-   label2.Caption:= inttostr(count);
+  labelAR.Caption := get_coords(focus, count);
+  LabelFocusCount.Caption := Format('%0.5d', [focus]);
+  Label2.Caption := inttostr(count);
 end;
 
 procedure TEsp32frm.ReadSettings;
@@ -250,6 +250,7 @@ begin
     ComComboBox2.Text := ReadString('Serial_Port', 'BaudRate', '57600');
     EditAddr.Text := ReadString('Host', 'Address', '192.168.1.1');
     LongEditPort.Value := ReadInteger('Host', 'Port', 10001);
+    RadioGroupcom.ItemIndex := ReadInteger('Interface', 'TCP', 0);
 
   end;
 end;
@@ -265,6 +266,7 @@ begin
     writeString('Serial_Port', 'BaudRate', ComComboBox2.Text);
     writeString('Host', 'Address', EditAddr.Text);
     writeInteger('Host', 'Port', LongEditPort.Value);
+    writeInteger('Interface', 'TCP', RadioGroupcom.ItemIndex);
   end;
 end;
 
