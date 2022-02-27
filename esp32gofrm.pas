@@ -52,6 +52,9 @@ type
     labelAR: TLabel;
     Label2: TLabel;
     Joystickex1: TJoystickex;
+    CheckBoxJoyf: TCheckBox;
+    CheckBox2: TCheckBox;
+
     procedure FormCreate(Sender: TObject);
     procedure Button_NMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
@@ -74,8 +77,21 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure Buttonconfig(Sender: TObject);
     procedure LabelFocusCountDblClick(Sender: TObject);
+    procedure Joystickex1JoyMove(Sender: TObject; XPos, YPos: Integer;
+      ButtonStatus: Word; IsCalibrating: Boolean);
     procedure Joystickex1Button1_Change(Sender: TObject; pressed: Boolean; Xpos,
       YPos: Integer);
+    procedure Joystickex1Button2_Change(Sender: TObject; pressed: Boolean; Xpos,
+      YPos: Integer);
+    procedure Joystickex1Button3_Change(Sender: TObject; pressed: Boolean; Xpos,
+      YPos: Integer);
+    procedure Joystickex1Button4_Change(Sender: TObject; pressed: Boolean; Xpos,
+      YPos: Integer);
+    procedure Joystickex1Button5_Change(Sender: TObject; pressed: Boolean; Xpos,
+      YPos: Integer);
+    procedure Joystickex1Button6_Change(Sender: TObject; pressed: Boolean; Xpos,
+      YPos: Integer);
+   
 
 
 
@@ -92,7 +108,8 @@ var
   s_inipath: string;
   inifile_name: string;
   Serialport: string;
-
+    joyxstatus,  joyystatus  :integer;
+     lastpress, errorcount1: Cardinal;
 implementation
 
 {$R *.dfm}
@@ -235,8 +252,9 @@ var
   n: Integer;
 begin
   n := 0;
+  joystickex1.EnableJoyStick;
   s_inipath := ExtractFilePath(Application.EXEName);
-  inifile_name := 'esp32go.ini';
+  inifile_name := 'esp32gocnf.ini';
   SetWindowPos(Handle, HWND_TOPMOST, Left, Top, Width, Height, 0);
   ReadSettings;
   imode := RadioGroupcom.ItemIndex;
@@ -279,13 +297,133 @@ end;
 
 
 
-
-
-
 procedure TEsp32frm.Joystickex1Button1_Change(Sender: TObject; pressed: Boolean;
   Xpos, YPos: Integer);
 begin
-radiogroup1.ItemIndex:=3;
+  if pressed then
+
+    if CheckBoxJoyF.Checked then
+    begin
+      CheckBox2.Checked := NOT CheckBox2.Checked;
+      //Tele.FocusSeleclSpeed := CheckBox5.Checked
+
+    end
+    else if CheckBoxJoyF.Checked then
+     send(':FQ#')
+
+    else
+     RadioGroup1.ItemIndex:=3;
+
+end;
+
+procedure TEsp32frm.Joystickex1Button2_Change(Sender: TObject; pressed: Boolean;
+  Xpos, YPos: Integer);
+
+begin
+  if CheckBoxJoyF.Checked then
+  begin
+    if pressed then
+       send(':F+#')
+
+    else
+      send(':FQ#');
+  end
+  else
+   RadioGroup1.ItemIndex:=2;
+
+end;
+
+procedure TEsp32frm.Joystickex1Button3_Change(Sender: TObject; pressed: Boolean;
+  Xpos, YPos: Integer);
+begin
+  if CheckBoxJoyF.Checked then
+  begin
+    if pressed then
+      send(':F-#')
+         else
+     send(':FQ#');
+   end
+  else
+  RadioGroup1.ItemIndex:=1;
+  end;
+
+
+procedure TEsp32frm.Joystickex1Button4_Change(Sender: TObject; pressed: Boolean;
+  Xpos, YPos: Integer);
+begin
+  if pressed then
+    lastpress := gettickCount
+  else if gettickCount - lastpress > 1000 then
+    CheckBoxJoyF.Checked := NOT CheckBoxJoyF.Checked
+  else
+   RadioGroup1.ItemIndex:=0;
+end;
+
+procedure TEsp32frm.Joystickex1Button5_Change(Sender: TObject; pressed: Boolean;
+  Xpos, YPos: Integer);
+begin
+    RadioGroup1.ItemIndex:=1;
+end;
+
+procedure TEsp32frm.Joystickex1Button6_Change(Sender: TObject; pressed: Boolean;
+  Xpos, YPos: Integer);
+begin
+    RadioGroup1.ItemIndex:=1;
+end;
+
+procedure TEsp32frm.Joystickex1JoyMove(Sender: TObject; XPos, YPos: Integer;
+  ButtonStatus: Word; IsCalibrating: Boolean);
+var
+   n: Integer;
+  xyreleased: boolean;
+begin
+
+  xyreleased := (Xpos = 1) and (YPos = 1);
+  label2.caption:=inttostr(xpos)+' '+inttostr(Ypos);
+  case RadioGroup1.ItemIndex of
+    0:
+      send('#:RS#');
+    1:
+      send('#:RM#');
+    2:
+      send('#:RC#');
+    3:
+      send('#:RG#');
+  end;
+  begin
+    if (joyxstatus <> Xpos) then
+    begin
+
+      case Xpos of
+        0:send('#:Me#');
+
+        1:  send('#:Qw#');
+
+        2:
+          send('#:Mw#');
+      end;
+
+    end;
+    if (joyystatus <> YPos) then
+    begin
+      case YPos of
+        0: send('#:Mn#');
+
+        1:
+         send('#:Qn#');
+        2:
+          send('#:Ms#');
+      end;
+
+    end;
+  end;
+
+  if xyreleased then
+    send('#:Qn#:Qw#');
+
+  joyxstatus := Xpos;
+  joyystatus := YPos;
+
 end;
 
 procedure TEsp32frm.LabelFocusCountDblClick(Sender: TObject);
@@ -318,6 +456,10 @@ begin
 
     Label5.Caption := 'DisConnected';
   end;
+   { if (Joystickex1.ButtonSt = 16) then
+        checkboxtrack.Checked := TRUE;
+      if (Joystickex1.ButtonSt = 32) then
+        checkboxtrack.Checked := FALSE;}
 end;
 
 procedure TEsp32frm.ReadSettings;

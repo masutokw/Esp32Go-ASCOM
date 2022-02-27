@@ -4,7 +4,7 @@ object Esp32frm: TEsp32frm
   AutoSize = True
   Caption = 'Esp32go'
   ClientHeight = 272
-  ClientWidth = 266
+  ClientWidth = 267
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -1216,7 +1216,7 @@ object Esp32frm: TEsp32frm
     end
   end
   object GroupBoxserial: TGroupBox
-    Left = 119
+    Left = 120
     Top = 0
     Width = 147
     Height = 272
@@ -1224,8 +1224,8 @@ object Esp32frm: TEsp32frm
     TabOrder = 4
     Visible = False
     object Label2: TLabel
-      Left = 102
-      Top = 242
+      Left = 113
+      Top = 258
       Width = 31
       Height = 13
       Caption = 'Label2'
@@ -1307,8 +1307,8 @@ object Esp32frm: TEsp32frm
       end
     end
     object ButtonSave: TButton
-      Left = 87
-      Top = 190
+      Left = 3
+      Top = 212
       Width = 48
       Height = 24
       Caption = 'Save'
@@ -1316,8 +1316,8 @@ object Esp32frm: TEsp32frm
       OnClick = ButtonSaveClick
     end
     object ButtonRecon: TButton
-      Left = 5
-      Top = 215
+      Left = 1
+      Top = 240
       Width = 65
       Height = 24
       Caption = 'Connect'
@@ -1338,13 +1338,29 @@ object Esp32frm: TEsp32frm
       TabOrder = 4
     end
     object Buttondisconnect: TButton
-      Left = 6
-      Top = 191
+      Left = 67
+      Top = 240
       Width = 64
       Height = 23
       Caption = 'Disconnect'
       TabOrder = 5
       OnMouseDown = ButtondisconnectMouseDown
+    end
+    object CheckBoxJoyf: TCheckBox
+      Left = 13
+      Top = 189
+      Width = 63
+      Height = 17
+      Caption = 'Focus'
+      TabOrder = 6
+    end
+    object CheckBox2: TCheckBox
+      Left = 63
+      Top = 189
+      Width = 45
+      Height = 17
+      Caption = 'FastF'
+      TabOrder = 7
     end
   end
   object GroupBoxFocus: TGroupBox
@@ -1480,9 +1496,9 @@ object Esp32frm: TEsp32frm
   end
   object Joystickex1: TJoystickex
     GamePort = Gameport1
-    Polling = True
-    Interval = 50
-    EventThreshold = 1.000000000000000000
+    Polling = False
+    Interval = 100
+    EventThreshold = 0.100000000000000000
     Scaled = True
     XScaledBy = 1
     YScaledBy = 1
@@ -1490,7 +1506,13 @@ object Esp32frm: TEsp32frm
     CalAutoSave = True
     CalAutoLoad = True
     OnButton1_Change = Joystickex1Button1_Change
-    Left = 89
-    Top = 65518
+    OnButton2_Change = Joystickex1Button2_Change
+    OnButton3_Change = Joystickex1Button3_Change
+    OnButton4_Change = Joystickex1Button4_Change
+    OnButton5_Change = Joystickex1Button5_Change
+    OnButton6_Change = Joystickex1Button6_Change
+    JoyMove = Joystickex1JoyMove
+    Left = 127
+    Top = 141
   end
 end
