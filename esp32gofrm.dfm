@@ -3,8 +3,8 @@ object Esp32frm: TEsp32frm
   Top = 0
   AutoSize = True
   Caption = 'Esp32go'
-  ClientHeight = 239
-  ClientWidth = 269
+  ClientHeight = 272
+  ClientWidth = 266
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -1046,13 +1046,14 @@ object Esp32frm: TEsp32frm
   OldCreateOrder = False
   Position = poOwnerFormCenter
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
   object RadioGroup1: TRadioGroup
     Left = 0
-    Top = 107
+    Top = 139
     Width = 120
-    Height = 41
+    Height = 37
     Margins.Top = 0
     Caption = 'Speed'
     Columns = 4
@@ -1076,226 +1077,12 @@ object Esp32frm: TEsp32frm
     Left = 0
     Top = 0
     Width = 120
-    Height = 123
+    Height = 152
     Margins.Bottom = 0
     Caption = 'Telescope'
     TabOrder = 2
-    object ButtonNE: TButton
-      Tag = 4
-      Left = 11
-      Top = 15
-      Width = 30
-      Height = 30
-      Caption = 'NE'
-      TabOrder = 0
-      OnMouseDown = Button_NMouseDown
-      OnMouseUp = Button_NMouseUp
-    end
-    object Button_N: TButton
-      Left = 42
-      Top = 13
-      Width = 35
-      Height = 35
-      Caption = 'N'
-      TabOrder = 1
-      OnMouseDown = Button_NMouseDown
-      OnMouseUp = Button_NMouseUp
-    end
-    object ButtonNW: TButton
-      Tag = 7
-      Left = 80
-      Top = 15
-      Width = 30
-      Height = 30
-      Caption = 'NW'
-      TabOrder = 2
-      OnMouseDown = Button_NMouseDown
-      OnMouseUp = Button_NMouseUp
-    end
-    object Button_W: TButton
-      Tag = 3
-      Left = 77
-      Top = 46
-      Width = 35
-      Height = 35
-      Caption = 'W'
-      TabOrder = 3
-      OnMouseDown = Button_NMouseDown
-      OnMouseUp = Button_NMouseUp
-    end
-    object ButtonSW: TButton
-      Tag = 6
-      Left = 80
-      Top = 83
-      Width = 30
-      Height = 30
-      Caption = 'SW'
-      TabOrder = 4
-      OnMouseDown = Button_NMouseDown
-      OnMouseUp = Button_NMouseUp
-    end
-    object Button_S: TButton
-      Tag = 1
-      Left = 43
-      Top = 81
-      Width = 35
-      Height = 35
-      Caption = 'S'
-      TabOrder = 5
-      OnMouseDown = Button_NMouseDown
-      OnMouseUp = Button_NMouseUp
-    end
-    object ButtonSE: TButton
-      Tag = 5
-      Left = 11
-      Top = 83
-      Width = 30
-      Height = 30
-      Caption = 'SE'
-      TabOrder = 6
-      OnMouseDown = Button_NMouseDown
-      OnMouseUp = Button_NMouseUp
-    end
-    object Button_E: TButton
-      Tag = 2
-      Left = 8
-      Top = 47
-      Width = 35
-      Height = 35
-      Caption = 'E'
-      TabOrder = 7
-      OnMouseDown = Button_NMouseDown
-      OnMouseUp = Button_NMouseUp
-    end
-    object ButtonH: TButton
-      Left = 45
-      Top = 50
-      Width = 29
-      Height = 15
-      Caption = 'H'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -9
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 8
-    end
-    object ButtonPark: TButton
-      Left = 45
-      Top = 64
-      Width = 29
-      Height = 15
-      Caption = 'Park'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -9
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 9
-    end
-  end
-  object GroupBoxFocus: TGroupBox
-    Left = 0
-    Top = 139
-    Width = 120
-    Height = 63
-    Caption = 'Focuser'
-    TabOrder = 1
-    object LabelFocusCount: TLabel
-      Tag = 1
-      Left = 55
-      Top = 14
-      Width = 61
-      Height = 19
-      Alignment = taRightJustify
-      AutoSize = False
-      Caption = '0'
-      Color = clBlack
-      Font.Charset = ANSI_CHARSET
-      Font.Color = clAqua
-      Font.Height = -12
-      Font.Name = 'Arial'
-      Font.Style = [fsBold]
-      ParentColor = False
-      ParentFont = False
-      Transparent = False
-      StyleElements = []
-    end
-    object ButtonIn: TButton
-      Left = 3
-      Top = 14
-      Width = 25
-      Height = 20
-      Caption = 'In'
-      TabOrder = 0
-      OnMouseDown = ButtonInMouseDown
-      OnMouseUp = ButtonInMouseUp
-    end
-    object ButtonOut: TButton
-      Left = 30
-      Top = 14
-      Width = 25
-      Height = 20
-      Caption = 'Out1'
-      TabOrder = 1
-      OnMouseDown = ButtonInMouseDown
-      OnMouseUp = ButtonInMouseUp
-    end
-    object ButtonM1: TButton
-      Left = 3
-      Top = 35
-      Width = 25
-      Height = 20
-      Caption = 'M1'
-      TabOrder = 2
-      OnClick = ButtonM1Click
-    end
-    object ButtonM2: TButton
-      Left = 32
-      Top = 35
-      Width = 25
-      Height = 20
-      Caption = 'M2'
-      TabOrder = 3
-      OnClick = ButtonM2Click
-    end
-    object ButtonM3: TButton
-      Left = 61
-      Top = 35
-      Width = 25
-      Height = 20
-      Caption = 'M3'
-      TabOrder = 4
-      OnClick = ButtonM3Click
-    end
-    object ButtonM4: TButton
-      Left = 90
-      Top = 35
-      Width = 25
-      Height = 20
-      Caption = 'M4'
-      TabOrder = 5
-      OnClick = ButtonM4Click
-    end
-  end
-  object GroupBox2: TGroupBox
-    Left = 0
-    Top = 194
-    Width = 120
-    Height = 45
-    Caption = 'Coord'
-    TabOrder = 3
-    object Label2: TLabel
-      Left = 88
-      Top = 29
-      Width = 27
-      Height = 13
-      Caption = 'count'
-    end
     object labelAR: TLabel
-      Left = 2
+      Left = 19
       Top = 13
       Width = 43
       Height = 15
@@ -1312,17 +1099,139 @@ object Esp32frm: TEsp32frm
       WordWrap = True
       StyleElements = [seBorder]
     end
+    object ButtonNE: TButton
+      Tag = 4
+      Left = 9
+      Top = 45
+      Width = 30
+      Height = 30
+      Caption = 'NE'
+      TabOrder = 0
+      OnMouseDown = Button_NMouseDown
+      OnMouseUp = Button_NMouseUp
+    end
+    object Button_N: TButton
+      Left = 40
+      Top = 43
+      Width = 35
+      Height = 35
+      Caption = 'N'
+      TabOrder = 1
+      OnMouseDown = Button_NMouseDown
+      OnMouseUp = Button_NMouseUp
+    end
+    object ButtonNW: TButton
+      Tag = 7
+      Left = 78
+      Top = 45
+      Width = 30
+      Height = 30
+      Caption = 'NW'
+      TabOrder = 2
+      OnMouseDown = Button_NMouseDown
+      OnMouseUp = Button_NMouseUp
+    end
+    object Button_W: TButton
+      Tag = 3
+      Left = 75
+      Top = 76
+      Width = 35
+      Height = 35
+      Caption = 'W'
+      TabOrder = 3
+      OnMouseDown = Button_NMouseDown
+      OnMouseUp = Button_NMouseUp
+    end
+    object ButtonSW: TButton
+      Tag = 6
+      Left = 78
+      Top = 113
+      Width = 30
+      Height = 30
+      Caption = 'SW'
+      TabOrder = 4
+      OnMouseDown = Button_NMouseDown
+      OnMouseUp = Button_NMouseUp
+    end
+    object Button_S: TButton
+      Tag = 1
+      Left = 41
+      Top = 111
+      Width = 35
+      Height = 35
+      Caption = 'S'
+      TabOrder = 5
+      OnMouseDown = Button_NMouseDown
+      OnMouseUp = Button_NMouseUp
+    end
+    object ButtonSE: TButton
+      Tag = 5
+      Left = 9
+      Top = 113
+      Width = 30
+      Height = 30
+      Caption = 'SE'
+      TabOrder = 6
+      OnMouseDown = Button_NMouseDown
+      OnMouseUp = Button_NMouseUp
+    end
+    object Button_E: TButton
+      Tag = 2
+      Left = 6
+      Top = 77
+      Width = 35
+      Height = 35
+      Caption = 'E'
+      TabOrder = 7
+      OnMouseDown = Button_NMouseDown
+      OnMouseUp = Button_NMouseUp
+    end
+    object ButtonH: TButton
+      Left = 43
+      Top = 80
+      Width = 29
+      Height = 15
+      Caption = 'H'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -9
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 8
+    end
+    object ButtonPark: TButton
+      Left = 43
+      Top = 95
+      Width = 29
+      Height = 15
+      Caption = 'Park'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -9
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 9
+    end
   end
   object GroupBoxserial: TGroupBox
-    Left = 122
+    Left = 119
     Top = 0
     Width = 147
-    Height = 235
+    Height = 272
     Caption = 'Config'
     TabOrder = 4
     Visible = False
+    object Label2: TLabel
+      Left = 102
+      Top = 242
+      Width = 31
+      Height = 13
+      Caption = 'Label2'
+    end
     object GroupBox4: TGroupBox
-      Left = -1
+      Left = 1
       Top = 15
       Width = 142
       Height = 78
@@ -1359,7 +1268,7 @@ object Esp32frm: TEsp32frm
         Width = 94
         Height = 21
         ComProperty = cpPort
-        Text = 'COM13'
+        Text = 'COM1'
         Style = csDropDownList
         ItemIndex = 0
         TabOrder = 1
@@ -1398,25 +1307,25 @@ object Esp32frm: TEsp32frm
       end
     end
     object ButtonSave: TButton
-      Left = 92
-      Top = 201
+      Left = 87
+      Top = 190
       Width = 48
-      Height = 26
+      Height = 24
       Caption = 'Save'
       TabOrder = 2
       OnClick = ButtonSaveClick
     end
     object ButtonRecon: TButton
-      Left = 28
-      Top = 202
-      Width = 62
+      Left = 5
+      Top = 215
+      Width = 65
       Height = 24
-      Caption = 'Reconnect'
+      Caption = 'Connect'
       TabOrder = 3
       OnClick = ButtonReconClick
     end
     object RadioGroupcom: TRadioGroup
-      Left = 2
+      Left = 5
       Top = 142
       Width = 138
       Height = 44
@@ -1428,17 +1337,160 @@ object Esp32frm: TEsp32frm
         'TCP')
       TabOrder = 4
     end
+    object Buttondisconnect: TButton
+      Left = 6
+      Top = 191
+      Width = 64
+      Height = 23
+      Caption = 'Disconnect'
+      TabOrder = 5
+      OnMouseDown = ButtondisconnectMouseDown
+    end
+  end
+  object GroupBoxFocus: TGroupBox
+    Left = 0
+    Top = 174
+    Width = 120
+    Height = 63
+    Caption = 'Focuser'
+    TabOrder = 1
+    object LabelFocusCount: TLabel
+      Tag = 1
+      Left = 55
+      Top = 14
+      Width = 61
+      Height = 19
+      Alignment = taRightJustify
+      AutoSize = False
+      Caption = '0'
+      Color = clBlack
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clAqua
+      Font.Height = -12
+      Font.Name = 'Arial'
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+      Transparent = False
+      StyleElements = []
+      OnDblClick = LabelFocusCountDblClick
+    end
+    object ButtonIn: TButton
+      Left = 3
+      Top = 14
+      Width = 25
+      Height = 20
+      Caption = 'In'
+      TabOrder = 0
+      OnMouseDown = ButtonInMouseDown
+      OnMouseUp = ButtonInMouseUp
+    end
+    object ButtonOut: TButton
+      Left = 30
+      Top = 14
+      Width = 25
+      Height = 20
+      Caption = 'Out'
+      TabOrder = 1
+      OnMouseDown = ButtonInMouseDown
+      OnMouseUp = ButtonInMouseUp
+    end
+    object ButtonM1: TButton
+      Left = 3
+      Top = 35
+      Width = 25
+      Height = 20
+      Caption = 'M1'
+      TabOrder = 2
+      OnClick = ButtonM1Click
+    end
+    object ButtonM2: TButton
+      Left = 32
+      Top = 35
+      Width = 25
+      Height = 20
+      Caption = 'M2'
+      TabOrder = 3
+      OnClick = ButtonM2Click
+    end
+    object ButtonM3: TButton
+      Left = 61
+      Top = 35
+      Width = 25
+      Height = 20
+      Caption = 'M3'
+      TabOrder = 4
+    end
+    object ButtonM4: TButton
+      Left = 90
+      Top = 35
+      Width = 25
+      Height = 20
+      Caption = 'M4'
+      TabOrder = 5
+    end
+  end
+  object GroupBox2: TGroupBox
+    Left = 0
+    Top = 234
+    Width = 120
+    Height = 38
+    Caption = 'Coord'
+    TabOrder = 3
+    object Label5: TLabel
+      Left = 7
+      Top = 12
+      Width = 67
+      Height = 15
+      AutoSize = False
+      Caption = 'dis'
+      Color = clBlack
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clRed
+      Font.Height = -12
+      Font.Name = 'Arial'
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+      Transparent = False
+      WordWrap = True
+      StyleElements = [seBorder]
+    end
+    object Button1: TButton
+      Left = 81
+      Top = 9
+      Width = 37
+      Height = 20
+      Caption = 'Config'
+      TabOrder = 0
+      OnClick = Buttonconfig
+    end
   end
   object Timer1: TTimer
     Enabled = False
     OnTimer = Timer1Timer
-    Left = 191
-    Top = 213
+    Left = 210
+    Top = 5
   end
   object adpInstanceControl1: TadpInstanceControl
     Enabled = True
     MaxInstances = 1
-    Left = 231
-    Top = 211
+    Left = 229
+    Top = 3
+  end
+  object Joystickex1: TJoystickex
+    GamePort = Gameport1
+    Polling = True
+    Interval = 50
+    EventThreshold = 1.000000000000000000
+    Scaled = True
+    XScaledBy = 1
+    YScaledBy = 1
+    ZScaledBy = 100
+    CalAutoSave = True
+    CalAutoLoad = True
+    OnButton1_Change = Joystickex1Button1_Change
+    Left = 89
+    Top = 65518
   end
 end

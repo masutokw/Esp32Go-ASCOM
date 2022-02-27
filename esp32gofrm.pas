@@ -6,7 +6,8 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
   Vcl.StdCtrls, Vcl.ExtCtrls, CPort, esp32goi, shared, inifiles,
-  EnhEdits, CPortCtl, adpInstanceControl;
+  EnhEdits, CPortCtl, adpInstanceControl, System.Win.ScktComp, serial,
+  Joystickex;
 
 type
   TEsp32frm = class(TForm)
@@ -29,11 +30,9 @@ type
     ButtonSE: TButton;
     Button_E: TButton;
     GroupBox2: TGroupBox;
-    Label2: TLabel;
     ButtonH: TButton;
     ButtonPark: TButton;
     LabelFocusCount: TLabel;
-    labelAR: TLabel;
     adpInstanceControl1: TadpInstanceControl;
     GroupBoxserial: TGroupBox;
     GroupBox4: TGroupBox;
@@ -47,6 +46,12 @@ type
     ButtonSave: TButton;
     ButtonRecon: TButton;
     RadioGroupcom: TRadioGroup;
+    Buttondisconnect: TButton;
+    Label5: TLabel;
+    Button1: TButton;
+    labelAR: TLabel;
+    Label2: TLabel;
+    Joystickex1: TJoystickex;
     procedure FormCreate(Sender: TObject);
     procedure Button_NMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
@@ -62,10 +67,19 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure ButtonM1Click(Sender: TObject);
     procedure ButtonM2Click(Sender: TObject);
-    procedure ButtonM4Click(Sender: TObject);
     procedure ButtonSaveClick(Sender: TObject);
     procedure ButtonReconClick(Sender: TObject);
-    procedure ButtonM3Click(Sender: TObject);
+    procedure ButtondisconnectMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure FormDestroy(Sender: TObject);
+    procedure Buttonconfig(Sender: TObject);
+    procedure LabelFocusCountDblClick(Sender: TObject);
+    procedure Joystickex1Button1_Change(Sender: TObject; pressed: Boolean; Xpos,
+      YPos: Integer);
+
+
+
+
   private
     { Private declarations }
   public
@@ -74,7 +88,7 @@ type
 
 var
   Esp32frm: TEsp32frm;
-//  telescope: Ttelescope;
+  // telescope: Ttelescope;
   s_inipath: string;
   inifile_name: string;
   Serialport: string;
@@ -90,17 +104,45 @@ end;
 
 procedure TEsp32frm.ButtonReconClick(Sender: TObject);
 begin
-  ComPortBT_USB.Connected := false;
-  ComPortBT_USB.Port := ComComboBox1.Text; // 'COM13';//serialport;
-  ComPortBT_USB.baudrate := tbaudrate(ComComboBox2.ItemIndex);;
-  ComComboBox1.ComPort := ComPortBT_USB;
-  ComPortBT_USB.Connected := true;
-  if ComPortBT_USB.Connected then
+  if imode = 0 then
   begin
+    ComPortBT_USB.Connected := false;
+    ComPortBT_USB.Port := ComComboBox1.Text; // 'COM13';//serialport;
+    ComPortBT_USB.baudrate := tbaudrate(ComComboBox2.ItemIndex);;
+    ComComboBox1.ComPort := ComPortBT_USB;
+    ComPortBT_USB.Connected := true;
+    if ComPortBT_USB.Connected then
+    begin
 
-    fullconnect := check_connection();
-    Timer1.Enabled := fullconnect;
+      fullconnect := check_connection();
+      Timer1.Enabled := fullconnect;
+    end;
+  end
+  else
+  begin
+    if ClientSocket1.active then
+      ClientSocket1.active := false;
+
+    sleep(1000);
+    ClientSocket1.Host := EditAddr.Text;
+    ClientSocket1.Port := LongEditPort.Value;
+    ClientSocket1.active := true;
+
   end;
+end;
+
+procedure TEsp32frm.Buttonconfig(Sender: TObject);
+begin
+  GroupBoxserial.Visible := not GroupBoxserial.Visible;
+end;
+
+procedure TEsp32frm.ButtondisconnectMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  if (imode = 1) then
+    ClientSocket1.active := false
+  else
+    ComPortBT_USB.Connected := false;
 end;
 
 procedure TEsp32frm.ButtonInMouseDown(Sender: TObject; Button: TMouseButton;
@@ -110,7 +152,7 @@ begin
     0:
       send(':F+#');
     1:
-     send(':F-#');
+      send(':F-#');
   end;
 end;
 
@@ -128,21 +170,6 @@ end;
 procedure TEsp32frm.ButtonM2Click(Sender: TObject);
 begin
   send(':FLS1+00900#');
-end;
-
-procedure TEsp32frm.ButtonM3Click(Sender: TObject);
-var
-  focus, count: Integer;
-begin
-  count := 7;
-  labelAR.Caption := get_coordstpc(focus, count);
-  LabelFocusCount.Caption := Format('%0.5d', [focus]);
-  Label2.Caption := inttostr(count);
-end;
-
-procedure TEsp32frm.ButtonM4Click(Sender: TObject);
-begin
-  GroupBoxserial.Visible := not GroupBoxserial.Visible
 end;
 
 procedure TEsp32frm.Button_NMouseDown(Sender: TObject; Button: TMouseButton;
@@ -165,11 +192,11 @@ begin
     0:
       send('#:Mn#');
     1:
-     send('#:Ms#');
+      send('#:Ms#');
     2:
-     send('#:Me#');
+      send('#:Me#');
     3:
-     send('#:Mw#');
+      send('#:Mw#');
     4:
       send('#:Mn#:Me#');
     5:
@@ -204,28 +231,66 @@ begin
 end;
 
 procedure TEsp32frm.FormCreate(Sender: TObject);
+var
+  n: Integer;
 begin
-  serial := (true);
+  n := 0;
   s_inipath := ExtractFilePath(Application.EXEName);
   inifile_name := 'esp32go.ini';
   SetWindowPos(Handle, HWND_TOPMOST, Left, Top, Width, Height, 0);
   ReadSettings;
-  serial := (true);
-  ComPortBT_USB.Port := ComComboBox1.Text; // 'COM13';//serialport;
-  ComPortBT_USB.baudrate := tbaudrate(ComComboBox2.ItemIndex);;
+  imode := RadioGroupcom.ItemIndex;
+  set_interface_mode(imode);
+  initserial(ComComboBox1.Text, tbaudrate(ComComboBox2.ItemIndex));
+  init_tcp(EditAddr.Text, LongEditPort.Value);
   ComComboBox1.ComPort := ComPortBT_USB;
-  ComPortBT_USB.Connected := true;
- // telescope := Ttelescope.Create();
- // telescope.Set_Connected(true);
-
-  if ComPortBT_USB.Connected then
+  if imode = 0 then
+    ComPortBT_USB.Connected := true
+  else
   begin
-
-   // fullconnect := check_connection();
-  //  Timer1.Enabled := true;
+    ClientSocket1.active := true;
+    { repeat
+      sleep(50);
+      inc(n);
+      until  ClientSocket1.active or (n=100);
+      ClientSocket1.active:=n<100; }
   end;
-   fullconnect:=true;
-   Timer1.Enabled :=true;
+
+  { if not(ClientSocket1.active) or ComPortBT_USB.Connected then
+    begin
+
+    fullconnect := true;//check_connection();
+    Timer1.Enabled := true;
+    end; }
+  fullconnect := true;
+  Timer1.Enabled := true;
+end;
+
+procedure TEsp32frm.FormDestroy(Sender: TObject);
+begin
+  if ClientSocket1.active = true then
+    ClientSocket1.active := false;
+  if ComPortBT_USB.Connected then
+    ComPortBT_USB.Connected := false;
+
+end;
+
+
+
+
+
+
+
+
+procedure TEsp32frm.Joystickex1Button1_Change(Sender: TObject; pressed: Boolean;
+  Xpos, YPos: Integer);
+begin
+radiogroup1.ItemIndex:=3;
+end;
+
+procedure TEsp32frm.LabelFocusCountDblClick(Sender: TObject);
+begin
+  send(':FLS1+00000#');
 end;
 
 procedure TEsp32frm.Timer1Timer(Sender: TObject);
@@ -234,9 +299,25 @@ var
   focus, count: Integer;
 
 begin
-  labelAR.Caption := get_coords(focus, count);
-  LabelFocusCount.Caption := Format('%0.5d', [focus]);
-  Label2.Caption := inttostr(count);
+  if (ClientSocket1.active and (imode = 1)) or
+    ((imode = 0) and ComPortBT_USB.Connected) then
+  begin
+    labelAR.Caption := get_coords(focus, count);
+    LabelFocusCount.Caption := Format('%0.5d', [focus]);
+    if imode = 1 then
+      Label5.Caption := 'TCP'
+    else
+      Label5.Caption := 'BT/USB';
+    Label5.Caption := Label5.Caption + ' ' + inttostr(count);
+    Label5.Font.Color := cllime;
+  end
+
+  else
+  begin
+    Label5.Font.Color := clred;
+
+    Label5.Caption := 'DisConnected';
+  end;
 end;
 
 procedure TEsp32frm.ReadSettings;

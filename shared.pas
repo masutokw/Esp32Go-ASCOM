@@ -2,19 +2,36 @@ unit shared;
 
 interface
 
-uses Windows, SysUtils, Classes, Controls, cport, dialogs, System.Win.ScktComp;
+uses Windows, SysUtils, Classes, Controls, cport, dialogs, System.Win.ScktComp,serial;
+type
+  TMyClass = class
+  private
+    procedure CSClientConnect(Sender: TObject;
+      Socket: TCustomWinSocket);
+    procedure CSClientDisconnect(Sender: TObject;
+      Socket: TCustomWinSocket);
+    procedure tcperror(Sender: TObject;
+    Socket: TCustomWinSocket; ErrorEvent: TErrorEvent; var ErrorCode: Integer);
+
+  public
+  end;
 
 const
   ra_pack = 11;
   dec_pack = 10;
   coor_pack = ra_pack + dec_pack;
 
+
 var
+
   ComPortBT_USB: TComPort;
   ClientSocket1: TClientSocket;
   fullconnect: boolean;
   lastdec, lastar, lastaz, lastalt: Double;
-  serial: boolean;
+  imode: integer;
+  Sport: THandle;
+   connected:boolean;
+    MyClass : TMyClass;
   send: function(values: String): integer;
   recv: function(var value: string; count: integer): integer;
   inbuff: function: integer;
@@ -28,6 +45,9 @@ function inputcountserial(): integer;
 function inputcounttcp(): integer;
 procedure clearbuffSerial(input, output: boolean);
 procedure clearbufftcp(input, output: boolean);
+procedure set_interface_mode(mode: integer);
+procedure initserial(port:string;baudrate: tbaudrate);
+procedure init_tcp(host:string;port:integer);
 Function get_coords(var focus, count: integer): string;
 Function get_coordstpc(var focus, count: integer): string;
 function FormatString(StringIn, DivideAt: String): TStringList;
@@ -65,17 +85,41 @@ procedure Slew_ToCoor();
 overload
 
   implementation
-
-var
-  strmain: string;
-function sendserial(value: string): integer;
+  procedure TMyClass.CSClientConnect(Sender: TObject;
+  Socket: TCustomWinSocket);
 begin
+ //showmessage('conectado socket');//Form1.Memo1.Lines.Add('Client connected.');
+end;
+
+procedure TMyClass.CSClientDisconnect(Sender: TObject;
+  Socket: TCustomWinSocket);
+begin
+ showmessage('desconectado socket');
+end;
+procedure  TMyClass.tcperror(Sender: TObject;
+    Socket: TCustomWinSocket; ErrorEvent:  TErrorEvent; var ErrorCode: Integer);
+    begin
+    clientsocket1.active:=false;
+     showmessage('error socket');
+    end;
+
+function sendserial(value: string): integer;
+   var count:integer;
+begin
+  result:=0;
+  if ComPortBT_USB.Connected then
+  begin
+  count:=length(value);
   result := ComPortBT_USB.writestr(value)
+  end;
+
+
+
 end;
 function sendtcp(value: string): integer;
 begin
 
-  result := ClientSocket1.socket.SendText(value)
+  result := clientsocket1.socket.SendText(value)
 
 end;
 
@@ -85,14 +129,26 @@ var
   str: string;
   n: cardinal;
 begin
-  value := '                     ';
+result:=0;
+ if ComPortBT_USB.Connected then
+  begin
+  value := '                             ';
   n := ComPortBT_USB.Readstr(value, count);
+
+
   setlength(value, n);
   result := n;
+  end;
 end;
+
 function inputcountserial(): integer;
 begin
+inputcountserial:=0;
+    if ComPortBT_USB.Connected then
+  begin
   inputcountserial := ComPortBT_USB.InputCount
+  end;
+
 end;
 function inputcounttcp(): integer;
 
@@ -105,8 +161,12 @@ begin
 end;
 
 procedure clearbuffSerial(input, output: boolean);
+var str:string;
 begin
-  ComPortBT_USB.ClearBuffer(input, output)
+ // ComPortBT_USB.ClearBuffer(input, output)  ;
+if comportbt_usb.Connected and (comportbt_usb.inputcount>0)
+ then comportbt_usb.readstr(str,comportbt_usb.inputcount);
+
 end;
 procedure clearbufftcp(input, output: boolean);
 
@@ -124,12 +184,63 @@ function recvtcp(var value: string; count: integer): integer;
 var
   str: ansistring;
 begin
+ result := 0;
+   if  ClientSocket1.active then           begin
 
-  // count:=clientSocket1.socket.ReceiveLength();
+  if clientSocket1.socket.ReceiveLength()>0 then
+  begin
   value := ClientSocket1.socket.ReceiveText();
   setlength(value, count);
-   result := count
+   end;
+  result := count;
+   end;
 end;
+
+procedure set_interface_mode(mode: integer);
+begin
+  if mode = 0 then
+  begin
+    send := sendserial;
+    recv := recvserial;
+    inbuff := inputcountserial;
+    clearBuff := clearbuffSerial;
+  end
+  else
+  begin
+
+    send := sendtcp;
+    recv := recvtcp;
+    inbuff := inputcounttcp;
+    clearBuff := clearbufftcp;
+  end;
+end;
+procedure initserial(port:string;baudrate: tbaudrate);
+begin
+//ComPortBT_USB := TComPort.Create(nil);
+ComPortBT_USB.Port:=port;
+ComPortBT_USB.BaudRate:=baudrate;
+ComPortBT_USB.Events := [];
+ComPortBT_USB.Parity.Bits := prNone;
+ComPortBT_USB.Timeouts.ReadInterval := 100;
+ComPortBT_USB.Timeouts.ReadTotalMultiplier := 1;
+ComPortBT_USB.Timeouts.ReadTotalConstant := 100;
+ComPortBT_USB.Timeouts.WriteTotalMultiplier := 1;
+ComPortBT_USB.Timeouts.WriteTotalConstant := 1000;
+ComPortBT_USB.TriggersOnRxChar := true;
+end;
+
+procedure init_tcp(host:string;port:integer);
+begin
+//ClientSocket1 := TClientSocket.Create(nil);
+ClientSocket1.Host := host;
+ClientSocket1.Port :=port;
+//ClientSocket1.active := true;
+ ClientSocket1.OnConnect := MyClass.CSClientConnect;
+ ClientSocket1.OnDisconnect :=MyClass.CSClientDisconnect;
+ clientsocket1.OnError:=MyClass.tcperror;
+end;
+
+
 function FormatString(StringIn, DivideAt: String): TStringList;
 
 var
@@ -477,7 +588,7 @@ var
 
 begin
   s := 0;
-  if (ComPortBT_USB.Connected) then
+  if (ComPortBT_USB.Connected)or ( ClientSocket1.active) then
   begin
     clearBuff(true, false);
     send('#:GD#');
@@ -504,7 +615,7 @@ begin
   n := 0;
   while (inbuff < coor_pack) and (n < 100) do
   begin
-    sleep(5);
+    sleep(20);
     inc(n);
   end;
   // Label2.caption := inttostr(inbuff) + '   ' + inttostr(n);
@@ -521,28 +632,28 @@ begin
   count := n;
   if true then
   begin
-  n := 0;
-  if (inbuff) > 0 then
-    clearBuff(true, false);
-  send(':Fp#');
-  while (inbuff < 6) and (n < 100) do
-  begin
-    sleep(5);
-    inc(n);
-  end;
-  //count := n;
-  if recv(str, 6) >= 6 then
-  begin
-    str := StringReplace(str, '#', '', [rfReplaceAll]);
-    focus := StrToIntDef(str, 0);
+    n := 0;
+    if (inbuff) > 0 then
+      clearBuff(true, false);
+    send(':Fp#');
+    while (inbuff < 6) and (n < 100) do
+    begin
+      sleep(20);
+      inc(n);
+    end;
+    // count := n;
+    if recv(str, 6) >= 0 then
+    begin
+      str := StringReplace(str, '#', '', [rfReplaceAll]);
+      focus := StrToIntDef(str, 0);
 
-    // LabelFocusCount.caption := StringReplace(str, '#', '',[rfReplaceAll]);
-    // LabelFocusCount.caption := Format('%0.5d', [n]);
-  end
-  else
-    count := 8888;
+      // LabelFocusCount.caption := StringReplace(str, '#', '',[rfReplaceAll]);
+      // LabelFocusCount.caption := Format('%0.5d', [n]);
+    end
+    else
+      count := 8888;
   end;
-   //focus := n;
+  // focus := n;
   result := coord_str;
 end;
 Function get_coordstpc(var focus, count: integer): string;
@@ -557,7 +668,7 @@ begin
 
   while (inputcounttcp() < dec_pack) and (n < 100) do
   begin
-    sleep(5);
+    sleep(1);
     inc(n);
   end;
   // sleep(10);
@@ -583,7 +694,7 @@ begin
   n := 0;
   while (inputcounttcp() < ra_pack) and (n < 100) do
   begin
-    sleep(5);
+    sleep(1);
     inc(n);
   end;
   // sleep(10);
@@ -621,7 +732,7 @@ begin
     send(str);
     while (inbuff < dec_pack) and (s < 100) do
     begin
-      sleep(5);
+      sleep(1);
       inc(s);
     end;
 
@@ -642,14 +753,14 @@ var
   str: string;
   n, s: integer;
 begin
-  if fullconnect  then
+  if fullconnect then
   begin
     s := 0;
     clearBuff(true, false);
     send(':GR#');
     while (inbuff < ra_pack) and (s < 100) do
     begin
-      sleep(5);
+      sleep(1);
       inc(s);
     end;
     If (recv(str, ra_pack) >= ra_pack) then
@@ -669,14 +780,14 @@ var
   str: string;
   n, s: integer;
 begin
-  if fullconnect  then
+  if fullconnect then
   begin
     s := 0;
     clearBuff(true, false);
     send('#:GA#');
     while (inbuff < dec_pack) and (s < 100) do
     begin
-      sleep(5);
+      sleep(1);
       inc(s);
     end;
     // sleep(30);
@@ -698,14 +809,14 @@ var
   str: string;
   n, s: integer;
 begin
-  if fullconnect  then
+  if fullconnect then
   begin
     s := 0;
     clearBuff(true, false);
     send('#:GZ#');
     while (inbuff < dec_pack) and (s < 100) do
     begin
-      sleep(5);
+      sleep(1);
       inc(s);
     end;
 
@@ -770,35 +881,31 @@ begin
   Set_TargetRA(RightAscension);
   send(':MS#');
 end;
+
 procedure Slew_ToCoor();
 begin
   send(':MS#');
+  end;
+
+
+procedure sconnect;
+
+begin
+
+  Connected := OpenCom(sport, '\\.\' + 'COM5', '115200', 'N', '8', '1', '100',
+    '100', false);
+    if connected then  showmessage('connecte');
+
+//  fh := sport;
+   //PurgeBuffer(sport);
 
 end;
-
 initialization
-
 ComPortBT_USB := TComPort.Create(nil);
-ClientSocket1 := TClientSocket.Create(nil);
-ClientSocket1.Host := '192.168.1.31';
-ClientSocket1.Port := 10001;
-ClientSocket1.active := true;
+ClientSocket1 := Tclientsocket.create(nil);
+//sconnect;
 
-{ send := sendserial;
-  recv := recvserial;
-  inbuff:= inputcountserial;
-  clearbuff:=clearbuffSerial; } //{
-send := sendtcp;
-recv := recvtcp;
-inbuff := inputcounttcp;
-clearBuff := clearbufftcp; // }
-ComPortBT_USB.Events := [];
-ComPortBT_USB.Parity.Bits := prNone;
-ComPortBT_USB.Timeouts.ReadInterval := 100;
-ComPortBT_USB.Timeouts.ReadTotalMultiplier := 1;
-ComPortBT_USB.Timeouts.ReadTotalConstant := 100;
-ComPortBT_USB.Timeouts.WriteTotalMultiplier := 1;
-ComPortBT_USB.Timeouts.WriteTotalConstant := 1000;
-ComPortBT_USB.TriggersOnRxChar := true;
+
+
 
 end.
