@@ -268,19 +268,19 @@ begin
   begin
     ClientSocket1.active := true;
     repeat
-      sleep(10);
+      sleep(500);
       inc(n);
-      until  ClientSocket1.active or (n=100);
-      ClientSocket1.active:=n<100;
+      until  (ClientSocket1.active) or (n>=3);
+      ClientSocket1.active:=(n<3)
   end;
 
-  { if not(ClientSocket1.active) or ComPortBT_USB.Connected then
+   if (ClientSocket1.active) or ComPortBT_USB.Connected then
     begin
 
-    fullconnect := true;//check_connection();
-    Timer1.Enabled := true;
-    end; }
-  fullconnect := true;
+    fullconnect := check_connection();
+   // Timer1.Enabled := true;
+    end;
+ // fullconnect := true;
   Timer1.Enabled := true;
 end;
 
