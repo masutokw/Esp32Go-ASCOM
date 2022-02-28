@@ -267,11 +267,11 @@ begin
   else
   begin
     ClientSocket1.active := true;
-    { repeat
-      sleep(50);
+    repeat
+      sleep(10);
       inc(n);
       until  ClientSocket1.active or (n=100);
-      ClientSocket1.active:=n<100; }
+      ClientSocket1.active:=n<100;
   end;
 
   { if not(ClientSocket1.active) or ComPortBT_USB.Connected then

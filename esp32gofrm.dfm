@@ -1268,7 +1268,7 @@ object Esp32frm: TEsp32frm
         Width = 94
         Height = 21
         ComProperty = cpPort
-        Text = 'COM1'
+        Text = 'COM13'
         Style = csDropDownList
         ItemIndex = 0
         TabOrder = 1
@@ -1512,7 +1512,7 @@ object Esp32frm: TEsp32frm
     OnButton5_Change = Joystickex1Button5_Change
     OnButton6_Change = Joystickex1Button6_Change
     JoyMove = Joystickex1JoyMove
-    Left = 127
-    Top = 141
+    Left = 227
+    Top = 203
   end
 end
