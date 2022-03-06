@@ -1224,11 +1224,10 @@ object Esp32frm: TEsp32frm
     TabOrder = 4
     Visible = False
     object Label2: TLabel
-      Left = 113
-      Top = 258
-      Width = 31
+      Left = 105
+      Top = 218
+      Width = 3
       Height = 13
-      Caption = 'Label2'
     end
     object GroupBox4: TGroupBox
       Left = 1

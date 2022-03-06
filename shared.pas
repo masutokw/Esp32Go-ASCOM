@@ -588,7 +588,7 @@ var
 
 begin
   s := 0;
-  if (ComPortBT_USB.Connected)or ( ClientSocket1.active) then
+  if (ComPortBT_USB.Connected)  or ( ClientSocket1.active) then
   begin
     clearBuff(true, false);
     send('#:GD#');

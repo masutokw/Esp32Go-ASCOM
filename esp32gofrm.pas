@@ -91,6 +91,7 @@ type
       YPos: Integer);
     procedure Joystickex1Button6_Change(Sender: TObject; pressed: Boolean; Xpos,
       YPos: Integer);
+
    
 
 
@@ -120,11 +121,15 @@ begin
 end;
 
 procedure TEsp32frm.ButtonReconClick(Sender: TObject);
+var n:integer;
 begin
+n:=0;
+imode:=radiogroupcom.ItemIndex;
+set_interface_mode(imode);
   if imode = 0 then
   begin
     ComPortBT_USB.Connected := false;
-    ComPortBT_USB.Port := ComComboBox1.Text; // 'COM13';//serialport;
+    ComPortBT_USB.Port := ComComboBox1.Text;
     ComPortBT_USB.baudrate := tbaudrate(ComComboBox2.ItemIndex);;
     ComComboBox1.ComPort := ComPortBT_USB;
     ComPortBT_USB.Connected := true;
@@ -133,6 +138,7 @@ begin
 
       fullconnect := check_connection();
       Timer1.Enabled := fullconnect;
+      if not(fullconnect) then  showmessage('No response');
     end;
   end
   else
@@ -140,11 +146,18 @@ begin
     if ClientSocket1.active then
       ClientSocket1.active := false;
 
-    sleep(1000);
     ClientSocket1.Host := EditAddr.Text;
     ClientSocket1.Port := LongEditPort.Value;
     ClientSocket1.active := true;
-
+    repeat
+      sleep(100);
+      inc(n);
+      Application.ProcessMessages;
+      until  (ClientSocket1.active) or (n>=50);
+     /// ClientSocket1.active:=(n<5);
+     fullconnect := check_connection();
+      if not( fullconnect ) then  showmessage('No response');
+     Timer1.Enabled := fullconnect;
   end;
 end;
 
@@ -152,6 +165,8 @@ procedure TEsp32frm.Buttonconfig(Sender: TObject);
 begin
   GroupBoxserial.Visible := not GroupBoxserial.Visible;
 end;
+
+
 
 procedure TEsp32frm.ButtondisconnectMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -268,20 +283,21 @@ begin
   begin
     ClientSocket1.active := true;
     repeat
-      sleep(500);
+      sleep(100);
       inc(n);
-      until  (ClientSocket1.active) or (n>=3);
-      ClientSocket1.active:=(n<3)
+      Application.ProcessMessages;
+      until  (ClientSocket1.active) or (n>=50);
+      ClientSocket1.active:=(n<50)
   end;
 
    if (ClientSocket1.active) or ComPortBT_USB.Connected then
     begin
 
     fullconnect := check_connection();
-   // Timer1.Enabled := true;
+      if not(fullconnect) then  showmessage('No response');
+    if fullconnect then Timer1.Enabled := true;
     end;
- // fullconnect := true;
-  Timer1.Enabled := true;
+
 end;
 
 procedure TEsp32frm.FormDestroy(Sender: TObject);
