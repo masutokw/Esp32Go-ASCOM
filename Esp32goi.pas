@@ -467,7 +467,7 @@ begin
     guideNorth:
       GuideCommand := '#:Mgn' + durStr;
     guideSouth:
-      GuideCommand := '#:Mgn' + durStr;
+      GuideCommand := '#:Mgs' + durStr;
     guideEast:
       GuideCommand := '#:Mge' + durStr;
     guideWest:
