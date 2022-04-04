@@ -1361,6 +1361,15 @@ object Esp32frm: TEsp32frm
       Caption = 'FastF'
       TabOrder = 7
     end
+    object ButtonHome: TButton
+      Left = 69
+      Top = 214
+      Width = 60
+      Height = 23
+      Caption = 'R_home'
+      TabOrder = 8
+      OnClick = ButtonHomeClick
+    end
   end
   object GroupBoxFocus: TGroupBox
     Left = 0
@@ -1511,7 +1520,7 @@ object Esp32frm: TEsp32frm
     OnButton5_Change = Joystickex1Button5_Change
     OnButton6_Change = Joystickex1Button6_Change
     JoyMove = Joystickex1JoyMove
-    Left = 227
-    Top = 203
+    Left = 202
+    Top = 2
   end
 end

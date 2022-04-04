@@ -54,6 +54,7 @@ type
     Joystickex1: TJoystickex;
     CheckBoxJoyf: TCheckBox;
     CheckBox2: TCheckBox;
+    ButtonHome: TButton;
 
     procedure FormCreate(Sender: TObject);
     procedure Button_NMouseDown(Sender: TObject; Button: TMouseButton;
@@ -91,6 +92,7 @@ type
       YPos: Integer);
     procedure Joystickex1Button6_Change(Sender: TObject; pressed: Boolean; Xpos,
       YPos: Integer);
+    procedure ButtonHomeClick(Sender: TObject);
 
    
 
@@ -175,6 +177,11 @@ begin
     ClientSocket1.active := false
   else
     ComPortBT_USB.Connected := false;
+end;
+
+procedure TEsp32frm.ButtonHomeClick(Sender: TObject);
+begin
+ send(':pH#');
 end;
 
 procedure TEsp32frm.ButtonInMouseDown(Sender: TObject; Button: TMouseButton;
