@@ -1267,7 +1267,7 @@ object Esp32frm: TEsp32frm
         Width = 94
         Height = 21
         ComProperty = cpPort
-        Text = 'COM13'
+        Text = 'COM1'
         Style = csDropDownList
         ItemIndex = 0
         TabOrder = 1
@@ -1400,6 +1400,7 @@ object Esp32frm: TEsp32frm
       OnDblClick = LabelFocusCountDblClick
     end
     object ButtonIn: TButton
+      Tag = 1
       Left = 3
       Top = 14
       Width = 25
@@ -1439,11 +1440,12 @@ object Esp32frm: TEsp32frm
     end
     object ButtonM3: TButton
       Left = 61
-      Top = 35
+      Top = 36
       Width = 25
       Height = 20
       Caption = 'M3'
       TabOrder = 4
+      OnClick = ButtonM3Click
     end
     object ButtonM4: TButton
       Left = 90

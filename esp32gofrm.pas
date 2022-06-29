@@ -93,6 +93,8 @@ type
     procedure Joystickex1Button6_Change(Sender: TObject; pressed: Boolean; Xpos,
       YPos: Integer);
     procedure ButtonHomeClick(Sender: TObject);
+    procedure ButtonM3Click(Sender: TObject);
+
 
    
 
@@ -209,6 +211,13 @@ end;
 procedure TEsp32frm.ButtonM2Click(Sender: TObject);
 begin
   send(':FLS1+00900#');
+end;
+
+
+
+procedure TEsp32frm.ButtonM3Click(Sender: TObject);
+begin
+    send(':FA-04000#');
 end;
 
 procedure TEsp32frm.Button_NMouseDown(Sender: TObject; Button: TMouseButton;
