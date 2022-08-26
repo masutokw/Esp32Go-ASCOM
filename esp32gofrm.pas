@@ -96,6 +96,7 @@ type
     procedure ButtonM3Click(Sender: TObject);
 
 
+
    
 
 
@@ -188,12 +189,15 @@ end;
 
 procedure TEsp32frm.ButtonInMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
+
 begin
+
+
   case TButton(Sender).tag of
     0:
-      send(':F+#');
+      if checkbox2.Checked then send(':F++#')else send(':F+#') ;
     1:
-      send(':F-#');
+      if checkbox2.Checked then send(':F--#')else send(':F-#') ;
   end;
 end;
 
@@ -219,6 +223,8 @@ procedure TEsp32frm.ButtonM3Click(Sender: TObject);
 begin
     send(':FA-04000#');
 end;
+
+
 
 procedure TEsp32frm.Button_NMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
@@ -354,8 +360,9 @@ procedure TEsp32frm.Joystickex1Button2_Change(Sender: TObject; pressed: Boolean;
 begin
   if CheckBoxJoyF.Checked then
   begin
-    if pressed then
-       send(':F+#')
+    if pressed then   begin
+       if checkbox2.Checked then send(':F++#')else send(':F+#') ;
+    end
 
     else
       send(':FQ#');
@@ -370,8 +377,9 @@ procedure TEsp32frm.Joystickex1Button3_Change(Sender: TObject; pressed: Boolean;
 begin
   if CheckBoxJoyF.Checked then
   begin
-    if pressed then
-      send(':F-#')
+    if pressed then  begin
+      if checkbox2.Checked then send(':F--#')else send(':F-#') ;
+    end
          else
      send(':FQ#');
    end
