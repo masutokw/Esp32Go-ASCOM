@@ -277,7 +277,7 @@ end;
 
 function TTelescope.Get_Description: WideString;
 begin
-
+    result:='ESP32wifi controller';
 end;
 
 function TTelescope.Get_DoesRefraction: WordBool;
@@ -287,12 +287,12 @@ end;
 
 function TTelescope.Get_DriverInfo: WideString;
 begin
-
+    result:='ESP32wifi controller info';
 end;
 
 function TTelescope.Get_DriverVersion: WideString;
 begin
-
+     result:='1.0';
 end;
 
 function TTelescope.Get_EquatorialSystem: EquatorialCoordinateType;

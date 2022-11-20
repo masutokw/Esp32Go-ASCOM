@@ -50,6 +50,8 @@ procedure initserial(port:string;baudrate: tbaudrate);
 procedure init_tcp(host:string;port:integer);
 Function get_coords(var focus, count: integer): string;
 Function get_coordstpc(var focus, count: integer): string;
+Function get_focuspos():integer;
+Function get_focusmoving():integer;
 function FormatString(StringIn, DivideAt: String): TStringList;
 function Inttodec(de: integer; prec: Byte): String;
 function IntToAr(ar: integer; prec: Byte): String;
@@ -656,6 +658,58 @@ begin
   // focus := n;
   result := coord_str;
 end;
+Function get_focuspos():integer;
+var temp,n:integer;
+str:string;
+begin
+ n := 0;
+   if (inbuff) > 0 then
+   clearBuff(true, false);
+ send(':Fp#');
+    while (inbuff < 6) and (n < 100) do
+    begin
+      sleep(20);
+      inc(n);
+    end;
+    // count := n;
+    if recv(str, 6) >= 0 then
+    begin
+      str := StringReplace(str, '#', '', [rfReplaceAll]);
+      temp := StrToIntDef(str, 0);
+
+      // LabelFocusCount.caption := StringReplace(str, '#', '',[rfReplaceAll]);
+      // LabelFocusCount.caption := Format('%0.5d', [n]);
+    end
+    else
+      temp := 0;
+      result:=temp;
+ end;
+ Function get_focusmoving():integer;
+var temp,n:integer;
+str:string;
+begin
+ n := 0;
+   if (inbuff) > 0 then
+   clearBuff(true, false);
+ send(':FM#');
+    while (inbuff < 2) and (n < 100) do
+    begin
+      sleep(20);
+      inc(n);
+    end;
+    // count := n;
+    if recv(str, 6) >= 0 then
+    begin
+      str := StringReplace(str, '#', '', [rfReplaceAll]);
+      temp := StrToIntDef(str, 0);
+
+      // LabelFocusCount.caption := StringReplace(str, '#', '',[rfReplaceAll]);
+      // LabelFocusCount.caption := Format('%0.5d', [n]);
+    end
+    else
+      temp := 0;
+      result:=temp;
+ end;
 Function get_coordstpc(var focus, count: integer): string;
 
 var
@@ -894,7 +948,7 @@ begin
 
   Connected := OpenCom(sport, '\\.\' + 'COM5', '115200', 'N', '8', '1', '100',
     '100', false);
-    if connected then  showmessage('connecte');
+    if connected then  showmessage('connected');
 
 //  fh := sport;
    //PurgeBuffer(sport);

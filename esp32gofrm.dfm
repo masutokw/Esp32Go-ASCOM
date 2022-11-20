@@ -1501,8 +1501,8 @@ object Esp32frm: TEsp32frm
   object adpInstanceControl1: TadpInstanceControl
     Enabled = True
     MaxInstances = 1
-    Left = 229
-    Top = 3
+    Left = 233
+    Top = 35
   end
   object Joystickex1: TJoystickex
     GamePort = Gameport1

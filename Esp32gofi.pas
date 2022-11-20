@@ -44,6 +44,7 @@ var
 function TFocuser.Get_IsMoving: wordbool;
 begin
 
+   result:= (get_focusmoving()=0);
 end;
 
 function TFocuser.Get_Link: wordbool;
@@ -62,18 +63,19 @@ begin
 end;
 
 function TFocuser.Get_Position: integer;
+ var focus,count:integer;
 begin
-
+ result:=get_focuspos();
 end;
 
 function TFocuser.Get_StepSize: double;
 begin
-
+     result:=0.1;
 end;
 
 function TFocuser.Get_TempComp: wordbool;
 begin
-
+   result:=false;
 end;
 
 Procedure TFocuser.Set_TempComp(value: wordbool);
@@ -83,7 +85,7 @@ end;
 
 function TFocuser.Get_Temperature: double;
 begin
-
+   result:=25;
 end;
 
 Procedure TFocuser.Set_Temperature(value: double);
@@ -97,7 +99,9 @@ end;
 
 procedure TFocuser.move(val: integer);
 begin
-      send(Format(':FP-%+0.5d#', [val]))
+      send(':FA-'+Format('%.5d',[ val])+'#');
+
+
 end;
 
 { -------------------------------------------------------------- }
@@ -132,7 +136,7 @@ end;
 function TFocuser.Get_MaxStep: integer;
 { -------------------------------------------------------------- }
 begin
-
+  result:=100000;
 end;
 
 { -------------------------------------------------------------- }
