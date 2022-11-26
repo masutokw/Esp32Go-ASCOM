@@ -4,7 +4,7 @@ object Esp32frm: TEsp32frm
   AutoSize = True
   Caption = 'Esp32go'
   ClientHeight = 272
-  ClientWidth = 267
+  ClientWidth = 337
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -1213,12 +1213,13 @@ object Esp32frm: TEsp32frm
       Font.Style = []
       ParentFont = False
       TabOrder = 9
+      OnClick = ButtonParkClick
     end
   end
   object GroupBoxserial: TGroupBox
     Left = 120
     Top = 0
-    Width = 147
+    Width = 217
     Height = 272
     Caption = 'Config'
     TabOrder = 4
@@ -1229,31 +1230,38 @@ object Esp32frm: TEsp32frm
       Width = 3
       Height = 13
     end
+    object Labelmsg: TLabel
+      Left = 170
+      Top = 175
+      Width = 19
+      Height = 13
+      Caption = 'msg'
+    end
     object GroupBox4: TGroupBox
-      Left = 1
-      Top = 15
-      Width = 142
-      Height = 78
+      Left = 3
+      Top = 12
+      Width = 209
+      Height = 38
       Caption = 'Serial'
       TabOrder = 0
       object Label1: TLabel
-        Left = 10
-        Top = 21
+        Left = 5
+        Top = 14
         Width = 20
         Height = 13
         Caption = 'Port'
       end
       object Label3: TLabel
-        Left = 10
-        Top = 46
+        Left = 95
+        Top = 14
         Width = 24
         Height = 13
         Caption = 'Baud'
       end
       object ComComboBox2: TComComboBox
-        Left = 42
-        Top = 43
-        Width = 93
+        Left = 122
+        Top = 10
+        Width = 66
         Height = 21
         ComProperty = cpBaudRate
         Text = '115200'
@@ -1262,9 +1270,9 @@ object Esp32frm: TEsp32frm
         TabOrder = 0
       end
       object ComComboBox1: TComComboBox
-        Left = 41
-        Top = 17
-        Width = 94
+        Left = 35
+        Top = 10
+        Width = 52
         Height = 21
         ComProperty = cpPort
         Text = 'COM1'
@@ -1274,15 +1282,15 @@ object Esp32frm: TEsp32frm
       end
     end
     object GroupBox3: TGroupBox
-      Left = 0
-      Top = 91
-      Width = 143
-      Height = 52
-      Caption = 'IP Settings.'
+      Left = 2
+      Top = 49
+      Width = 119
+      Height = 40
+      Caption = 'IP Settings'
       TabOrder = 1
       object EditAddr: TEdit
-        Left = 5
-        Top = 22
+        Left = 0
+        Top = 15
         Width = 72
         Height = 19
         Ctl3D = False
@@ -1291,9 +1299,9 @@ object Esp32frm: TEsp32frm
         Text = '192.168.1.14'
       end
       object LongEditPort: TLongEdit
-        Left = 84
-        Top = 22
-        Width = 44
+        Left = 74
+        Top = 15
+        Width = 40
         Height = 19
         Hint = '0..100000'
         Ctl3D = False
@@ -1306,28 +1314,28 @@ object Esp32frm: TEsp32frm
       end
     end
     object ButtonSave: TButton
-      Left = 3
-      Top = 212
+      Left = 49
+      Top = 107
       Width = 48
-      Height = 24
+      Height = 20
       Caption = 'Save'
       TabOrder = 2
       OnClick = ButtonSaveClick
     end
     object ButtonRecon: TButton
-      Left = 1
-      Top = 240
-      Width = 65
-      Height = 24
+      Left = -1
+      Top = 87
+      Width = 51
+      Height = 20
       Caption = 'Connect'
       TabOrder = 3
       OnClick = ButtonReconClick
     end
     object RadioGroupcom: TRadioGroup
-      Left = 5
-      Top = 142
-      Width = 138
-      Height = 44
+      Left = 121
+      Top = 51
+      Width = 100
+      Height = 39
       Caption = 'Interface'
       Columns = 2
       ItemIndex = 0
@@ -1337,38 +1345,83 @@ object Esp32frm: TEsp32frm
       TabOrder = 4
     end
     object Buttondisconnect: TButton
-      Left = 67
-      Top = 240
-      Width = 64
-      Height = 23
+      Left = 49
+      Top = 87
+      Width = 60
+      Height = 20
       Caption = 'Disconnect'
       TabOrder = 5
       OnMouseDown = ButtondisconnectMouseDown
     end
     object CheckBoxJoyf: TCheckBox
-      Left = 13
-      Top = 189
+      Left = 116
+      Top = 91
       Width = 63
       Height = 17
       Caption = 'Focus'
       TabOrder = 6
     end
     object CheckBox2: TCheckBox
-      Left = 63
-      Top = 189
+      Left = 163
+      Top = 91
       Width = 45
       Height = 17
-      Caption = 'FastF'
+      Caption = 'Fast'
       TabOrder = 7
     end
     object ButtonHome: TButton
-      Left = 69
-      Top = 214
-      Width = 60
-      Height = 23
-      Caption = 'R_home'
+      Left = -1
+      Top = 107
+      Width = 50
+      Height = 20
+      Caption = 'home'
       TabOrder = 8
       OnClick = ButtonHomeClick
+    end
+    object Button2: TButton
+      Left = 97
+      Top = 107
+      Width = 53
+      Height = 20
+      Caption = 'Set Time'
+      TabOrder = 9
+      OnClick = Button2Click
+    end
+    object FloatEditLong: TFloatEdit
+      Left = 2
+      Top = 128
+      Width = 45
+      Height = 18
+      Hint = '-180..180'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 10
+      Value = -4.200000000000000000
+      Decimals = 4
+      MinValue = -180.000000000000000000
+      MaxValue = 180.000000000000000000
+    end
+    object FloatEditLat: TFloatEdit
+      Left = 49
+      Top = 128
+      Width = 40
+      Height = 18
+      Hint = '-90..90'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 11
+      Value = 36.430000000000000000
+      MinValue = -90.000000000000000000
+      MaxValue = 90.000000000000000000
+    end
+    object Button3: TButton
+      Left = 90
+      Top = 127
+      Width = 52
+      Height = 20
+      Caption = 'Set Geo.'
+      TabOrder = 12
+      OnClick = Button3Click
     end
   end
   object GroupBoxFocus: TGroupBox
@@ -1494,15 +1547,16 @@ object Esp32frm: TEsp32frm
   end
   object Timer1: TTimer
     Enabled = False
+    Interval = 2000
     OnTimer = Timer1Timer
-    Left = 210
-    Top = 5
+    Left = 288
+    Top = 193
   end
   object adpInstanceControl1: TadpInstanceControl
     Enabled = True
     MaxInstances = 1
-    Left = 233
-    Top = 35
+    Left = 284
+    Top = 225
   end
   object Joystickex1: TJoystickex
     GamePort = Gameport1
@@ -1522,7 +1576,7 @@ object Esp32frm: TEsp32frm
     OnButton5_Change = Joystickex1Button5_Change
     OnButton6_Change = Joystickex1Button6_Change
     JoyMove = Joystickex1JoyMove
-    Left = 202
-    Top = 2
+    Left = 300
+    Top = 231
   end
 end

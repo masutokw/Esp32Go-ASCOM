@@ -183,7 +183,7 @@ end;
 
 function TTelescope.Get_CanPark: WordBool;
 begin
-  result := false
+  result := true;
 end;
 
 function TTelescope.Get_CanPulseGuide: WordBool;
@@ -363,12 +363,12 @@ end;
 
 function TTelescope.Get_SiteLatitude: Double;
 begin
-
+  result:=get_lat();
 end;
 
 function TTelescope.Get_SiteLongitude: Double;
 begin
-
+     result:=get_long();
 end;
 
 function TTelescope.Get_Slewing: WordBool;
@@ -453,7 +453,7 @@ end;
 
 procedure TTelescope.Park;
 begin
-
+  send(':hP#');
 end;
 
 procedure TTelescope.PulseGuide(Direction: GuideDirections; Duration: Integer);
@@ -523,12 +523,12 @@ end;
 
 procedure TTelescope.Set_SiteLatitude(Value: Double);
 begin
-
+   Set_latitude(value);
 end;
 
 procedure TTelescope.Set_SiteLongitude(Value: Double);
 begin
-
+   Set_longitude(value);
 end;
 
 procedure TTelescope.Set_SlewSettleTime(Value: SYSINT);
@@ -570,7 +570,8 @@ end;
 
 procedure TTelescope.Set_UTCDate(Value: TDateTime);
 begin
-
+    Set_date(value);
+    Set_localtime(value);
 end;
 
 procedure TTelescope.SetPark;

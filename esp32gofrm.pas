@@ -55,6 +55,11 @@ type
     CheckBoxJoyf: TCheckBox;
     CheckBox2: TCheckBox;
     ButtonHome: TButton;
+    Button2: TButton;
+    Labelmsg: TLabel;
+    FloatEditLong: TFloatEdit;
+    FloatEditLat: TFloatEdit;
+    Button3: TButton;
 
     procedure FormCreate(Sender: TObject);
     procedure Button_NMouseDown(Sender: TObject; Button: TMouseButton;
@@ -94,6 +99,10 @@ type
       YPos: Integer);
     procedure ButtonHomeClick(Sender: TObject);
     procedure ButtonM3Click(Sender: TObject);
+    procedure ButtonParkClick(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
+    procedure Button3Click(Sender: TObject);
+
 
 
 
@@ -166,6 +175,26 @@ set_interface_mode(imode);
   end;
 end;
 
+procedure TEsp32frm.Button2Click(Sender: TObject);
+begin
+Set_localtime(now);
+sleep(20);
+Set_date(now);
+sleep(20);
+
+end;
+
+
+
+procedure TEsp32frm.Button3Click(Sender: TObject);
+begin
+Set_latitude(floateditlat.Value);
+sleep(20);
+set_longitude(floateditlong.Value);
+sleep(20);
+
+end;
+
 procedure TEsp32frm.Buttonconfig(Sender: TObject);
 begin
   GroupBoxserial.Visible := not GroupBoxserial.Visible;
@@ -225,6 +254,11 @@ begin
 end;
 
 
+
+procedure TEsp32frm.ButtonParkClick(Sender: TObject);
+begin
+  send(':hP#');
+end;
 
 procedure TEsp32frm.Button_NMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
@@ -330,6 +364,8 @@ begin
     ComPortBT_USB.Connected := false;
 
 end;
+
+
 
 
 
@@ -514,6 +550,8 @@ begin
     EditAddr.Text := ReadString('Host', 'Address', '192.168.1.1');
     LongEditPort.Value := ReadInteger('Host', 'Port', 10001);
     RadioGroupcom.ItemIndex := ReadInteger('Interface', 'TCP', 0);
+    floateditlat.value:=readfloat('GEO','lat',36.7);
+    floateditlong.value:=readfloat('GEO','long',-4.12);
 
   end;
 end;
@@ -530,6 +568,8 @@ begin
     writeString('Host', 'Address', EditAddr.Text);
     writeInteger('Host', 'Port', LongEditPort.Value);
     writeInteger('Interface', 'TCP', RadioGroupcom.ItemIndex);
+    writefloat('GEO','lat',floateditlat.value);
+    writefloat('GEO','long',floateditlong.value);
   end;
 end;
 

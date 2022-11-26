@@ -59,7 +59,7 @@ end;
 
 function TFocuser.Get_MaxIncrement: integer;
 begin
-  Get_MaxIncrement := 1000;
+  Get_MaxIncrement := 10000;
 end;
 
 function TFocuser.Get_Position: integer;

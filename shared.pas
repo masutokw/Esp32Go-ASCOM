@@ -19,6 +19,8 @@ type
 const
   ra_pack = 11;
   dec_pack = 10;
+  lat_pack =7;
+  long_pack=8;
   coor_pack = ra_pack + dec_pack;
 
 
@@ -70,12 +72,15 @@ function DoubleToLXAr(ra: Double; prec: Byte): string;
 function LX200AZtoint(az: String; prec: boolean): integer;
 function GetEnvVarValue(const VarName: string): string;
 function check_connection(): boolean;
-
+procedure Set_date(date_time: tdatetime);
+procedure Set_localtime(date_time: tdatetime);
 function Get_Dec(): Double;
 function Get_RA: Double;
 procedure Pulse_Guide(StrCommand: string);
 function Get_Alt(): Double;
 function Get_Az(): Double;
+function Get_Lat():extended;
+function Get_Long():extended;
 procedure Set_TargetDec(value: Double);
 procedure Set_TargetRA(value: Double);
 procedure Abort_Slew();
@@ -83,8 +88,9 @@ procedure Command_Blind(const Command: WideString; Raw: WordBool);
 procedure SyncTo_Coord(RightAscension, Declination: Double); overload;
 procedure SyncTo_Coord(); overload;
 procedure Slew_ToCoor(RightAscension, Declination: Double); overload;
-procedure Slew_ToCoor();
-overload
+procedure Slew_ToCoor();overload
+procedure Set_longitude(lon: extended);
+procedure Set_latitude(lat: extended);
 
   implementation
   procedure TMyClass.CSClientConnect(Sender: TObject;
@@ -441,8 +447,10 @@ var
   temp: integer;
 begin
 
-  temp := (strtoint(Copy(ar, 2, 3)) * 3600 + strtoint(Copy(ar, 6, 2)) * 60 +
-    strtoint(Copy(ar, 9, 2)));
+  temp := (strtoint(Copy(ar, 2, 3)) * 3600 + strtoint(Copy(ar, 6, 2)) * 60 );
+  //+    strtoint(Copy(ar, 9, 2)));
+   if ar[1] = '-' then
+    temp := -temp;
   longitudetodeg := (temp / (3600.00));
 end;
 
@@ -452,8 +460,8 @@ var
   temp: integer;
 begin
 
-  temp := (strtoint(Copy(ar, 2, 2)) * 3600 + strtoint(Copy(ar, 5, 2)) * 60 +
-    strtoint(Copy(ar, 8, 2)));
+  temp := (strtoint(Copy(ar, 2, 2)) * 3600 + strtoint(Copy(ar, 5, 2)) * 60 );
+   // +strtoint(Copy(ar, 8, 2)));
   if ar[1] = '-' then
     temp := -temp;
   latitudetodeg := (temp / (3600.00));
@@ -741,7 +749,7 @@ begin
   count := inputcounttcp;
   clearbufftcp(true, false);
 
-  sendtcp(':GR#');
+  sendtcp('#:GR#');
   // clientSocket1.socket.SendText(':Fp#');
   // count:= inputcounttcp;
   str := '';
@@ -811,7 +819,7 @@ begin
   begin
     s := 0;
     clearBuff(true, false);
-    send(':GR#');
+    send('#:GR#');
     while (inbuff < ra_pack) and (s < 100) do
     begin
       sleep(1);
@@ -903,6 +911,41 @@ begin
   send(':Sr' + DoubleToLXAr(value, 1));
   recv(response, 1);
 end;
+procedure Set_date(date_time: tdatetime);
+var
+lxdate,response:string ;
+
+begin
+     DateTimeToString(lxdate, 'mm/dd/yy#', date_time);
+     send(':SC'+lxdate);
+   //  showmessage(lxdate);
+     recv(response, 50);
+end;
+
+procedure Set_localtime(date_time: tdatetime);
+var
+lxtime,response: string ;
+begin
+
+     DateTimeToString(lxtime, 'hh:nn:ss#', date_time);
+     send(':SL'+lxtime);
+    // showmessage(lxtime);
+     recv(response, 1);
+end;
+procedure Set_latitude(lat:extended) ;
+var
+response: string ;
+begin
+send(':St'+DoubletoLXdec(lat, 1));
+recv(response, 1);
+end;
+procedure Set_longitude(lon: extended);
+var
+response: string ;
+begin
+send(':Sg'+DoubletoLXdec(-lon,1 ));
+recv(response, 1);
+end;
 
 procedure Abort_Slew();
 begin
@@ -941,6 +984,61 @@ begin
   send(':MS#');
   end;
 
+
+function Get_Lat():extended;
+    var
+
+  str: string;
+  n, s: integer;
+  lat:extended;
+begin
+  if fullconnect then
+  begin
+    s := 0;
+    clearBuff(true, false);
+    send(':Gt#');
+    while (inbuff < lat_pack) and (s < 100) do
+    begin
+      sleep(1);
+      inc(s);
+    end;
+
+    If (recv(str,lat_pack) = lat_pack) and (Char(str[lat_pack]) = '#') then
+    begin
+      lat := latitudetodeg(str);
+      clearBuff(true, false);
+     end;
+  end;
+  result := lat;
+
+end;
+function Get_Long():extended;
+    var
+
+  str: string;
+  n, s: integer;
+  lon:extended;
+begin
+  if fullconnect then
+  begin
+    s := 0;
+    clearBuff(true, false);
+    send(':Gg#');
+    while (inbuff < long_pack) and (s < 100) do
+    begin
+      sleep(1);
+      inc(s);
+    end;
+
+    If (recv(str, long_pack) = long_pack) and (Char(str[long_pack]) = '#') then
+    begin
+      lon := longitudetodeg(str);
+      clearBuff(true, false);
+     end;
+  end;
+  result := lon;
+
+end;
 
 procedure sconnect;
 
