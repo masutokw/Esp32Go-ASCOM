@@ -130,13 +130,14 @@ var
 
   ProfileObject, ASCOMexcept: Variant;
   trackr: TTrackingRates;
- // ratearr: array [0 .. 3] of DriveRates;
+  itrackr:ItrackingRates;
+  ratearr: array [0 .. 3] of DriveRates;
 
   lastguideTimestamp: longint;
 
 function TTelescope.CanMoveAxis(Axis: TelescopeAxes): WordBool;
 begin
-  result := true;
+  result := false;
 end;
 
 function TTelescope.Get_AlignmentMode: AlignmentModes;
@@ -297,7 +298,7 @@ end;
 
 function TTelescope.Get_EquatorialSystem: EquatorialCoordinateType;
 begin
-
+     result:=equLocalTopocentric;
 end;
 
 function TTelescope.Get_FocalLength: Double;
@@ -321,7 +322,7 @@ end;
 
 function TTelescope.Get_InterfaceVersion: SYSINT;
 begin
-
+    result:=1;
 end;
 
 function TTelescope.Get_IsPulseGuiding: WordBool;
@@ -398,12 +399,14 @@ end;
 
 function TTelescope.Get_TrackingRate: DriveRates;
 begin
-
+  result :=driveSidereal;
 end;
 
 function TTelescope.Get_TrackingRates: ITrackingRates;
+var tracking_Rates: ITrackingRates;
 begin
-
+   itrackr:=trackr.Create;
+result:= itrackr ;
 end;
 
 function TTelescope.Get_UTCDate: TDateTime;
@@ -448,7 +451,11 @@ end;
 
 procedure TTelescope.MoveAxis(Axis: TelescopeAxes; Rate: Double);
 begin
-
+      case axis of
+      axisprimary:send('#:Mw#');
+      axissecondary:send('#:Mn#');
+      axistertiary:send('#:Q#');
+      end;
 end;
 
 procedure TTelescope.Park;
@@ -662,7 +669,7 @@ end;
 
 function TTrackingRates.Get_Count: Integer; safecall;
 begin
-  result := 3;
+  result := 0;
 end;
 
 function TTrackingRates.Get_Item(Index: Integer): DriveRates; safecall;

@@ -699,7 +699,7 @@ begin
  n := 0;
    if (inbuff) > 0 then
    clearBuff(true, false);
- send(':FM#');
+ send(':FB#');
     while (inbuff < 2) and (n < 100) do
     begin
       sleep(20);
@@ -1036,7 +1036,7 @@ begin
       clearBuff(true, false);
      end;
   end;
-  result := lon;
+  result := -lon;
 
 end;
 

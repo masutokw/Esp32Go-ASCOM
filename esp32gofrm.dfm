@@ -1391,21 +1391,21 @@ object Esp32frm: TEsp32frm
       Left = 2
       Top = 128
       Width = 45
-      Height = 18
-      Hint = '-180..180'
+      Height = 21
+      Hint = '-360..360'
       ParentShowHint = False
       ShowHint = True
       TabOrder = 10
       Value = -4.200000000000000000
       Decimals = 4
-      MinValue = -180.000000000000000000
-      MaxValue = 180.000000000000000000
+      MinValue = -360.000000000000000000
+      MaxValue = 360.000000000000000000
     end
     object FloatEditLat: TFloatEdit
       Left = 49
       Top = 128
       Width = 40
-      Height = 18
+      Height = 21
       Hint = '-90..90'
       ParentShowHint = False
       ShowHint = True
