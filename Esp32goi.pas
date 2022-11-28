@@ -136,13 +136,25 @@ var
   lastguideTimestamp: longint;
 
 function TTelescope.CanMoveAxis(Axis: TelescopeAxes): WordBool;
+
 begin
-  result := false;
+ result := false;
 end;
 
 function TTelescope.Get_AlignmentMode: AlignmentModes;
+var al:char;
+alm:  AlignmentModes;
 begin
-  result := algPolar;
+
+al:= get_alignmode();
+case al of
+'P':  alm:=algPolar;
+'L':  alm:=algPolar;
+'A':  alm:=algAltAz;
+end;
+
+
+
 end;
 
 function TTelescope.Get_Altitude: Double;
@@ -322,7 +334,7 @@ end;
 
 function TTelescope.Get_InterfaceVersion: SYSINT;
 begin
-    result:=1;
+    result:=2;
 end;
 
 function TTelescope.Get_IsPulseGuiding: WordBool;
@@ -405,8 +417,12 @@ end;
 function TTelescope.Get_TrackingRates: ITrackingRates;
 var tracking_Rates: ITrackingRates;
 begin
-   itrackr:=trackr.Create;
-result:= itrackr ;
+   // showmessage(inttostr(trackr.Get_Item(1)))  ;
+  //  trackr:=ttrackingrates.Create;
+    itrackr:=trackr.Create();
+    trackr.lrates.add();
+
+    result:= itrackr ;
 end;
 
 function TTelescope.Get_UTCDate: TDateTime;
@@ -578,6 +594,7 @@ end;
 procedure TTelescope.Set_UTCDate(Value: TDateTime);
 begin
     Set_date(value);
+    sleep(20);
     Set_localtime(value);
 end;
 
@@ -669,7 +686,7 @@ end;
 
 function TTrackingRates.Get_Count: Integer; safecall;
 begin
-  result := 0;
+  result := 1;
 end;
 
 function TTrackingRates.Get_Item(Index: Integer): DriveRates; safecall;
@@ -688,7 +705,7 @@ end;
 
 function TTrackingRates.GetEnumerator: IEnumVARIANT;
 begin
-  result := self as IEnumVARIANT;
+  //result := self as IEnumVARIANT;
 end;
 
 initialization

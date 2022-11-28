@@ -91,6 +91,7 @@ procedure Slew_ToCoor(RightAscension, Declination: Double); overload;
 procedure Slew_ToCoor();overload
 procedure Set_longitude(lon: extended);
 procedure Set_latitude(lat: extended);
+function get_alignmode():char;
 
   implementation
   procedure TMyClass.CSClientConnect(Sender: TObject;
@@ -1038,6 +1039,14 @@ begin
   end;
   result := -lon;
 
+end;
+function get_alignmode():char;
+var str:string;
+begin
+  send(#6);
+  if recv(str,1)=1 then
+  result :=str[1]
+  else result:='0' ;
 end;
 
 procedure sconnect;

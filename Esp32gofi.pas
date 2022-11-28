@@ -44,7 +44,7 @@ var
 function TFocuser.Get_IsMoving: wordbool;
 begin
 
-   result:= (get_focusmoving()=0);
+   result:= (get_focusmoving()>0);
 end;
 
 function TFocuser.Get_Link: wordbool;
