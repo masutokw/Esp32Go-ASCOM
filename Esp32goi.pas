@@ -83,13 +83,11 @@ type
     procedure CommandBlind(const Command: WideString; Raw: WordBool); safecall;
     procedure CommandBool(const Command: WideString; Raw: Integer); safecall;
     procedure CommandString(const Command: WideString; Raw: WordBool); safecall;
-    procedure DestinationSideOfPier(RightAscension,
-      Declination: Double); safecall;
+    procedure DestinationSideOfPier(RightAscension,Declination: Double); safecall;
     procedure FindHome; safecall;
     procedure MoveAxis(Axis: TelescopeAxes; Rate: Double); safecall;
     procedure Park; safecall;
-    procedure PulseGuide(Direction: GuideDirections;
-      Duration: Integer); safecall;
+    procedure PulseGuide(Direction: GuideDirections;Duration: Integer); safecall;
     procedure Set_Connected(Value: WordBool); safecall;
     procedure Set_DeclinationRate(Value: Double); safecall;
     procedure Set_DoesRefraction(Value: WordBool); safecall;
@@ -179,7 +177,7 @@ end;
 
 function TTelescope.Get_AtPark: WordBool;
 begin
-
+    result := false
 end;
 
 function TTelescope.Get_Azimuth: Double;
@@ -361,7 +359,8 @@ end;
 
 function TTelescope.Get_SideOfPier: PierSide;
 begin
-
+  //// Send(':GW#');
+  result:=pierwest;
 end;
 
 function TTelescope.Get_SiderealTime: Double;
@@ -391,7 +390,7 @@ end;
 
 function TTelescope.Get_SlewSettleTime: SYSINT;
 begin
-  result := 0;
+  result := 1;
 end;
 
 function TTelescope.Get_TargetDeclination: Double;
@@ -405,13 +404,14 @@ begin
 end;
 
 function TTelescope.Get_Tracking: WordBool;
+var str:string ;
 begin
-  result := true;
+result:= get_track()=1;
 end;
 
 function TTelescope.Get_TrackingRate: DriveRates;
 begin
-  result :=driveSidereal;
+  result :=driveSolar;//driveSidereal;
 end;
 
 function TTelescope.Get_TrackingRates: ITrackingRates;
@@ -583,7 +583,8 @@ end;
 
 procedure TTelescope.Set_Tracking(Value: WordBool);
 begin
-
+  if value then send(':Q#') else
+  send(':Mh#');
 end;
 
 procedure TTelescope.Set_TrackingRate(Value: DriveRates);

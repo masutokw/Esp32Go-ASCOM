@@ -102,6 +102,7 @@ type
     procedure ButtonParkClick(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
+    procedure ButtonHClick(Sender: TObject);
 
 
 
@@ -209,6 +210,11 @@ begin
     ClientSocket1.active := false
   else
     ComPortBT_USB.Connected := false;
+end;
+
+procedure TEsp32frm.ButtonHClick(Sender: TObject);
+begin
+send(':Mh#');
 end;
 
 procedure TEsp32frm.ButtonHomeClick(Sender: TObject);

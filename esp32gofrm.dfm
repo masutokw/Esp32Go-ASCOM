@@ -1199,6 +1199,7 @@ object Esp32frm: TEsp32frm
       Font.Style = []
       ParentFont = False
       TabOrder = 8
+      OnClick = ButtonHClick
     end
     object ButtonPark: TButton
       Left = 43
@@ -1547,7 +1548,6 @@ object Esp32frm: TEsp32frm
   end
   object Timer1: TTimer
     Enabled = False
-    Interval = 2000
     OnTimer = Timer1Timer
     Left = 288
     Top = 193
@@ -1576,7 +1576,7 @@ object Esp32frm: TEsp32frm
     OnButton5_Change = Joystickex1Button5_Change
     OnButton6_Change = Joystickex1Button6_Change
     JoyMove = Joystickex1JoyMove
-    Left = 300
-    Top = 231
+    Left = 227
+    Top = 228
   end
 end

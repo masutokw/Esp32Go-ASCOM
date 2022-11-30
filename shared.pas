@@ -92,6 +92,7 @@ procedure Slew_ToCoor();overload
 procedure Set_longitude(lon: extended);
 procedure Set_latitude(lat: extended);
 function get_alignmode():char;
+Function get_track():integer;
 
   implementation
   procedure TMyClass.CSClientConnect(Sender: TObject;
@@ -719,6 +720,32 @@ begin
       temp := 0;
       result:=temp;
  end;
+Function get_track():integer;
+var temp,n:integer;
+str:string;
+begin
+ n := 0;
+   if (inbuff) > 0 then
+   clearBuff(true, false);
+ send(':Gk#');
+    while (inbuff < 1) and (n < 100) do
+    begin
+      sleep(1);
+      inc(n);
+    end;
+    // count := n;
+    if recv(str, 1) > 0 then
+    begin
+     // str := StringReplace(str, '#', '', [rfReplaceAll]);
+      temp := StrToIntDef(str, 0);
+
+      // LabelFocusCount.caption := StringReplace(str, '#', '',[rfReplaceAll]);
+      // LabelFocusCount.caption := Format('%0.5d', [n]);
+    end
+    else
+      temp := 0;
+      result:=temp;
+ end;
 Function get_coordstpc(var focus, count: integer): string;
 
 var
@@ -847,8 +874,8 @@ begin
   begin
     s := 0;
     clearBuff(true, false);
-    send('#:GA#');
-    while (inbuff < dec_pack) and (s < 100) do
+    send(':GA#');
+    while (inbuff < dec_pack) and (s < 10) do
     begin
       sleep(1);
       inc(s);
@@ -876,7 +903,7 @@ begin
   begin
     s := 0;
     clearBuff(true, false);
-    send('#:GZ#');
+    send(':GZ#');
     while (inbuff < dec_pack) and (s < 100) do
     begin
       sleep(1);
@@ -1042,11 +1069,37 @@ begin
 end;
 function get_alignmode():char;
 var str:string;
+ c :char;
+  n, s: integer;
 begin
+{clearBuff(true, false);
   send(#6);
   if recv(str,1)=1 then
   result :=str[1]
-  else result:='0' ;
+  else result:='P' ; }
+   if fullconnect then
+  begin
+    s := 0;
+    c:='A';
+    clearBuff(true, false);
+    send(#6);
+    while (inbuff < 1) and (s < 100) do
+    begin
+      sleep(1);
+      inc(s);
+    end;
+
+    If (recv(str, 1) = 1)  then
+    begin
+       c :=str[1];
+      clearBuff(true, false);
+     end;
+  end;
+  result := c;
+
+
+
+
 end;
 
 procedure sconnect;
