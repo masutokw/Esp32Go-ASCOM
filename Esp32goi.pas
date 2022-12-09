@@ -136,7 +136,12 @@ var
 function TTelescope.CanMoveAxis(Axis: TelescopeAxes): WordBool;
 
 begin
- result := false;
+         case axis of
+      axisprimary:result := false;
+      axissecondary:result := false;
+      axistertiary:result := false;
+      end;
+
 end;
 
 function TTelescope.Get_AlignmentMode: AlignmentModes;
@@ -283,7 +288,7 @@ end;
 
 function TTelescope.Get_DeclinationRate: Double;
 begin
-
+       result:=1;
 end;
 
 function TTelescope.Get_Description: WideString;
@@ -406,12 +411,12 @@ end;
 function TTelescope.Get_Tracking: WordBool;
 var str:string ;
 begin
-result:= get_track()=1;
+result:= (get_track()=1);
 end;
 
 function TTelescope.Get_TrackingRate: DriveRates;
 begin
-  result :=driveSolar;//driveSidereal;
+  result :=driveSidereal;
 end;
 
 function TTelescope.Get_TrackingRates: ITrackingRates;
@@ -423,6 +428,7 @@ begin
     trackr.lrates.add();
 
     result:= itrackr ;
+    showmessage('gettr');
 end;
 
 function TTelescope.Get_UTCDate: TDateTime;
@@ -467,11 +473,34 @@ end;
 
 procedure TTelescope.MoveAxis(Axis: TelescopeAxes; Rate: Double);
 begin
-      case axis of
-      axisprimary:send('#:Mw#');
-      axissecondary:send('#:Mn#');
-      axistertiary:send('#:Q#');
+ //showmessage(floattostr(rate));
+ if rate=0 then
+ begin
+  case axis of
+      axisprimary:send('#:Qw#');
+      axissecondary:send('#:Qn#');
+
       end;
+ exit;
+ end;
+
+if rate >0 then
+begin
+      case axis of
+      axisprimary:send('#:Me#');
+      axissecondary:send('#:Mn#');
+    //  axistertiary:send('#:Q#');
+      end;
+
+end
+else
+
+ case axis of
+      axisprimary:send('#:Mw#');
+      axissecondary:send('#:Ms#');
+     // axistertiary:send('#');
+      end;
+
 end;
 
 procedure TTelescope.Park;
@@ -681,7 +710,7 @@ begin
     ProfileObject.Register(DRIVER_ID, 'Esp32go Driver');
 
   end;
-  // ASCOMExcept:=CreateOLEObject('ASCOM.exceptions');
+   //ASCOMExcept:=CreateOLEObject('ASCOM.exceptions');
 
 end;
 
@@ -706,7 +735,7 @@ end;
 
 function TTrackingRates.GetEnumerator: IEnumVARIANT;
 begin
-  //result := self as IEnumVARIANT;
+  result := self as IEnumVARIANT;
 end;
 
 initialization
