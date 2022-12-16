@@ -13,6 +13,15 @@ const
   DRIVER_ID = DRIVER_NAME + '.Telescope';
 
 type
+  TAxisRates = class(TAutoObject, IAxisRates)
+    protected
+    function Get_Count: Integer; safecall;
+    function Get_Item(Index: Integer): IRate; safecall;
+  //  function GetEnumerator: IEnumVARIANT; safecall;
+   function Get_NewEnum: IEnumVARIANT; safecall;
+  end;
+
+type
   TTrackingRates = class(TAutoObject, ITrackingRates)
   private
     lrates: tcollection;
@@ -167,7 +176,7 @@ end;
 
 function TTelescope.Get_ApertureArea: Double;
 begin
-
+      result:=100;
 end;
 
 function TTelescope.Get_ApertureDiameter: Double;
@@ -214,7 +223,7 @@ end;
 
 function TTelescope.Get_CanSetGuideRates: WordBool;
 begin
-  result := false;
+  result := true;
 end;
 
 function TTelescope.Get_CanSetPark: WordBool;
@@ -275,7 +284,7 @@ end;
 function TTelescope.Get_Connected: WordBool;
 begin
   // if  not check_connection() then
-  // ShowMessage('Comport not responding');
+   //ShowMessage('Comport not responding');
 
   result := true;
 end;
@@ -337,7 +346,7 @@ end;
 
 function TTelescope.Get_InterfaceVersion: SYSINT;
 begin
-    result:=2;
+    result:=3;
 end;
 
 function TTelescope.Get_IsPulseGuiding: WordBool;
@@ -359,7 +368,7 @@ end;
 
 function TTelescope.Get_RightAscensionRate: Double;
 begin
-
+   result:=1;
 end;
 
 function TTelescope.Get_SideOfPier: PierSide;
@@ -370,7 +379,7 @@ end;
 
 function TTelescope.Get_SiderealTime: Double;
 begin
-
+    send(':GS#');
 end;
 
 function TTelescope.Get_SiteElevation: Double;
@@ -426,7 +435,7 @@ begin
   //  trackr:=ttrackingrates.Create;
     itrackr:=trackr.Create();
     trackr.lrates.add();
-
+    // trackr.lrates.Items[1]
     result:= itrackr ;
     showmessage('gettr');
 end;
@@ -618,7 +627,7 @@ end;
 
 procedure TTelescope.Set_TrackingRate(Value: DriveRates);
 begin
-
+       showmessage('sett');
 end;
 
 procedure TTelescope.Set_UTCDate(Value: TDateTime);
@@ -716,7 +725,7 @@ end;
 
 function TTrackingRates.Get_Count: Integer; safecall;
 begin
-  result := 1;
+  result := 4;
 end;
 
 function TTrackingRates.Get_Item(Index: Integer): DriveRates; safecall;
@@ -738,10 +747,33 @@ begin
   result := self as IEnumVARIANT;
 end;
 
+function TAxisRates.Get_Count: Integer; safecall;
+begin
+  result := 4;
+end;
+
+function TaxisRates.Get_Item(Index: Integer): iRate; safecall;
+var r:irate;
+ r1:rate;
+begin
+       r:=r1;
+
+
+
+       result:=r;
+end;
+
+function Taxisrates.Get_newEnum: IEnumVARIANT;
+begin
+  result := self as IEnumVARIANT;
+end;
+
 initialization
 
 CoInitializeex(nil, COINIT_APARTMENTTHREADED);
 RegisterThySelf;
+ TAutoObjectFactory.Create(ComServer, TAxisRates, Class_AxisRates,
+  cimultiInstance, tmApartment);
 
 TAutoObjectFactory.Create(ComServer, TTrackingRates, Class_TrackingRates,
   cimultiInstance, tmApartment);

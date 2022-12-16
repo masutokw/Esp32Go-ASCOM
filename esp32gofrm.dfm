@@ -1253,14 +1253,14 @@ object Esp32frm: TEsp32frm
         Caption = 'Port'
       end
       object Label3: TLabel
-        Left = 95
+        Left = 111
         Top = 14
         Width = 24
         Height = 13
         Caption = 'Baud'
       end
       object ComComboBox2: TComComboBox
-        Left = 122
+        Left = 139
         Top = 10
         Width = 66
         Height = 21
@@ -1273,7 +1273,7 @@ object Esp32frm: TEsp32frm
       object ComComboBox1: TComComboBox
         Left = 35
         Top = 10
-        Width = 52
+        Width = 63
         Height = 21
         ComProperty = cpPort
         Text = 'COM1'
@@ -1549,14 +1549,14 @@ object Esp32frm: TEsp32frm
   object Timer1: TTimer
     Enabled = False
     OnTimer = Timer1Timer
-    Left = 288
-    Top = 193
+    Left = 300
+    Top = 123
   end
   object adpInstanceControl1: TadpInstanceControl
     Enabled = True
     MaxInstances = 1
-    Left = 284
-    Top = 225
+    Left = 296
+    Top = 191
   end
   object Joystickex1: TJoystickex
     GamePort = Gameport1
@@ -1576,7 +1576,7 @@ object Esp32frm: TEsp32frm
     OnButton5_Change = Joystickex1Button5_Change
     OnButton6_Change = Joystickex1Button6_Change
     JoyMove = Joystickex1JoyMove
-    Left = 227
-    Top = 228
+    Left = 235
+    Top = 170
   end
 end

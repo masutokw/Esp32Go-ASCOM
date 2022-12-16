@@ -6,7 +6,7 @@
 // However, when applying changes via the Editor this file will be regenerated
 // and comments or formatting changes will be lost.
 // ************************************************************************ //
-// File generated on 01/12/2022 11:48:32 (- $Rev: 12980 $, 244560234).
+// File generated on 16/12/2022 11:22:33 (- $Rev: 12980 $, 6874218).
 
 [
   uuid(1E06C881-9ACE-461A-AE17-0A0981B24AB1),
@@ -366,7 +366,7 @@ library Esp32go
     HRESULT _stdcall Count([out, retval] long* __MIDL_0087);
     [propget, id(0x00000000)]
     HRESULT _stdcall Item([in] long Index, [out, retval] IRate** __MIDL_0088);
-    [propget, id(0xFFFFFFFC), hidden]
+    [propget, id(0x00000074), hidden]
     HRESULT _stdcall NewEnum([out, retval] IEnumVARIANT** __MIDL_0089);
   };
 
@@ -381,9 +381,9 @@ library Esp32go
   {
     [propget, id(0x00000065)]
     HRESULT _stdcall Count([out, retval] long* __MIDL_0090);
-    [propget, id(0x00000000)]
+    [propget, id(0x00000071)]
     HRESULT _stdcall Item([in] long Index, [out, retval] enum DriveRates* __MIDL_0091);
-    [id(0x00000001)]
+    [id(0x00000070)]
     HRESULT _stdcall GetEnumerator([out, retval] IEnumVARIANT** Param1);
   };
 

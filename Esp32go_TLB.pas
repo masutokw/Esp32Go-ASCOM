@@ -12,7 +12,7 @@ unit Esp32go_TLB;
 // ************************************************************************ //
 
 // $Rev: 98336 $
-// File generated on 21/02/2022 20:15:45 from Type Library described below.
+// File generated on 11/12/2022 19:14:29 from Type Library described below.
 
 // ************************************************************************  //
 // Type Lib: C:\Users\masut\Documents\Embarcadero\Studio\Projects\Esp32Go-ASCOM\esp32go (1)
@@ -483,7 +483,7 @@ type
     ['{7DE18E3E-FBB1-4856-8F16-B1C91C88B200}']
     property Count: Integer readonly dispid 101;
     property Item[Index: Integer]: IRate readonly dispid 0; default;
-    property NewEnum: IEnumVARIANT readonly dispid -4;
+    property NewEnum: IEnumVARIANT readonly dispid 116;
   end;
 
 // *********************************************************************//
@@ -497,7 +497,7 @@ type
     function Get_Item(Index: Integer): DriveRates; safecall;
     function GetEnumerator: IEnumVARIANT; safecall;
     property Count: Integer read Get_Count;
-    property Item[Index: Integer]: DriveRates read Get_Item; default;
+    property Item[Index: Integer]: DriveRates read Get_Item;
   end;
 
 // *********************************************************************//
@@ -508,8 +508,8 @@ type
   ITrackingRatesDisp = dispinterface
     ['{AF07ABEC-343F-41BA-836E-AC9AF57CBFBA}']
     property Count: Integer readonly dispid 101;
-    property Item[Index: Integer]: DriveRates readonly dispid 0; default;
-    function GetEnumerator: IEnumVARIANT; dispid 1;
+    property Item[Index: Integer]: DriveRates readonly dispid 113;
+    function GetEnumerator: IEnumVARIANT; dispid 112;
   end;
 
 // *********************************************************************//
