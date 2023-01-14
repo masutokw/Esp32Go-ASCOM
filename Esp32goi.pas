@@ -379,7 +379,7 @@ end;
 
 function TTelescope.Get_SiderealTime: Double;
 begin
-    send(':GS#');
+    result:= get_sideral();
 end;
 
 function TTelescope.Get_SiteElevation: Double;

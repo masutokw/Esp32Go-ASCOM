@@ -93,6 +93,7 @@ procedure Set_longitude(lon: extended);
 procedure Set_latitude(lat: extended);
 function get_alignmode():char;
 Function get_track():integer;
+function get_sideral():double;
 
   implementation
   procedure TMyClass.CSClientConnect(Sender: TObject;
@@ -144,8 +145,6 @@ result:=0;
   begin
   value := '                             ';
   n := ComPortBT_USB.Readstr(value, count);
-
-
   setlength(value, n);
   result := n;
   end;
@@ -836,6 +835,31 @@ begin
   end;
   result := lastdec;
 end;
+function get_sideral:double;
+var
+  str: string;
+  n, s: integer;
+begin
+  if fullconnect then
+  begin
+    s := 0;
+    clearBuff(true, false);
+    send('#:GS#');
+    while (inbuff < ra_pack) and (s < 100) do
+    begin
+      sleep(1);
+      inc(s);
+    end;
+    If (recv(str, ra_pack) >= ra_pack) then
+    begin
+      n := LX200Artoint(str, true);
+      lastar := (n / (15 * 3600.0));
+
+    end;
+  end;
+  result := lastar;
+
+end;
 
 function Get_RA: Double;
 
@@ -874,7 +898,7 @@ begin
   begin
     s := 0;
     clearBuff(true, false);
-    send(':GA#');
+    send('#:GA#');
     while (inbuff < dec_pack) and (s < 10) do
     begin
       sleep(1);
@@ -903,7 +927,7 @@ begin
   begin
     s := 0;
     clearBuff(true, false);
-    send(':GZ#');
+    send('#:GZ#');
     while (inbuff < dec_pack) and (s < 100) do
     begin
       sleep(1);

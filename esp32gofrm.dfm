@@ -1082,8 +1082,8 @@ object Esp32frm: TEsp32frm
     Caption = 'Telescope'
     TabOrder = 2
     object labelAR: TLabel
-      Left = 19
-      Top = 13
+      Left = 11
+      Top = 14
       Width = 43
       Height = 15
       Caption = 'Waiting'
@@ -1253,16 +1253,16 @@ object Esp32frm: TEsp32frm
         Caption = 'Port'
       end
       object Label3: TLabel
-        Left = 111
+        Left = 119
         Top = 14
         Width = 24
         Height = 13
         Caption = 'Baud'
       end
       object ComComboBox2: TComComboBox
-        Left = 139
+        Left = 145
         Top = 10
-        Width = 66
+        Width = 60
         Height = 21
         ComProperty = cpBaudRate
         Text = '115200'
@@ -1315,8 +1315,8 @@ object Esp32frm: TEsp32frm
       end
     end
     object ButtonSave: TButton
-      Left = 49
-      Top = 107
+      Left = 154
+      Top = 246
       Width = 48
       Height = 20
       Caption = 'Save'
@@ -1334,7 +1334,7 @@ object Esp32frm: TEsp32frm
     end
     object RadioGroupcom: TRadioGroup
       Left = 121
-      Top = 51
+      Top = 50
       Width = 100
       Height = 39
       Caption = 'Interface'
@@ -1355,9 +1355,9 @@ object Esp32frm: TEsp32frm
       OnMouseDown = ButtondisconnectMouseDown
     end
     object CheckBoxJoyf: TCheckBox
-      Left = 116
+      Left = 114
       Top = 91
-      Width = 63
+      Width = 47
       Height = 17
       Caption = 'Focus'
       TabOrder = 6
@@ -1371,28 +1371,28 @@ object Esp32frm: TEsp32frm
       TabOrder = 7
     end
     object ButtonHome: TButton
-      Left = -1
-      Top = 107
-      Width = 50
+      Left = 0
+      Top = 146
+      Width = 65
       Height = 20
-      Caption = 'home'
+      Caption = 'Reset home'
       TabOrder = 8
       OnClick = ButtonHomeClick
     end
     object Button2: TButton
-      Left = 97
-      Top = 107
-      Width = 53
+      Left = 115
+      Top = 141
+      Width = 52
       Height = 20
       Caption = 'Set Time'
       TabOrder = 9
       OnClick = Button2Click
     end
     object FloatEditLong: TFloatEdit
-      Left = 2
-      Top = 128
-      Width = 45
-      Height = 21
+      Left = 1
+      Top = 118
+      Width = 55
+      Height = 20
       Hint = '-360..360'
       ParentShowHint = False
       ShowHint = True
@@ -1401,23 +1401,26 @@ object Esp32frm: TEsp32frm
       Decimals = 4
       MinValue = -360.000000000000000000
       MaxValue = 360.000000000000000000
+      NumericType = ntFixed
     end
     object FloatEditLat: TFloatEdit
-      Left = 49
-      Top = 128
-      Width = 40
-      Height = 21
+      Left = 58
+      Top = 118
+      Width = 55
+      Height = 20
       Hint = '-90..90'
       ParentShowHint = False
       ShowHint = True
       TabOrder = 11
-      Value = 36.430000000000000000
+      Value = 36.700000000000000000
+      Decimals = 4
       MinValue = -90.000000000000000000
       MaxValue = 90.000000000000000000
+      NumericType = ntFixed
     end
     object Button3: TButton
-      Left = 90
-      Top = 127
+      Left = 116
+      Top = 118
       Width = 52
       Height = 20
       Caption = 'Set Geo.'
@@ -1515,7 +1518,7 @@ object Esp32frm: TEsp32frm
     Top = 234
     Width = 120
     Height = 38
-    Caption = 'Coord'
+    Caption = 'Status'
     TabOrder = 3
     object Label5: TLabel
       Left = 7
@@ -1537,7 +1540,7 @@ object Esp32frm: TEsp32frm
       StyleElements = [seBorder]
     end
     object Button1: TButton
-      Left = 81
+      Left = 77
       Top = 9
       Width = 37
       Height = 20
@@ -1549,8 +1552,8 @@ object Esp32frm: TEsp32frm
   object Timer1: TTimer
     Enabled = False
     OnTimer = Timer1Timer
-    Left = 300
-    Top = 123
+    Left = 229
+    Top = 137
   end
   object adpInstanceControl1: TadpInstanceControl
     Enabled = True
@@ -1576,7 +1579,7 @@ object Esp32frm: TEsp32frm
     OnButton5_Change = Joystickex1Button5_Change
     OnButton6_Change = Joystickex1Button6_Change
     JoyMove = Joystickex1JoyMove
-    Left = 235
-    Top = 170
+    Left = 81
+    Top = 14
   end
 end
