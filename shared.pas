@@ -105,13 +105,19 @@ end;
 procedure TMyClass.CSClientDisconnect(Sender: TObject;
   Socket: TCustomWinSocket);
 begin
- showmessage('desconectado socket');
+ //showmessage('desconectado socket');
 end;
 procedure  TMyClass.tcperror(Sender: TObject;
     Socket: TCustomWinSocket; ErrorEvent:  TErrorEvent; var ErrorCode: Integer);
     begin
     clientsocket1.active:=false;
-     showmessage('error socket');
+    errorcode:=0;
+    if MessageBox(0,'Connection Lost,Reconnect?',
+   'Error',  MB_YESNO  ) = 6 then
+   begin
+     clientsocket1.active:=true;
+   end;
+
     end;
 
 function sendserial(value: string): integer;

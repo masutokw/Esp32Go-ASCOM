@@ -3,8 +3,8 @@ object Esp32frm: TEsp32frm
   Top = 0
   AutoSize = True
   Caption = 'Esp32go'
-  ClientHeight = 272
-  ClientWidth = 337
+  ClientHeight = 273
+  ClientWidth = 336
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -1218,8 +1218,8 @@ object Esp32frm: TEsp32frm
     end
   end
   object GroupBoxserial: TGroupBox
-    Left = 120
-    Top = 0
+    Left = 119
+    Top = 1
     Width = 217
     Height = 272
     Caption = 'Config'
@@ -1232,8 +1232,8 @@ object Esp32frm: TEsp32frm
       Height = 13
     end
     object Labelmsg: TLabel
-      Left = 170
-      Top = 175
+      Left = 15
+      Top = 152
       Width = 19
       Height = 13
       Caption = 'msg'
@@ -1315,8 +1315,8 @@ object Esp32frm: TEsp32frm
       end
     end
     object ButtonSave: TButton
-      Left = 154
-      Top = 246
+      Left = 108
+      Top = 87
       Width = 48
       Height = 20
       Caption = 'Save'
@@ -1334,7 +1334,7 @@ object Esp32frm: TEsp32frm
     end
     object RadioGroupcom: TRadioGroup
       Left = 121
-      Top = 50
+      Top = 49
       Width = 100
       Height = 39
       Caption = 'Interface'
@@ -1355,24 +1355,24 @@ object Esp32frm: TEsp32frm
       OnMouseDown = ButtondisconnectMouseDown
     end
     object CheckBoxJoyf: TCheckBox
-      Left = 114
-      Top = 91
+      Left = 72
+      Top = 134
       Width = 47
       Height = 17
       Caption = 'Focus'
       TabOrder = 6
     end
     object CheckBox2: TCheckBox
-      Left = 163
-      Top = 91
+      Left = 122
+      Top = 134
       Width = 45
       Height = 17
       Caption = 'Fast'
       TabOrder = 7
     end
     object ButtonHome: TButton
-      Left = 0
-      Top = 146
+      Left = 1
+      Top = 131
       Width = 65
       Height = 20
       Caption = 'Reset home'
@@ -1380,8 +1380,8 @@ object Esp32frm: TEsp32frm
       OnClick = ButtonHomeClick
     end
     object Button2: TButton
-      Left = 115
-      Top = 141
+      Left = 167
+      Top = 109
       Width = 52
       Height = 20
       Caption = 'Set Time'
@@ -1389,10 +1389,10 @@ object Esp32frm: TEsp32frm
       OnClick = Button2Click
     end
     object FloatEditLong: TFloatEdit
-      Left = 1
-      Top = 118
+      Left = 2
+      Top = 109
       Width = 55
-      Height = 20
+      Height = 21
       Hint = '-360..360'
       ParentShowHint = False
       ShowHint = True
@@ -1405,9 +1405,9 @@ object Esp32frm: TEsp32frm
     end
     object FloatEditLat: TFloatEdit
       Left = 58
-      Top = 118
+      Top = 109
       Width = 55
-      Height = 20
+      Height = 21
       Hint = '-90..90'
       ParentShowHint = False
       ShowHint = True
@@ -1419,13 +1419,22 @@ object Esp32frm: TEsp32frm
       NumericType = ntFixed
     end
     object Button3: TButton
-      Left = 116
-      Top = 118
+      Left = 115
+      Top = 109
       Width = 52
       Height = 20
       Caption = 'Set Geo.'
       TabOrder = 12
       OnClick = Button3Click
+    end
+    object lstHidDevices: TListBox
+      Left = 10
+      Top = 175
+      Width = 196
+      Height = 90
+      ItemHeight = 13
+      TabOrder = 13
+      Visible = False
     end
   end
   object GroupBoxFocus: TGroupBox
@@ -1581,5 +1590,11 @@ object Esp32frm: TEsp32frm
     JoyMove = Joystickex1JoyMove
     Left = 81
     Top = 14
+  end
+  object JvHidDeviceController: TJvHidDeviceController
+    OnEnumerate = JvHidDeviceControllerEnumerate
+    OnDeviceChange = JvHidDeviceControllerDeviceChange
+    Left = 168
+    Top = 208
   end
 end
