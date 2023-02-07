@@ -135,9 +135,9 @@ begin
 end;
 function sendtcp(value: string): integer;
 begin
-
-  result := clientsocket1.socket.SendText(value)
-
+  if clientsocket1.socket.Connected then
+  result := clientsocket1.socket.SendText(value) else
+   result:=0;
 end;
 
 function recvserial(var value: string; count: integer): integer;
@@ -729,6 +729,8 @@ Function get_track():integer;
 var temp,n:integer;
 str:string;
 begin
+ if fullconnect then
+ begin
  n := 0;
    if (inbuff) > 0 then
    clearBuff(true, false);
@@ -750,6 +752,8 @@ begin
     else
       temp := 0;
       result:=temp;
+ end;
+  result:=1;
  end;
 Function get_coordstpc(var focus, count: integer): string;
 

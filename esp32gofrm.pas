@@ -110,6 +110,9 @@ type
       const Idx: Integer): Boolean;
     procedure ReadJoysticks(HidDev: TJvHidDevice; ReportID: Byte;
       const Data: Pointer; Size: Word);
+    procedure JvHidDeviceControllerDeviceCreateError
+      (Controller: TJvHidDeviceController; PnPInfo: TJvHidPnPInfo;
+      var Handled, RetryCreate: Boolean);
 
   private
     { Private declarations }
@@ -522,7 +525,7 @@ function TEsp32frm.JvHidDeviceControllerEnumerate(HidDev: TJvHidDevice;
 var
   Dev: TJvHidDevice;
   DevID, idxb: Integer;
-  UsagePageText, UsageText: string;
+  UsagePageText, UsageText, name: string;
 begin
 
   // This procedure gets all the HID items:
@@ -541,10 +544,13 @@ begin
   JvHidDeviceController.CheckOutByIndex(Dev, Idx);
   lstHidDevices.Items.Objects[DevID] := Dev;
   // If this device is a joystick then set its OnData property to read  its input
-  IF (trim(HidDev.ProductName) = 'Gamepad') then
-    // IF (trim(HidDev.ProductName) = 'Generic USB Joystick') then
+  name := HidDev.ProductName;
+  IF trim(HidDev.ProductName) = 'Gamepad' then
+  begin
     Dev.OnData := ReadJoysticks;
-  // Labelmsg.Caption := trim(HidDev.ProductName);
+
+  end;
+
   // Return true so we can move on to the next device
   result := true;
 end;
@@ -569,38 +575,37 @@ begin
   JvHidDeviceController.Enumerate;
 end;
 
+procedure TEsp32frm.JvHidDeviceControllerDeviceCreateError
+  (Controller: TJvHidDeviceController; PnPInfo: TJvHidPnPInfo;
+  var Handled, RetryCreate: Boolean);
+begin
+  Labelmsg.caption := 'Error GP';
+end;
+
 procedure TEsp32frm.ReadJoysticks(HidDev: TJvHidDevice; ReportID: Byte;
   const Data: Pointer; Size: Word);
 var
-  Xaxis, Yaxis, Btn, cur, trackbnt: Integer;
+  Xaxis, Yaxis, Btn, cur, trackbnt, n: Integer;
 begin
+  // labelmsg.caption:='';
+  // for n := 0 to size do
+  // labelmsg.caption:=labelmsg.caption+' '+inttostr(Cardinal(Pbyte(Data)[n]));
   // Check the X and Y axis
   Xaxis := Cardinal(Pbyte(Data)[3]);
   Yaxis := Cardinal(Pbyte(Data)[1]);
   // Check the button(s) value
   Btn := Cardinal(Pbyte(Data)[4]);
   trackbnt := Cardinal(Pbyte(Data)[5]);
-  { if trackbnt = 4 then
-    checkboxtrack.Checked := TRUE
-    else if trackbnt = 8 then
-    checkboxtrack.Checked := FALSE; }
-  // string grid code goes here (Xaxis and Yaxis)
-  // Launch the second form if a button is pressed
+
   cur := Btn and $000F;
   Btn := Btn and $00F0;
 
-  // Label71.Caption := inttostr(Btn) + ' ' + inttostr(cur);
-  // label71.Caption:=inttostr(pint(data)[1]);
   if lastgamebutton <> Btn then
   begin
     case Btn of
-      { 64:radiobuttonspeed(radiobuttonSlew);//radiobuttonSlew.checked:=true;
-        128:radiobuttonspeed(radiobuttonFind);
-        32:radiobuttonspeed(radiobuttonCenter) ;
-        16:radiobuttonspeed(radiobuttonGuide)   ; }
+
       64:
         Joystickex1Button4_Change(Joystickex1, true, 0, 0);
-      // radiobuttonSlew.checked:=true;
       128:
         Joystickex1Button1_Change(Joystickex1, true, 0, 0);
       32:
@@ -612,7 +617,7 @@ begin
           case lastgamebutton of
             64:
               Joystickex1Button4_Change(Joystickex1, false, 0, 0);
-            // radiobuttonSlew.checked:=true;
+
             128:
               Joystickex1Button1_Change(Joystickex1, false, 0, 0);
             32:

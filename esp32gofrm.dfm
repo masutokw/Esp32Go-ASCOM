@@ -1276,7 +1276,7 @@ object Esp32frm: TEsp32frm
         Width = 63
         Height = 21
         ComProperty = cpPort
-        Text = 'COM1'
+        Text = 'COM11'
         Style = csDropDownList
         ItemIndex = 0
         TabOrder = 1
@@ -1594,7 +1594,8 @@ object Esp32frm: TEsp32frm
   object JvHidDeviceController: TJvHidDeviceController
     OnEnumerate = JvHidDeviceControllerEnumerate
     OnDeviceChange = JvHidDeviceControllerDeviceChange
-    Left = 168
-    Top = 208
+    OnDeviceCreateError = JvHidDeviceControllerDeviceCreateError
+    Left = 288
+    Top = 141
   end
 end
