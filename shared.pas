@@ -30,6 +30,7 @@ var
   ClientSocket1: TClientSocket;
   fullconnect: boolean;
   lastdec, lastar, lastaz, lastalt: Double;
+  gmtoffset:integer;
   imode: integer;
   Sport: THandle;
    connected:boolean;
@@ -91,9 +92,12 @@ procedure Slew_ToCoor(RightAscension, Declination: Double); overload;
 procedure Slew_ToCoor();overload
 procedure Set_longitude(lon: extended);
 procedure Set_latitude(lat: extended);
+procedure Set_offset(offset:integer);
 function get_alignmode():char;
 Function get_track():integer;
 function get_sideral():double;
+function get_gmtoffset ():integer;
+function UTCNow: TDateTime;
 
   implementation
   procedure TMyClass.CSClientConnect(Sender: TObject;
@@ -119,6 +123,16 @@ procedure  TMyClass.tcperror(Sender: TObject;
    end;
 
     end;
+
+function UTCNow: TDateTime;
+var
+   ASystemTime: TSystemTime;
+   UTCnowDateTime: TDateTime;
+begin
+   GetSystemTime(ASystemTime);
+   UTCnowDateTime :=  SystemTimeToDateTime(ASystemTime);
+   Result := UTCnowDateTime;
+end;
 
 function sendserial(value: string): integer;
    var count:integer;
@@ -973,6 +987,16 @@ begin
   send(':Sr' + DoubleToLXAr(value, 1));
   recv(response, 1);
 end;
+procedure Set_offset(offset:integer);
+
+begin
+
+if offset>0 then
+send(':SG-'+inttostr(offset)+'.0#')
+else
+send(':SG+'+inttostr(-offset)+'.0#');
+
+end;
 procedure Set_date(date_time: tdatetime);
 var
 lxdate,response:string ;
@@ -1133,6 +1157,34 @@ begin
 
 
 
+
+
+end;
+  function get_gmtoffset():integer;
+var str:string;
+
+  n, s: integer;
+begin
+   if fullconnect then
+  begin
+    n:=50;
+    s := 0;
+    clearBuff(true, false);
+    send(':GG#');
+    while (inbuff < 1) and (s < 100) do
+    begin
+      sleep(1);
+      inc(s);
+    end;
+
+    If (recv(str, 4) =4 )  then
+    begin
+
+       n:=-strtoint(StringReplace(str, '#','',[rfReplaceAll]));
+      clearBuff(true, false);
+     end;
+  end;
+  result := n;
 
 end;
 

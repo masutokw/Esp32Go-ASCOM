@@ -7,7 +7,7 @@ uses
   System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
   Vcl.StdCtrls, Vcl.ExtCtrls, CPort, esp32goi, shared, inifiles,
   EnhEdits, CPortCtl, adpInstanceControl, System.Win.ScktComp, serial,
-  Joystickex, JvComponentBase, JvHidControllerClass;
+  Joystickex, JvComponentBase, JvHidControllerClass,HidUsage;
 
 type
   TEsp32frm = class(TForm)
@@ -55,13 +55,22 @@ type
     CheckBoxJoyf: TCheckBox;
     CheckBox2: TCheckBox;
     ButtonHome: TButton;
-    Button2: TButton;
     Labelmsg: TLabel;
+    JvHidDeviceController: TJvHidDeviceController;
+    lstHidDevices: TListBox;
+    GroupBox5: TGroupBox;
+    ButtonSync: TButton;
+    Buttonstar1: TButton;
+    Buttonstar2: TButton;
+    groupboxgeo: TGroupBox;
     FloatEditLong: TFloatEdit;
     FloatEditLat: TFloatEdit;
     Button3: TButton;
-    JvHidDeviceController: TJvHidDeviceController;
-    lstHidDevices: TListBox;
+    Button2: TButton;
+    Buttontakireset: TButton;
+    LongEditgmt: TLongEdit;
+    Label4: TLabel;
+    Buttongetgeo: TButton;
 
     procedure FormCreate(Sender: TObject);
     procedure Button_NMouseDown(Sender: TObject; Button: TMouseButton;
@@ -113,6 +122,11 @@ type
     procedure JvHidDeviceControllerDeviceCreateError
       (Controller: TJvHidDeviceController; PnPInfo: TJvHidPnPInfo;
       var Handled, RetryCreate: Boolean);
+    procedure ButtonSyncClick(Sender: TObject);
+    procedure Buttonstar1Click(Sender: TObject);
+    procedure Buttonstar2Click(Sender: TObject);
+    procedure ButtontakiresetClick(Sender: TObject);
+    procedure ButtongetgeoClick(Sender: TObject);
 
   private
     { Private declarations }
@@ -138,6 +152,16 @@ implementation
 procedure TEsp32frm.ButtonSaveClick(Sender: TObject);
 begin
   WriteSettings;
+end;
+
+procedure TEsp32frm.Buttonstar1Click(Sender: TObject);
+begin
+ send(':a1#') ;
+end;
+
+procedure TEsp32frm.Buttonstar2Click(Sender: TObject);
+begin
+send(':a2#') ;
 end;
 
 procedure TEsp32frm.ButtonReconClick(Sender: TObject);
@@ -185,21 +209,40 @@ begin
 end;
 
 procedure TEsp32frm.Button2Click(Sender: TObject);
+var ctime:TdateTime;
 begin
-  Set_localtime(now);
+
+  gmtoffset:=LongEditgmt.value;
+  set_offset(gmtoffset);
   sleep(20);
-  Set_date(now);
+  ctime:=UTCnow()+(gmtoffset/24.0);
+
+  Set_localtime(ctime);
+  sleep(20);
+  Set_date(ctime);
   sleep(20);
 
 end;
 
 procedure TEsp32frm.Button3Click(Sender: TObject);
 begin
+  set_offset(LongEditgmt.value);
   Set_latitude(FloatEditLat.Value);
   sleep(20);
   set_longitude(FloatEditLong.Value);
   sleep(20);
 
+
+end;
+
+procedure TEsp32frm.ButtonSyncClick(Sender: TObject);
+begin
+    send(':a0#') ;
+end;
+
+procedure TEsp32frm.ButtontakiresetClick(Sender: TObject);
+begin
+   send(':a3#') ;
 end;
 
 procedure TEsp32frm.Buttonconfig(Sender: TObject);
@@ -214,6 +257,15 @@ begin
     ClientSocket1.active := false
   else
     ComPortBT_USB.Connected := false;
+end;
+
+procedure TEsp32frm.ButtongetgeoClick(Sender: TObject);
+var offset:integer;
+begin
+      floateditlong.value:=get_long();
+      floateditlat.value:=get_lat();
+      offset:=get_gmtoffset();
+      if offset<>50 then longeditgmt.value:=offset;
 end;
 
 procedure TEsp32frm.ButtonHClick(Sender: TObject);
@@ -534,18 +586,22 @@ begin
   // HidDev.LinkCollectionNodes[Idx].LinkUsage, UsagePageText, UsageText);
   if HidDev.ProductName <> '' then
     DevID := lstHidDevices.Items.Add(HidDev.ProductName +
-      Format('Device VID=%x PID=%x ', [HidDev.Attributes.VendorID,
+      Format('Device VID=%x PID=%x ',[HidDev.Attributes.VendorID,
       HidDev.Attributes.ProductID]))
   else
-    DevID := lstHidDevices.Items.Add(Format('Device VID=%x PID=%x  %x %s',
+    DevID := lstHidDevices.Items.Add(Format('Device VID=%x PID=%x  %x %s %x',
       [HidDev.Attributes.VendorID, HidDev.Attributes.ProductID, Idx,
-      UsageText]));
+      UsageText,HidDev.LinkCollectionNodes[Idx].LinkUsage]));
   // Retrive the device and assign it to the list
   JvHidDeviceController.CheckOutByIndex(Dev, Idx);
   lstHidDevices.Items.Objects[DevID] := Dev;
+
   // If this device is a joystick then set its OnData property to read  its input
   name := HidDev.ProductName;
-  IF trim(HidDev.ProductName) = 'Gamepad' then
+ // IF trim(HidDev.ProductName) = 'Generic  USB  Joystick ' then
+ IF HidDev.Attributes.VendorID = $790 then
+//if  HidDev.LinkCollectionNodes[Idx].LinkUsage= HID_USAGE_GENERIC_GAMEPAD
+
   begin
     Dev.OnData := ReadJoysticks;
 
@@ -581,15 +637,25 @@ procedure TEsp32frm.JvHidDeviceControllerDeviceCreateError
 begin
   Labelmsg.caption := 'Error GP';
 end;
+function IntToBin8(I: integer): string;
+begin
+  Result := '';
+  while I > 0 do begin
+    Result := Chr(Ord('0') + (I and 1)) + Result;
+    I := I shr 1;
+  end;
+  while Length(Result) < 8 do
+    Result := '0' + Result;
+end;
 
 procedure TEsp32frm.ReadJoysticks(HidDev: TJvHidDevice; ReportID: Byte;
   const Data: Pointer; Size: Word);
 var
   Xaxis, Yaxis, Btn, cur, trackbnt, n: Integer;
 begin
-  // labelmsg.caption:='';
-  // for n := 0 to size do
-  // labelmsg.caption:=labelmsg.caption+' '+inttostr(Cardinal(Pbyte(Data)[n]));
+   labelmsg.caption:='';
+   for n := 0 to size do
+   labelmsg.caption:=labelmsg.caption+' '+inttohex(Cardinal(Pbyte(Data)[n]),2);
   // Check the X and Y axis
   Xaxis := Cardinal(Pbyte(Data)[3]);
   Yaxis := Cardinal(Pbyte(Data)[1]);
@@ -599,6 +665,7 @@ begin
 
   cur := Btn and $000F;
   Btn := Btn and $00F0;
+   //labelmsg.caption:=labelmsg.caption+' '+ inttobin8(BTN);
 
   if lastgamebutton <> Btn then
   begin
@@ -707,7 +774,8 @@ begin
     RadioGroupcom.ItemIndex := ReadInteger('Interface', 'TCP', 0);
     FloatEditLat.Value := readfloat('GEO', 'lat', 36.7);
     FloatEditLong.Value := readfloat('GEO', 'long', -4.12);
-
+    LongEditgmt.value:=  readinteger('GEO','offset',1);
+    gmtoffset:=LongEditgmt.value;
   end;
 end;
 
@@ -725,6 +793,7 @@ begin
     writeInteger('Interface', 'TCP', RadioGroupcom.ItemIndex);
     writefloat('GEO', 'lat', FloatEditLat.Value);
     writefloat('GEO', 'long', FloatEditLong.Value);
+    writefloat('GEO','offset',LongEditgmt.value);
   end;
 end;
 

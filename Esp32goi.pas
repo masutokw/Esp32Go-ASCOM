@@ -632,9 +632,10 @@ end;
 
 procedure TTelescope.Set_UTCDate(Value: TDateTime);
 begin
-    Set_date(value);
-    sleep(20);
+value :=value+gmtoffset/24.0;
     Set_localtime(value);
+    sleep(20);
+    Set_date(value);
 end;
 
 procedure TTelescope.SetPark;
