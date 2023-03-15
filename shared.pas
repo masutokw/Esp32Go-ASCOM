@@ -2,16 +2,16 @@ unit shared;
 
 interface
 
-uses Windows, SysUtils, Classes, Controls, cport, dialogs, System.Win.ScktComp,serial;
+uses Windows, SysUtils, Classes, Controls, cport, dialogs, System.Win.ScktComp,
+  serial, dateutils;
+
 type
   TMyClass = class
   private
-    procedure CSClientConnect(Sender: TObject;
-      Socket: TCustomWinSocket);
-    procedure CSClientDisconnect(Sender: TObject;
-      Socket: TCustomWinSocket);
-    procedure tcperror(Sender: TObject;
-    Socket: TCustomWinSocket; ErrorEvent: TErrorEvent; var ErrorCode: Integer);
+    procedure CSClientConnect(Sender: TObject; Socket: TCustomWinSocket);
+    procedure CSClientDisconnect(Sender: TObject; Socket: TCustomWinSocket);
+    procedure tcperror(Sender: TObject; Socket: TCustomWinSocket;
+      ErrorEvent: TErrorEvent; var ErrorCode: Integer);
 
   public
   end;
@@ -19,10 +19,9 @@ type
 const
   ra_pack = 11;
   dec_pack = 10;
-  lat_pack =7;
-  long_pack=8;
+  lat_pack = 7;
+  long_pack = 8;
   coor_pack = ra_pack + dec_pack;
-
 
 var
 
@@ -30,47 +29,47 @@ var
   ClientSocket1: TClientSocket;
   fullconnect: boolean;
   lastdec, lastar, lastaz, lastalt: Double;
-  gmtoffset:integer;
-  imode: integer;
+  gmtoffset: Integer;
+  imode: Integer;
   Sport: THandle;
-   connected:boolean;
-    MyClass : TMyClass;
-  send: function(values: String): integer;
-  recv: function(var value: string; count: integer): integer;
-  inbuff: function: integer;
+  connected: boolean;
+  MyClass: TMyClass;
+  send: function(values: String): Integer;
+  recv: function(var value: string; count: Integer): Integer;
+  inbuff: function: Integer;
   clearBuff: procedure(input, output: boolean);
 
-function sendserial(value: string): integer;
-function recvserial(var value: string; count: integer): integer;
-function sendtcp(value: string): integer;
-function recvtcp(var value: string; count: integer): integer;
-function inputcountserial(): integer;
-function inputcounttcp(): integer;
+function sendserial(value: string): Integer;
+function recvserial(var value: string; count: Integer): Integer;
+function sendtcp(value: string): Integer;
+function recvtcp(var value: string; count: Integer): Integer;
+function inputcountserial(): Integer;
+function inputcounttcp(): Integer;
 procedure clearbuffSerial(input, output: boolean);
 procedure clearbufftcp(input, output: boolean);
-procedure set_interface_mode(mode: integer);
-procedure initserial(port:string;baudrate: tbaudrate);
-procedure init_tcp(host:string;port:integer);
-Function get_coords(var focus, count: integer): string;
-Function get_coordstpc(var focus, count: integer): string;
-Function get_focuspos():integer;
-Function get_focusmoving():integer;
+procedure set_interface_mode(mode: Integer);
+procedure initserial(port: string; baudrate: tbaudrate);
+procedure init_tcp(host: string; port: Integer);
+Function get_coords(var focus, count: Integer): string;
+Function get_coordstpc(var focus, count: Integer): string;
+Function get_focuspos(): Integer;
+Function get_focusmoving(): Integer;
 function FormatString(StringIn, DivideAt: String): TStringList;
-function Inttodec(de: integer; prec: Byte): String;
-function IntToAr(ar: integer; prec: Byte): String;
-function LX200Dectoint(dec: String; prec: boolean): integer;
-function LX200Artoint(ar: String; prec: boolean): integer;
-function Artoint(ar: String): integer;
+function Inttodec(de: Integer; prec: Byte): String;
+function IntToAr(ar: Integer; prec: Byte): String;
+function LX200Dectoint(dec: String; prec: boolean): Integer;
+function LX200Artoint(ar: String; prec: boolean): Integer;
+function Artoint(ar: String): Integer;
 function longitudetohr(ar: String): Extended;
 function longitudetodeg(ar: String): Extended;
 function latitudetodeg(ar: String): Extended;
-procedure GoSleepp(SleepSecs: integer);
-function Signo(n: integer): integer;
+procedure GoSleepp(SleepSecs: Integer);
+function Signo(n: Integer): Integer;
 function Signof(f: Double): Double;
-function Signof1(f: Double): integer;
+function Signof1(f: Double): Integer;
 function DoubletoLXdec(de: Double; prec: Byte): string;
 function DoubleToLXAr(ra: Double; prec: Byte): string;
-function LX200AZtoint(az: String; prec: boolean): integer;
+function LX200AZtoint(az: String; prec: boolean): Integer;
 function GetEnvVarValue(const VarName: string): string;
 function check_connection(): boolean;
 procedure Set_date(date_time: tdatetime);
@@ -80,8 +79,8 @@ function Get_RA: Double;
 procedure Pulse_Guide(StrCommand: string);
 function Get_Alt(): Double;
 function Get_Az(): Double;
-function Get_Lat():extended;
-function Get_Long():extended;
+function Get_Lat(): Extended;
+function Get_Long(): Extended;
 procedure Set_TargetDec(value: Double);
 procedure Set_TargetRA(value: Double);
 procedure Abort_Slew();
@@ -89,143 +88,151 @@ procedure Command_Blind(const Command: WideString; Raw: WordBool);
 procedure SyncTo_Coord(RightAscension, Declination: Double); overload;
 procedure SyncTo_Coord(); overload;
 procedure Slew_ToCoor(RightAscension, Declination: Double); overload;
-procedure Slew_ToCoor();overload
-procedure Set_longitude(lon: extended);
-procedure Set_latitude(lat: extended);
-procedure Set_offset(offset:integer);
-function get_alignmode():char;
-Function get_track():integer;
-function get_sideral():double;
-function get_gmtoffset ():integer;
-function UTCNow: TDateTime;
+procedure Slew_ToCoor();
+overload
+procedure Set_longitude(lon: Extended);
+procedure Set_latitude(lat: Extended);
+procedure Set_offset(offset: Integer);
+function get_alignmode(): char;
+Function get_track(): Integer;
+function get_sideral(): Double;
+function get_gmtoffset(): Integer;
+function UTCNow: tdatetime;
+function Local_Sideral_Time(localdatetime: tdatetime;
+  longitude: Double): Double;
 
-  implementation
-  procedure TMyClass.CSClientConnect(Sender: TObject;
-  Socket: TCustomWinSocket);
+implementation
+
+procedure TMyClass.CSClientConnect(Sender: TObject; Socket: TCustomWinSocket);
 begin
- //showmessage('conectado socket');//Form1.Memo1.Lines.Add('Client connected.');
+  // showmessage('conectado socket');//Form1.Memo1.Lines.Add('Client connected.');
 end;
 
 procedure TMyClass.CSClientDisconnect(Sender: TObject;
   Socket: TCustomWinSocket);
 begin
- //showmessage('desconectado socket');
-end;
-procedure  TMyClass.tcperror(Sender: TObject;
-    Socket: TCustomWinSocket; ErrorEvent:  TErrorEvent; var ErrorCode: Integer);
-    begin
-    clientsocket1.active:=false;
-    errorcode:=0;
-    if MessageBox(0,'Connection Lost,Reconnect?',
-   'Error',  MB_YESNO  ) = 6 then
-   begin
-     clientsocket1.active:=true;
-   end;
-
-    end;
-
-function UTCNow: TDateTime;
-var
-   ASystemTime: TSystemTime;
-   UTCnowDateTime: TDateTime;
-begin
-   GetSystemTime(ASystemTime);
-   UTCnowDateTime :=  SystemTimeToDateTime(ASystemTime);
-   Result := UTCnowDateTime;
+  // showmessage('desconectado socket');
 end;
 
-function sendserial(value: string): integer;
-   var count:integer;
+procedure TMyClass.tcperror(Sender: TObject; Socket: TCustomWinSocket;
+  ErrorEvent: TErrorEvent; var ErrorCode: Integer);
 begin
-  result:=0;
-  if ComPortBT_USB.Connected then
+  ClientSocket1.active := false;
+  ErrorCode := 0;
+  if MessageBox(0, 'Connection Lost,Reconnect?', 'Error', MB_YESNO) = 6 then
   begin
-  count:=length(value);
-  result := ComPortBT_USB.writestr(value)
+    ClientSocket1.active := true;
   end;
 
-
-
 end;
-function sendtcp(value: string): integer;
+
+function UTCNow: tdatetime;
+var
+  ASystemTime: TSystemTime;
+  UTCnowDateTime: tdatetime;
 begin
-  if clientsocket1.socket.Connected then
-  result := clientsocket1.socket.SendText(value) else
-   result:=0;
+  GetSystemTime(ASystemTime);
+  UTCnowDateTime := SystemTimeToDateTime(ASystemTime);
+  Result := UTCnowDateTime;
 end;
 
-function recvserial(var value: string; count: integer): integer;
+function sendserial(value: string): Integer;
+var
+  count: Integer;
+begin
+  Result := 0;
+  if ComPortBT_USB.connected then
+  begin
+    count := length(value);
+    Result := ComPortBT_USB.writestr(value)
+  end;
+
+end;
+
+function sendtcp(value: string): Integer;
+begin
+  if ClientSocket1.Socket.connected then
+    Result := ClientSocket1.Socket.SendText(value)
+  else
+    Result := 0;
+end;
+
+function recvserial(var value: string; count: Integer): Integer;
 
 var
   str: string;
   n: cardinal;
 begin
-result:=0;
- if ComPortBT_USB.Connected then
+  Result := 0;
+  if ComPortBT_USB.connected then
   begin
-  value := '                             ';
-  n := ComPortBT_USB.Readstr(value, count);
-  setlength(value, n);
-  result := n;
+    value := '                             ';
+    n := ComPortBT_USB.Readstr(value, count);
+    setlength(value, n);
+    Result := n;
   end;
 end;
 
-function inputcountserial(): integer;
+function inputcountserial(): Integer;
 begin
-inputcountserial:=0;
-    if ComPortBT_USB.Connected then
+  inputcountserial := 0;
+  if ComPortBT_USB.connected then
   begin
-  inputcountserial := ComPortBT_USB.InputCount
+    inputcountserial := ComPortBT_USB.InputCount
   end;
 
 end;
-function inputcounttcp(): integer;
+
+function inputcounttcp(): Integer;
 
 var
-  n: integer;
+  n: Integer;
 begin
   n := 0;
-  n := ClientSocket1.socket.ReceiveLength();
-  result := n
+  n := ClientSocket1.Socket.ReceiveLength();
+  Result := n
 end;
 
 procedure clearbuffSerial(input, output: boolean);
-var str:string;
+var
+  str: string;
 begin
- // ComPortBT_USB.ClearBuffer(input, output)  ;
-if comportbt_usb.Connected and (comportbt_usb.inputcount>0)
- then comportbt_usb.readstr(str,comportbt_usb.inputcount);
+  // ComPortBT_USB.ClearBuffer(input, output)  ;
+  if ComPortBT_USB.connected and (ComPortBT_USB.InputCount > 0) then
+    ComPortBT_USB.Readstr(str, ComPortBT_USB.InputCount);
 
 end;
+
 procedure clearbufftcp(input, output: boolean);
 
 var
   str: string;
 begin
   str := ' ';
-  if (ClientSocket1.socket.ReceiveLength() > 0) and input then
-    str := ClientSocket1.socket.ReceiveText();
+  if (ClientSocket1.Socket.ReceiveLength() > 0) and input then
+    str := ClientSocket1.Socket.ReceiveText();
 
 end;
 
-function recvtcp(var value: string; count: integer): integer;
+function recvtcp(var value: string; count: Integer): Integer;
 
 var
   str: ansistring;
 begin
- result := 0;
-   if  ClientSocket1.active then           begin
-
-  if clientSocket1.socket.ReceiveLength()>0 then
+  Result := 0;
+  if ClientSocket1.active then
   begin
-  value := ClientSocket1.socket.ReceiveText();
-  setlength(value, count);
-   end;
-  result := count;
-   end;
+
+    if ClientSocket1.Socket.ReceiveLength() > 0 then
+    begin
+      value := ClientSocket1.Socket.ReceiveText();
+      setlength(value, count);
+    end;
+    Result := count;
+  end;
 end;
 
-procedure set_interface_mode(mode: integer);
+procedure set_interface_mode(mode: Integer);
 begin
   if mode = 0 then
   begin
@@ -243,64 +250,64 @@ begin
     clearBuff := clearbufftcp;
   end;
 end;
-procedure initserial(port:string;baudrate: tbaudrate);
+
+procedure initserial(port: string; baudrate: tbaudrate);
 begin
-//ComPortBT_USB := TComPort.Create(nil);
-ComPortBT_USB.Port:=port;
-ComPortBT_USB.BaudRate:=baudrate;
-ComPortBT_USB.Events := [];
-ComPortBT_USB.Parity.Bits := prNone;
-ComPortBT_USB.Timeouts.ReadInterval := 100;
-ComPortBT_USB.Timeouts.ReadTotalMultiplier := 1;
-ComPortBT_USB.Timeouts.ReadTotalConstant := 100;
-ComPortBT_USB.Timeouts.WriteTotalMultiplier := 1;
-ComPortBT_USB.Timeouts.WriteTotalConstant := 1000;
-ComPortBT_USB.TriggersOnRxChar := true;
+  // ComPortBT_USB := TComPort.Create(nil);
+  ComPortBT_USB.port := port;
+  ComPortBT_USB.baudrate := baudrate;
+  ComPortBT_USB.Events := [];
+  ComPortBT_USB.Parity.Bits := prNone;
+  ComPortBT_USB.Timeouts.ReadInterval := 100;
+  ComPortBT_USB.Timeouts.ReadTotalMultiplier := 1;
+  ComPortBT_USB.Timeouts.ReadTotalConstant := 100;
+  ComPortBT_USB.Timeouts.WriteTotalMultiplier := 1;
+  ComPortBT_USB.Timeouts.WriteTotalConstant := 1000;
+  ComPortBT_USB.TriggersOnRxChar := true;
 end;
 
-procedure init_tcp(host:string;port:integer);
+procedure init_tcp(host: string; port: Integer);
 begin
-//ClientSocket1 := TClientSocket.Create(nil);
-ClientSocket1.Host := host;
-ClientSocket1.Port :=port;
-//ClientSocket1.active := true;
- ClientSocket1.OnConnect := MyClass.CSClientConnect;
- ClientSocket1.OnDisconnect :=MyClass.CSClientDisconnect;
- clientsocket1.OnError:=MyClass.tcperror;
+  // ClientSocket1 := TClientSocket.Create(nil);
+  ClientSocket1.host := host;
+  ClientSocket1.port := port;
+  // ClientSocket1.active := true;
+  ClientSocket1.OnConnect := MyClass.CSClientConnect;
+  ClientSocket1.OnDisconnect := MyClass.CSClientDisconnect;
+  ClientSocket1.OnError := MyClass.tcperror;
 end;
-
 
 function FormatString(StringIn, DivideAt: String): TStringList;
 
 var
-  Lop, StartAt: integer;
+  Lop, StartAt: Integer;
 
 begin
 
-  result := TStringList.Create;
+  Result := TStringList.Create;
   (* First clear the Starting Point, it should set to 1, as
     the Copy() function picks the first character twice when
     Starting at 0. *)
 
   StartAt := 1;
   (* Now start the loop for every string character: *)
-  for Lop := 1 to Length(StringIn) - 1 do
-    if Copy(StringIn, Lop, Length(DivideAt)) = DivideAt then
+  for Lop := 1 to length(StringIn) - 1 do
+    if Copy(StringIn, Lop, length(DivideAt)) = DivideAt then
     begin
       (* The adding starts here: *)
-      result.Add(Copy(StringIn, StartAt, Lop - StartAt));
+      Result.Add(Copy(StringIn, StartAt, Lop - StartAt));
       (* Redefine StartAt, to the Current point + Length of DivideAt: *)
-      StartAt := Lop + Length(DivideAt);
+      StartAt := Lop + length(DivideAt);
     end (* If the 'DivideAt' variable is found, add the text to the stringlist: *);
-  result.Add(Copy(StringIn, StartAt, Lop - StartAt + 1));
+  Result.Add(Copy(StringIn, StartAt, Lop - StartAt + 1));
 end;
 
 // ----------------------------------------------------------------------------
-function Inttodec(de: integer; prec: Byte): String;
+function Inttodec(de: Integer; prec: Byte): String;
 
 var
-  g, m, s, tmp, sg: integer;
-  sig: Char;
+  g, m, s, tmp, sg: Integer;
+  sig: char;
   destr: Pchar;
 begin
 
@@ -338,10 +345,10 @@ begin
 end;
 
 // ------------------------------------------------------------------------
-function IntToAr(ar: integer; prec: Byte): String;
+function IntToAr(ar: Integer; prec: Byte): String;
 
 var
-  h, m, s, tmp, de: integer;
+  h, m, s, tmp, de: Integer;
   arstr: Pchar;
 begin
   arstr := StrAlloc(100);
@@ -377,7 +384,7 @@ begin
   StrDispose(arstr);
 end;
 
-procedure GoSleepp(SleepSecs: integer);
+procedure GoSleepp(SleepSecs: Integer);
 
 var
   StartValue: Longint;
@@ -387,10 +394,10 @@ begin
     // Aplication.ProcessMessages;
 end;
 
-function LX200Dectoint(dec: String; prec: boolean): integer;
+function LX200Dectoint(dec: String; prec: boolean): Integer;
 
 var
-  temp, Signo: integer;
+  temp, Signo: Integer;
 begin
   if (dec[1] = '-') then
     Signo := -1
@@ -405,10 +412,10 @@ begin
   LX200Dectoint := temp;
 end;
 
-function LX200AZtoint(az: String; prec: boolean): integer;
+function LX200AZtoint(az: String; prec: boolean): Integer;
 
 var
-  temp, Signo: integer;
+  temp, Signo: Integer;
 begin
 
   temp := (((ord(az[1]) - 48) * 100) + (ord(az[2]) - 48) * 10 +
@@ -420,10 +427,10 @@ begin
   LX200AZtoint := temp;
 end;
 
-function LX200Artoint(ar: String; prec: boolean): integer;
+function LX200Artoint(ar: String; prec: boolean): Integer;
 
 var
-  temp: integer;
+  temp: Integer;
 begin
 
   if prec then
@@ -440,10 +447,10 @@ begin
   LX200Artoint := temp;
 end;
 
-function Artoint(ar: String): integer;
+function Artoint(ar: String): Integer;
 
 var
-  temp: integer;
+  temp: Integer;
 begin
 
   temp := 15 * (strtoint(Copy(ar, 1, 2)) * 3600 + strtoint(Copy(ar, 4, 2)) * 60
@@ -454,7 +461,7 @@ end;
 function longitudetohr(ar: String): Extended;
 
 var
-  temp: integer;
+  temp: Integer;
 begin
 
   temp := (strtoint(Copy(ar, 2, 3)) * 3600 + strtoint(Copy(ar, 6, 2)) * 60 +
@@ -465,12 +472,12 @@ end;
 function longitudetodeg(ar: String): Extended;
 
 var
-  temp: integer;
+  temp: Integer;
 begin
 
-  temp := (strtoint(Copy(ar, 2, 3)) * 3600 + strtoint(Copy(ar, 6, 2)) * 60 );
-  //+    strtoint(Copy(ar, 9, 2)));
-   if ar[1] = '-' then
+  temp := (strtoint(Copy(ar, 2, 3)) * 3600 + strtoint(Copy(ar, 6, 2)) * 60);
+  // +    strtoint(Copy(ar, 9, 2)));
+  if ar[1] = '-' then
     temp := -temp;
   longitudetodeg := (temp / (3600.00));
 end;
@@ -478,11 +485,11 @@ end;
 function latitudetodeg(ar: String): Extended;
 
 var
-  temp: integer;
+  temp: Integer;
 begin
 
-  temp := (strtoint(Copy(ar, 2, 2)) * 3600 + strtoint(Copy(ar, 5, 2)) * 60 );
-   // +strtoint(Copy(ar, 8, 2)));
+  temp := (strtoint(Copy(ar, 2, 2)) * 3600 + strtoint(Copy(ar, 5, 2)) * 60);
+  // +strtoint(Copy(ar, 8, 2)));
   if ar[1] = '-' then
     temp := -temp;
   latitudetodeg := (temp / (3600.00));
@@ -524,9 +531,9 @@ end;
 function DoubletoLXdec(de: Double; prec: Byte): string;
 
 var
-  g, m, s, sg: integer;
+  g, m, s, sg: Integer;
   tmp: Double;
-  sig: Char;
+  sig: char;
   destr: Pchar;
 begin
 
@@ -566,7 +573,7 @@ End;
 function DoubleToLXAr(ra: Double; prec: Byte): string;
 
 var
-  h, m, s, de: integer;
+  h, m, s, de: Integer;
   tmp: Double;
   arstr: Pchar;
 begin
@@ -596,30 +603,30 @@ end;
 function GetEnvVarValue(const VarName: string): string;
 
 var
-  BufSize: integer; // buffer size required for value
+  BufSize: Integer; // buffer size required for value
 begin
   // Get required buffer size (inc. terminal #0)
   BufSize := GetEnvironmentVariable(Pchar(VarName), nil, 0);
   if BufSize > 0 then
   begin
     // Read env var value into result string
-    setlength(result, BufSize - 1);
-    GetEnvironmentVariable(Pchar(VarName), Pchar(result), BufSize);
+    setlength(Result, BufSize - 1);
+    GetEnvironmentVariable(Pchar(VarName), Pchar(Result), BufSize);
   end
   else
     // No such environment variable
-    result := '';
+    Result := '';
 end;
 
 function check_connection: boolean;
 
 var
   str: string;
-  n, s, count: integer;
+  n, s, count: Integer;
 
 begin
   s := 0;
-  if (ComPortBT_USB.Connected)  or ( ClientSocket1.active) then
+  if (ComPortBT_USB.connected) or (ClientSocket1.active) then
   begin
     clearBuff(true, false);
     send('#:GD#');
@@ -628,21 +635,22 @@ begin
       sleep(5);
       inc(s);
     end;
-    result := (recv(str, dec_pack) = dec_pack) and (Char(str[dec_pack]) = '#')
+    Result := (recv(str, dec_pack) = dec_pack) and (char(str[dec_pack]) = '#')
 
   end
   else
-    result := false;
+    Result := false;
 end;
-Function get_coords(var focus, count: integer): string;
+
+Function get_coords(var focus, count: Integer): string;
 
 var
   str, coord_str: string;
 
-  n: integer;
+  n: Integer;
 begin
   clearBuff(true, false);
-  send('#:GR#:GD#');
+  send(':GR#:GD#');
   n := 0;
   while (inbuff < coor_pack) and (n < 100) do
   begin
@@ -685,16 +693,20 @@ begin
       count := 8888;
   end;
   // focus := n;
-  result := coord_str;
+  Result := coord_str;
 end;
-Function get_focuspos():integer;
-var temp,n:integer;
-str:string;
+
+Function get_focuspos(): Integer;
+var
+  temp, n: Integer;
+  str: string;
 begin
- n := 0;
-   if (inbuff) > 0 then
-   clearBuff(true, false);
- send(':Fp#');
+  if fullconnect then
+  begin
+    n := 0;
+    if (inbuff) > 0 then
+      clearBuff(true, false);
+    send(':Fp#');
     while (inbuff < 6) and (n < 100) do
     begin
       sleep(20);
@@ -711,44 +723,50 @@ begin
     end
     else
       temp := 0;
-      result:=temp;
- end;
- Function get_focusmoving():integer;
-var temp,n:integer;
-str:string;
-begin
- n := 0;
-   if (inbuff) > 0 then
-   clearBuff(true, false);
- send(':FB#');
-    while (inbuff < 2) and (n < 100) do
-    begin
-      sleep(20);
-      inc(n);
-    end;
-    // count := n;
-    if recv(str, 6) >= 0 then
-    begin
-      str := StringReplace(str, '#', '', [rfReplaceAll]);
-      temp := StrToIntDef(str, 0);
+    Result := temp;
+  end;
+  Result := 0;
+end;
 
-      // LabelFocusCount.caption := StringReplace(str, '#', '',[rfReplaceAll]);
-      // LabelFocusCount.caption := Format('%0.5d', [n]);
-    end
-    else
-      temp := 0;
-      result:=temp;
- end;
-Function get_track():integer;
-var temp,n:integer;
-str:string;
+Function get_focusmoving(): Integer;
+var
+  temp, n: Integer;
+  str: string;
 begin
- if fullconnect then
- begin
- n := 0;
-   if (inbuff) > 0 then
-   clearBuff(true, false);
- send(':Gk#');
+  n := 0;
+  if (inbuff) > 0 then
+    clearBuff(true, false);
+  send(':FB#');
+  while (inbuff < 2) and (n < 100) do
+  begin
+    sleep(20);
+    inc(n);
+  end;
+  // count := n;
+  if recv(str, 6) >= 0 then
+  begin
+    str := StringReplace(str, '#', '', [rfReplaceAll]);
+    temp := StrToIntDef(str, 0);
+
+    // LabelFocusCount.caption := StringReplace(str, '#', '',[rfReplaceAll]);
+    // LabelFocusCount.caption := Format('%0.5d', [n]);
+  end
+  else
+    temp := 0;
+  Result := temp;
+end;
+
+Function get_track(): Integer;
+var
+  temp, n: Integer;
+  str: string;
+begin
+  if fullconnect then
+  begin
+    n := 0;
+    if (inbuff) > 0 then
+      clearBuff(true, false);
+    send(':Gk#');
     while (inbuff < 1) and (n < 100) do
     begin
       sleep(1);
@@ -757,7 +775,7 @@ begin
     // count := n;
     if recv(str, 1) > 0 then
     begin
-     // str := StringReplace(str, '#', '', [rfReplaceAll]);
+      // str := StringReplace(str, '#', '', [rfReplaceAll]);
       temp := StrToIntDef(str, 0);
 
       // LabelFocusCount.caption := StringReplace(str, '#', '',[rfReplaceAll]);
@@ -765,15 +783,17 @@ begin
     end
     else
       temp := 0;
-      result:=temp;
- end;
-  result:=1;
- end;
-Function get_coordstpc(var focus, count: integer): string;
+    Result := temp;
+  end
+  else
+    Result := 0;
+end;
+
+Function get_coordstpc(var focus, count: Integer): string;
 
 var
   str, coord_str: string;
-  n, coo: integer;
+  n, coo: Integer;
 begin
   clearbufftcp(true, false);
   sendtcp('#:GD#');
@@ -800,7 +820,7 @@ begin
   count := inputcounttcp;
   clearbufftcp(true, false);
 
-  sendtcp('#:GR#');
+  sendtcp(':GR#');
   // clientSocket1.socket.SendText(':Fp#');
   // count:= inputcounttcp;
   str := '';
@@ -826,14 +846,14 @@ begin
   else
     n := 8888;
   focus := n;
-  result := coord_str + #10#13 + str;
+  Result := coord_str + #10#13 + str;
 end;
 
 function Get_Dec(): Double;
 
 var
   str: string;
-  n, s: integer;
+  n, s: Integer;
 begin
 
   // if fullconnect then
@@ -849,7 +869,7 @@ begin
       inc(s);
     end;
 
-    If (recv(str, dec_pack) >= dec_pack) and (Char(str[dec_pack]) = '#') then
+    If (recv(str, dec_pack) >= dec_pack) and (char(str[dec_pack]) = '#') then
     begin
       n := LX200Dectoint(str, true);
       clearBuff(true, false);
@@ -857,12 +877,13 @@ begin
 
     end;
   end;
-  result := lastdec;
+  Result := lastdec;
 end;
-function get_sideral:double;
+
+function get_sideral: Double;
 var
   str: string;
-  n, s: integer;
+  n, s: Integer;
 begin
   if fullconnect then
   begin
@@ -881,7 +902,7 @@ begin
 
     end;
   end;
-  result := lastar;
+  Result := lastar;
 
 end;
 
@@ -889,13 +910,13 @@ function Get_RA: Double;
 
 var
   str: string;
-  n, s: integer;
+  n, s: Integer;
 begin
   if fullconnect then
   begin
     s := 0;
     clearBuff(true, false);
-    send('#:GR#');
+    send(':GR#');
     while (inbuff < ra_pack) and (s < 100) do
     begin
       sleep(1);
@@ -908,7 +929,7 @@ begin
 
     end;
   end;
-  result := lastar;
+  Result := lastar;
 
 end;
 
@@ -916,7 +937,7 @@ function Get_Alt(): Double;
 
 var
   str: string;
-  n, s: integer;
+  n, s: Integer;
 begin
   if fullconnect then
   begin
@@ -929,7 +950,7 @@ begin
       inc(s);
     end;
     // sleep(30);
-    If (recv(str, dec_pack) = dec_pack) and (Char(str[dec_pack]) = '#') then
+    If (recv(str, dec_pack) = dec_pack) and (char(str[dec_pack]) = '#') then
     begin
       n := LX200Dectoint(str, true);
       clearBuff(true, false);
@@ -937,7 +958,7 @@ begin
 
     end;
   end;
-  result := lastalt;
+  Result := lastalt;
 end;
 
 function Get_Az(): Double;
@@ -945,7 +966,7 @@ function Get_Az(): Double;
 var
 
   str: string;
-  n, s: integer;
+  n, s: Integer;
 begin
   if fullconnect then
   begin
@@ -958,14 +979,14 @@ begin
       inc(s);
     end;
 
-    If (recv(str, dec_pack) = dec_pack) and (Char(str[dec_pack]) = '#') then
+    If (recv(str, dec_pack) = dec_pack) and (char(str[dec_pack]) = '#') then
     begin
       n := LX200AZtoint(str, true);
       clearBuff(true, false);
       lastaz := (n / (3600.0));
     end;
   end;
-  result := lastaz;
+  Result := lastaz;
 end;
 
 procedure Set_TargetDec(value: Double);
@@ -987,50 +1008,54 @@ begin
   send(':Sr' + DoubleToLXAr(value, 1));
   recv(response, 1);
 end;
-procedure Set_offset(offset:integer);
+
+procedure Set_offset(offset: Integer);
 
 begin
 
-if offset>0 then
-send(':SG-'+inttostr(offset)+'.0#')
-else
-send(':SG+'+inttostr(-offset)+'.0#');
+  if offset > 0 then
+    send(':SG-' + inttostr(offset) + '.0#')
+  else
+    send(':SG+' + inttostr(-offset) + '.0#');
 
 end;
+
 procedure Set_date(date_time: tdatetime);
 var
-lxdate,response:string ;
+  lxdate, response: string;
 
 begin
-     DateTimeToString(lxdate, 'mm/dd/yy#', date_time);
-     send(':SC'+lxdate);
-   //  showmessage(lxdate);
-     recv(response, 50);
+  DateTimeToString(lxdate, 'mm/dd/yy#', date_time);
+  send(':SC' + lxdate);
+  // showmessage(lxdate);
+  recv(response, 50);
 end;
 
 procedure Set_localtime(date_time: tdatetime);
 var
-lxtime,response: string ;
+  lxtime, response: string;
 begin
 
-     DateTimeToString(lxtime, 'hh:nn:ss#', date_time);
-     send(':SL'+lxtime);
-    // showmessage(lxtime);
-     recv(response, 1);
+  DateTimeToString(lxtime, 'hh:nn:ss#', date_time);
+  send(':SL' + lxtime);
+  // showmessage(lxtime);
+  recv(response, 1);
 end;
-procedure Set_latitude(lat:extended) ;
+
+procedure Set_latitude(lat: Extended);
 var
-response: string ;
+  response: string;
 begin
-send(':St'+DoubletoLXdec(lat, 1));
-recv(response, 1);
+  send(':St' + DoubletoLXdec(lat, 1));
+  recv(response, 1);
 end;
-procedure Set_longitude(lon: extended);
+
+procedure Set_longitude(lon: Extended);
 var
-response: string ;
+  response: string;
 begin
-send(':Sg'+DoubletoLXdec(-lon,1 ));
-recv(response, 1);
+  send(':Sg' + DoubletoLXdec(-lon, 1));
+  recv(response, 1);
 end;
 
 procedure Abort_Slew();
@@ -1047,12 +1072,14 @@ procedure Command_Blind(const Command: WideString; Raw: WordBool);
 begin
   send(Command);
 end;
+
 procedure SyncTo_Coord(RightAscension, Declination: Double);
 begin
   Set_TargetDec(Declination);
   Set_TargetRA(RightAscension);
   send(':CM#');
 end;
+
 procedure SyncTo_Coord();
 begin
   send(':CM#');
@@ -1068,15 +1095,14 @@ end;
 procedure Slew_ToCoor();
 begin
   send(':MS#');
-  end;
+end;
 
-
-function Get_Lat():extended;
-    var
+function Get_Lat(): Extended;
+var
 
   str: string;
-  n, s: integer;
-  lat:extended;
+  n, s: Integer;
+  lat: Extended;
 begin
   if fullconnect then
   begin
@@ -1089,21 +1115,22 @@ begin
       inc(s);
     end;
 
-    If (recv(str,lat_pack) = lat_pack) and (Char(str[lat_pack]) = '#') then
+    If (recv(str, lat_pack) = lat_pack) and (char(str[lat_pack]) = '#') then
     begin
       lat := latitudetodeg(str);
       clearBuff(true, false);
-     end;
+    end;
   end;
-  result := lat;
+  Result := lat;
 
 end;
-function Get_Long():extended;
-    var
+
+function Get_Long(): Extended;
+var
 
   str: string;
-  n, s: integer;
-  lon:extended;
+  n, s: Integer;
+  lon: Extended;
 begin
   if fullconnect then
   begin
@@ -1116,29 +1143,31 @@ begin
       inc(s);
     end;
 
-    If (recv(str, long_pack) = long_pack) and (Char(str[long_pack]) = '#') then
+    If (recv(str, long_pack) = long_pack) and (char(str[long_pack]) = '#') then
     begin
       lon := longitudetodeg(str);
       clearBuff(true, false);
-     end;
+    end;
   end;
-  result := -lon;
+  Result := -lon;
 
 end;
-function get_alignmode():char;
-var str:string;
- c :char;
-  n, s: integer;
+
+function get_alignmode(): char;
+var
+  str: string;
+  c: char;
+  n, s: Integer;
 begin
-{clearBuff(true, false);
-  send(#6);
-  if recv(str,1)=1 then
-  result :=str[1]
-  else result:='P' ; }
-   if fullconnect then
+  { clearBuff(true, false);
+    send(#6);
+    if recv(str,1)=1 then
+    result :=str[1]
+    else result:='P' ; }
+  if fullconnect then
   begin
     s := 0;
-    c:='A';
+    c := 'A';
     clearBuff(true, false);
     send(#6);
     while (inbuff < 1) and (s < 100) do
@@ -1147,27 +1176,25 @@ begin
       inc(s);
     end;
 
-    If (recv(str, 1) = 1)  then
+    If (recv(str, 1) = 1) then
     begin
-       c :=str[1];
+      c := str[1];
       clearBuff(true, false);
-     end;
+    end;
   end;
-  result := c;
-
-
-
-
+  Result := c;
 
 end;
-  function get_gmtoffset():integer;
-var str:string;
 
-  n, s: integer;
+function get_gmtoffset(): Integer;
+var
+  str: string;
+
+  n, s: Integer;
 begin
-   if fullconnect then
+  if fullconnect then
   begin
-    n:=50;
+    n := 50;
     s := 0;
     clearBuff(true, false);
     send(':GG#');
@@ -1177,35 +1204,46 @@ begin
       inc(s);
     end;
 
-    If (recv(str, 4) =4 )  then
+    If (recv(str, 4) = 4) then
     begin
 
-       n:=-strtoint(StringReplace(str, '#','',[rfReplaceAll]));
+      n := -strtoint(StringReplace(str, '#', '', [rfReplaceAll]));
       clearBuff(true, false);
-     end;
+    end;
   end;
-  result := n;
+  Result := n;
 
+end;
+
+function Local_Sideral_Time(localdatetime: tdatetime;
+  longitude: Double): Double;
+var
+  d, lst: Double;
+begin
+  d := (DateTimeToJulianDate(localdatetime)) - 2451545.0;
+  lst := 18.697374558 + 24.06570982441908 * d;
+  Local_Sideral_Time := 1.0 * (trunc(lst) MOD 24) + frac(lst) - longitude /
+    15.0; // result hours
 end;
 
 procedure sconnect;
 
 begin
 
-  Connected := OpenCom(sport, '\\.\' + 'COM5', '115200', 'N', '8', '1', '100',
+  connected := OpenCom(Sport, '\\.\' + 'COM5', '115200', 'N', '8', '1', '100',
     '100', false);
-    if connected then  showmessage('connected');
+  if connected then
+    showmessage('connected');
 
-//  fh := sport;
-   //PurgeBuffer(sport);
+  // fh := sport;
+  // PurgeBuffer(sport);
 
 end;
+
 initialization
+
 ComPortBT_USB := TComPort.Create(nil);
-ClientSocket1 := Tclientsocket.create(nil);
-//sconnect;
-
-
-
+ClientSocket1 := TClientSocket.Create(nil);
+// sconnect;
 
 end.

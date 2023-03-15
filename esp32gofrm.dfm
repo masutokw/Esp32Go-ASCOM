@@ -3,7 +3,7 @@ object Esp32frm: TEsp32frm
   Top = 0
   AutoSize = True
   Caption = 'Esp32go'
-  ClientHeight = 273
+  ClientHeight = 272
   ClientWidth = 337
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -1219,7 +1219,7 @@ object Esp32frm: TEsp32frm
   end
   object GroupBoxserial: TGroupBox
     Left = 120
-    Top = 1
+    Top = 0
     Width = 217
     Height = 272
     Caption = 'Config'
@@ -1232,8 +1232,8 @@ object Esp32frm: TEsp32frm
       Height = 13
     end
     object Labelmsg: TLabel
-      Left = 170
-      Top = 112
+      Left = 8
+      Top = 232
       Width = 19
       Height = 13
       Caption = 'msg'
@@ -1644,8 +1644,8 @@ object Esp32frm: TEsp32frm
   object Timer1: TTimer
     Enabled = False
     OnTimer = Timer1Timer
-    Left = 229
-    Top = 137
+    Left = 291
+    Top = 91
   end
   object adpInstanceControl1: TadpInstanceControl
     Enabled = True

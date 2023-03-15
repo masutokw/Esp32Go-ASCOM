@@ -14,11 +14,11 @@ const
 
 type
   TAxisRates = class(TAutoObject, IAxisRates)
-    protected
+  protected
     function Get_Count: Integer; safecall;
     function Get_Item(Index: Integer): IRate; safecall;
-  //  function GetEnumerator: IEnumVARIANT; safecall;
-   function Get_NewEnum: IEnumVARIANT; safecall;
+    // function GetEnumerator: IEnumVARIANT; safecall;
+    function Get_NewEnum: IEnumVARIANT; safecall;
   end;
 
 type
@@ -92,11 +92,13 @@ type
     procedure CommandBlind(const Command: WideString; Raw: WordBool); safecall;
     procedure CommandBool(const Command: WideString; Raw: Integer); safecall;
     procedure CommandString(const Command: WideString; Raw: WordBool); safecall;
-    procedure DestinationSideOfPier(RightAscension,Declination: Double); safecall;
+    procedure DestinationSideOfPier(RightAscension,
+      Declination: Double); safecall;
     procedure FindHome; safecall;
     procedure MoveAxis(Axis: TelescopeAxes; Rate: Double); safecall;
     procedure Park; safecall;
-    procedure PulseGuide(Direction: GuideDirections;Duration: Integer); safecall;
+    procedure PulseGuide(Direction: GuideDirections;
+      Duration: Integer); safecall;
     procedure Set_Connected(Value: WordBool); safecall;
     procedure Set_DeclinationRate(Value: Double); safecall;
     procedure Set_DoesRefraction(Value: WordBool); safecall;
@@ -118,7 +120,8 @@ type
     procedure SlewToAltAz(Azimut, Altitude: Double); safecall;
     procedure SlewToAltAzAsync(Azimut, Altitude: Double); safecall;
     procedure SlewToCoordinates(RightAscension, Declination: Double); safecall;
-    procedure SlewToCoordinatesAsync(RightAscension,Declination: Double); safecall;
+    procedure SlewToCoordinatesAsync(RightAscension,
+      Declination: Double); safecall;
     procedure SlewToTarget; safecall;
     procedure SlewToTargetAsync; safecall;
     procedure SyncToAltAz(Azimuth, Altitude: Double); safecall;
@@ -134,10 +137,9 @@ uses ComServ, sysutils;
 
 var
 
-
   ProfileObject, ASCOMexcept: Variant;
   trackr: TTrackingRates;
-  itrackr:ItrackingRates;
+  itrackr: ITrackingRates;
   ratearr: array [0 .. 3] of DriveRates;
 
   lastguideTimestamp: longint;
@@ -145,27 +147,32 @@ var
 function TTelescope.CanMoveAxis(Axis: TelescopeAxes): WordBool;
 
 begin
-         case axis of
-      axisprimary:result := false;
-      axissecondary:result := false;
-      axistertiary:result := false;
-      end;
+  case Axis of
+    axisprimary:
+      result := false;
+    axissecondary:
+      result := false;
+    axistertiary:
+      result := false;
+  end;
 
 end;
 
 function TTelescope.Get_AlignmentMode: AlignmentModes;
-var al:char;
-alm:  AlignmentModes;
+var
+  al: char;
+  alm: AlignmentModes;
 begin
 
-al:= get_alignmode();
-case al of
-'P':  alm:=algPolar;
-'L':  alm:=algPolar;
-'A':  alm:=algAltAz;
-end;
-
-
+  al := get_alignmode();
+  case al of
+    'P':
+      alm := algPolar;
+    'L':
+      alm := algPolar;
+    'A':
+      alm := algAltAz;
+  end;
 
 end;
 
@@ -176,7 +183,7 @@ end;
 
 function TTelescope.Get_ApertureArea: Double;
 begin
-      result:=100;
+  result := 100;
 end;
 
 function TTelescope.Get_ApertureDiameter: Double;
@@ -191,13 +198,14 @@ end;
 
 function TTelescope.Get_AtPark: WordBool;
 begin
-    result := false
+  result := false
 end;
 
 function TTelescope.Get_Azimuth: Double;
-var d:double;
+var
+  d: Double;
 begin
-result:=Get_Az;
+  result := Get_Az;
 
 end;
 
@@ -284,7 +292,7 @@ end;
 function TTelescope.Get_Connected: WordBool;
 begin
   // if  not check_connection() then
-   //ShowMessage('Comport not responding');
+  // ShowMessage('Comport not responding');
 
   result := true;
 end;
@@ -297,12 +305,12 @@ end;
 
 function TTelescope.Get_DeclinationRate: Double;
 begin
-       result:=1;
+  result := 1;
 end;
 
 function TTelescope.Get_Description: WideString;
 begin
-    result:='ESP32wifi controller';
+  result := 'ESP32wifi controller';
 end;
 
 function TTelescope.Get_DoesRefraction: WordBool;
@@ -312,17 +320,17 @@ end;
 
 function TTelescope.Get_DriverInfo: WideString;
 begin
-    result:='ESP32wifi controller info';
+  result := 'ESP32wifi controller info';
 end;
 
 function TTelescope.Get_DriverVersion: WideString;
 begin
-     result:='1.0';
+  result := '1.0';
 end;
 
 function TTelescope.Get_EquatorialSystem: EquatorialCoordinateType;
 begin
-     result:=equLocalTopocentric;
+  result := equLocalTopocentric;
 end;
 
 function TTelescope.Get_FocalLength: Double;
@@ -346,7 +354,7 @@ end;
 
 function TTelescope.Get_InterfaceVersion: SYSINT;
 begin
-    result:=3;
+  result := 3;
 end;
 
 function TTelescope.Get_IsPulseGuiding: WordBool;
@@ -368,18 +376,18 @@ end;
 
 function TTelescope.Get_RightAscensionRate: Double;
 begin
-   result:=1;
+  result := 1;
 end;
 
 function TTelescope.Get_SideOfPier: PierSide;
 begin
-  //// Send(':GW#');
-  result:=pierwest;
+  /// / Send(':GW#');
+  result := pierwest;
 end;
 
 function TTelescope.Get_SiderealTime: Double;
 begin
-    result:= get_sideral();
+  result := get_sideral();
 end;
 
 function TTelescope.Get_SiteElevation: Double;
@@ -389,12 +397,12 @@ end;
 
 function TTelescope.Get_SiteLatitude: Double;
 begin
-  result:=get_lat();
+  result := get_lat();
 end;
 
 function TTelescope.Get_SiteLongitude: Double;
 begin
-     result:=get_long();
+  result := get_long();
 end;
 
 function TTelescope.Get_Slewing: WordBool;
@@ -418,26 +426,28 @@ begin
 end;
 
 function TTelescope.Get_Tracking: WordBool;
-var str:string ;
+var
+  str: string;
 begin
-result:= (get_track()=1);
+  result := (get_track() = 1);
 end;
 
 function TTelescope.Get_TrackingRate: DriveRates;
 begin
-  result :=driveSidereal;
+  result := driveSidereal;
 end;
 
 function TTelescope.Get_TrackingRates: ITrackingRates;
-var tracking_Rates: ITrackingRates;
+var
+  tracking_Rates: ITrackingRates;
 begin
-   // showmessage(inttostr(trackr.Get_Item(1)))  ;
-  //  trackr:=ttrackingrates.Create;
-    itrackr:=trackr.Create();
-    trackr.lrates.add();
-    // trackr.lrates.Items[1]
-    result:= itrackr ;
-    showmessage('gettr');
+  // showmessage(inttostr(trackr.Get_Item(1)))  ;
+  // trackr:=ttrackingrates.Create;
+  itrackr := trackr.Create();
+  trackr.lrates.add();
+  // trackr.lrates.Items[1]
+  result := itrackr;
+  showmessage('gettr');
 end;
 
 function TTelescope.Get_UTCDate: TDateTime;
@@ -482,33 +492,39 @@ end;
 
 procedure TTelescope.MoveAxis(Axis: TelescopeAxes; Rate: Double);
 begin
- //showmessage(floattostr(rate));
- if rate=0 then
- begin
-  case axis of
-      axisprimary:send('#:Qw#');
-      axissecondary:send('#:Qn#');
+  // showmessage(floattostr(rate));
+  if Rate = 0 then
+  begin
+    case Axis of
+      axisprimary:
+        send('#:Qw#');
+      axissecondary:
+        send('#:Qn#');
 
-      end;
- exit;
- end;
+    end;
+    exit;
+  end;
 
-if rate >0 then
-begin
-      case axis of
-      axisprimary:send('#:Me#');
-      axissecondary:send('#:Mn#');
-    //  axistertiary:send('#:Q#');
-      end;
+  if Rate > 0 then
+  begin
+    case Axis of
+      axisprimary:
+        send('#:Me#');
+      axissecondary:
+        send('#:Mn#');
+      // axistertiary:send('#:Q#');
+    end;
 
-end
-else
+  end
+  else
 
- case axis of
-      axisprimary:send('#:Mw#');
-      axissecondary:send('#:Ms#');
-     // axistertiary:send('#');
-      end;
+    case Axis of
+      axisprimary:
+        send('#:Mw#');
+      axissecondary:
+        send('#:Ms#');
+      // axistertiary:send('#');
+    end;
 
 end;
 
@@ -541,9 +557,6 @@ end;
 
 procedure TTelescope.Set_Connected(Value: WordBool);
 begin
-
-
-
 
 end;
 
@@ -584,12 +597,12 @@ end;
 
 procedure TTelescope.Set_SiteLatitude(Value: Double);
 begin
-   Set_latitude(value);
+  Set_latitude(Value);
 end;
 
 procedure TTelescope.Set_SiteLongitude(Value: Double);
 begin
-   Set_longitude(value);
+  Set_longitude(Value);
 end;
 
 procedure TTelescope.Set_SlewSettleTime(Value: SYSINT);
@@ -621,21 +634,23 @@ end;
 
 procedure TTelescope.Set_Tracking(Value: WordBool);
 begin
-  if value then send(':Q#') else
-  send(':Mh#');
+  if Value then
+    send(':Q#')
+  else
+    send(':Mh#');
 end;
 
 procedure TTelescope.Set_TrackingRate(Value: DriveRates);
 begin
-       showmessage('sett');
+  showmessage('sett');
 end;
 
 procedure TTelescope.Set_UTCDate(Value: TDateTime);
 begin
-value :=value+gmtoffset/24.0;
-    Set_localtime(value);
-    sleep(20);
-    Set_date(value);
+  Value := Value + gmtoffset / 24.0;
+  Set_localtime(Value);
+  sleep(20);
+  Set_date(Value);
 end;
 
 procedure TTelescope.SetPark;
@@ -645,7 +660,7 @@ end;
 
 procedure TTelescope.SetUpDialog;
 begin
-   ShowMessage('Setup done');
+  showmessage('Setup done');
 end;
 
 procedure TTelescope.SlewToAltAz(Azimut, Altitude: Double);
@@ -716,11 +731,11 @@ begin
 
   if (not ProfileObject.IsRegistered(DRIVER_ID)) then
   begin
-    ShowMessage('Self-Registering: ASCOM ' + DRIVER_ID);
+    showmessage('Self-Registering: ASCOM ' + DRIVER_ID);
     ProfileObject.Register(DRIVER_ID, 'Esp32go Driver');
 
   end;
-   //ASCOMExcept:=CreateOLEObject('ASCOM.exceptions');
+  // ASCOMExcept:=CreateOLEObject('ASCOM.exceptions');
 
 end;
 
@@ -753,18 +768,17 @@ begin
   result := 4;
 end;
 
-function TaxisRates.Get_Item(Index: Integer): iRate; safecall;
-var r:irate;
- r1:rate;
+function TAxisRates.Get_Item(Index: Integer): IRate; safecall;
+var
+  r: IRate;
+  r1: Rate;
 begin
-       r:=r1;
+  r := r1;
 
-
-
-       result:=r;
+  result := r;
 end;
 
-function Taxisrates.Get_newEnum: IEnumVARIANT;
+function TAxisRates.Get_NewEnum: IEnumVARIANT;
 begin
   result := self as IEnumVARIANT;
 end;
@@ -773,7 +787,7 @@ initialization
 
 CoInitializeex(nil, COINIT_APARTMENTTHREADED);
 RegisterThySelf;
- TAutoObjectFactory.Create(ComServer, TAxisRates, Class_AxisRates,
+TAutoObjectFactory.Create(ComServer, TAxisRates, Class_AxisRates,
   cimultiInstance, tmApartment);
 
 TAutoObjectFactory.Create(ComServer, TTrackingRates, Class_TrackingRates,
