@@ -7,19 +7,13 @@ uses
   System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
   Vcl.StdCtrls, Vcl.ExtCtrls, CPort, esp32goi, shared, inifiles,
   EnhEdits, CPortCtl, adpInstanceControl, System.Win.ScktComp, serial,
-  Joystickex, JvComponentBase, JvHidControllerClass, HidUsage;
+  Joystickex, JvComponentBase, JvHidControllerClass, HidUsage, Vcl.ComCtrls,
+  System.Bluetooth, bluetools, tcptools, serialtools, lxutils, Vcl.NumberBox;
 
 type
   TEsp32frm = class(TForm)
     Timer1: TTimer;
     RadioGroup1: TRadioGroup;
-    GroupBoxFocus: TGroupBox;
-    ButtonIn: TButton;
-    ButtonOut: TButton;
-    ButtonM1: TButton;
-    ButtonM2: TButton;
-    ButtonM3: TButton;
-    ButtonM4: TButton;
     GroupBox1: TGroupBox;
     ButtonNE: TButton;
     Button_N: TButton;
@@ -32,45 +26,115 @@ type
     GroupBox2: TGroupBox;
     ButtonH: TButton;
     ButtonPark: TButton;
-    LabelFocusCount: TLabel;
     adpInstanceControl1: TadpInstanceControl;
-    GroupBoxserial: TGroupBox;
-    GroupBox4: TGroupBox;
-    ComComboBox2: TComComboBox;
-    ComComboBox1: TComComboBox;
-    Label1: TLabel;
-    Label3: TLabel;
-    GroupBox3: TGroupBox;
-    EditAddr: TEdit;
-    LongEditPort: TLongEdit;
-    ButtonSave: TButton;
-    ButtonRecon: TButton;
-    RadioGroupcom: TRadioGroup;
-    Buttondisconnect: TButton;
     Label5: TLabel;
     Button1: TButton;
-    labelAR: TLabel;
-    Label2: TLabel;
     Joystickex1: TJoystickex;
-    CheckBoxJoyf: TCheckBox;
-    CheckBox2: TCheckBox;
-    ButtonHome: TButton;
-    Labelmsg: TLabel;
     JvHidDeviceController: TJvHidDeviceController;
-    lstHidDevices: TListBox;
-    GroupBox5: TGroupBox;
-    ButtonSync: TButton;
-    Buttonstar1: TButton;
-    Buttonstar2: TButton;
+    PageControl1: TPageControl;
+    Tabconfig: TTabSheet;
+    cb: TTabSheet;
+    ButtonHome: TButton;
     groupboxgeo: TGroupBox;
+    Label4: TLabel;
     FloatEditLong: TFloatEdit;
     FloatEditLat: TFloatEdit;
     Button3: TButton;
     Button2: TButton;
-    Buttontakireset: TButton;
     LongEditgmt: TLongEdit;
-    Label4: TLabel;
     Buttongetgeo: TButton;
+    lstHidDevices: TListBox;
+    Label2: TLabel;
+    Align: TTabSheet;
+    GroupBox4: TGroupBox;
+    ComComboBox2: TComComboBox;
+    ComComboBox1: TComComboBox;
+    GroupBox6: TGroupBox;
+    cbxpaired: TComboBox;
+    RadioGroupcom: TRadioGroup;
+    GroupBox3: TGroupBox;
+    EditAddr: TEdit;
+    LongEditPort: TLongEdit;
+    GroupBox7: TGroupBox;
+    ButtonRecon: TButton;
+    Buttondisconnect: TButton;
+    ButtonSave: TButton;
+    Buttonbtconnect: TButton;
+    CheckAlt: TCheckBox;
+    CheckBox1: TCheckBox;
+    TabSheet1: TTabSheet;
+    GroupBox9: TGroupBox;
+    GroupBox10: TGroupBox;
+    LabelAltitude: TLabel;
+    LabelAzimuth: TLabel;
+    StaticText18: TStaticText;
+    StaticText33: TStaticText;
+    LabelAR1: TLabel;
+    LabelDec1: TLabel;
+    GroupBox8: TGroupBox;
+    labelAR: TLabel;
+    GroupBoxFocus: TGroupBox;
+    LabelFocusCount: TLabel;
+    ButtonIn: TButton;
+    ButtonOut: TButton;
+    ButtonM1: TButton;
+    ButtonM2: TButton;
+    ButtonM3: TButton;
+    ButtonM4: TButton;
+    CheckBoxJoyf: TCheckBox;
+    CheckBox2: TCheckBox;
+    GroupBox5: TGroupBox;
+    ButtonSync: TButton;
+    Buttonstar1: TButton;
+    Buttonstar2: TButton;
+    Buttontakireset: TButton;
+    Label1: TLabel;
+    Labelmsg: TLabel;
+    GroupBox11: TGroupBox;
+    Chkflip: TCheckBox;
+    btnw: TButton;
+    btnE: TButton;
+    Label3: TLabel;
+    NumberBoxcountaz: TNumberBox;
+    NumberBoxcountalt: TNumberBox;
+    NumberBoxspgaz: TNumberBox;
+    NumberBoxspgalt: TNumberBox;
+    NumberBoxspcaz: TNumberBox;
+    NumberBoxspcalt: TNumberBox;
+    NumberBoxspfaz: TNumberBox;
+    NumberBoxspfalt: TNumberBox;
+    NumberBoxspsaz: TNumberBox;
+    NumberBoxspsalt: TNumberBox;
+    NumberBoxrampaz: TNumberBox;
+    NumberBoxrampalt: TNumberBox;
+    NumberBoxbackpaz: TNumberBox;
+    NumberBoxbackpalt: TNumberBox;
+    StaticText1: TStaticText;
+    StaticText2: TStaticText;
+    StaticText3: TStaticText;
+    StaticText4: TStaticText;
+    StaticText5: TStaticText;
+    ComboBoxEqmode: TComboBox;
+    ComboBoxtrack: TComboBox;
+    NumberBoxpresc: TNumberBox;
+    StaticText7: TStaticText;
+    CheckBoxbackaz: TCheckBox;
+    CheckBoxbackalt: TCheckBox;
+    CheckBoxflip: TCheckBox;
+    CheckBoxinvaz: TCheckBox;
+    CheckBoxinvalt: TCheckBox;
+    NumberBoxgmtoff: TNumberBox;
+    StaticText6: TStaticText;
+    NumberBoxlong: TNumberBox;
+    NumberBoxlat: TNumberBox;
+    NumberBoxFmax: TNumberBox;
+    NBxVolt: TNumberBox;
+    NumberBoxFlow: TNumberBox;
+    NumberBoxfsp: TNumberBox;
+    StaticText8: TStaticText;
+    Memo1: TMemo;
+    save: TButton;
+    Button4: TButton;
 
     procedure FormCreate(Sender: TObject);
     procedure Button_NMouseDown(Sender: TObject; Button: TMouseButton;
@@ -127,6 +191,13 @@ type
     procedure Buttonstar2Click(Sender: TObject);
     procedure ButtontakiresetClick(Sender: TObject);
     procedure ButtongetgeoClick(Sender: TObject);
+    procedure CheckBox1Click(Sender: TObject);
+    procedure ButtonbtconnectClick(Sender: TObject);
+    procedure ChkflipClick(Sender: TObject);
+    procedure btnwClick(Sender: TObject);
+    procedure btnEClick(Sender: TObject);
+    procedure saveClick(Sender: TObject);
+    procedure Button4Click(Sender: TObject);
 
   private
     { Private declarations }
@@ -171,41 +242,77 @@ begin
   n := 0;
   imode := RadioGroupcom.ItemIndex;
   set_interface_mode(imode);
-  if imode = 0 then
-  begin
-    ComPortBT_USB.Connected := false;
-    ComPortBT_USB.Port := ComComboBox1.Text;
-    ComPortBT_USB.baudrate := tbaudrate(ComComboBox2.ItemIndex);;
-    ComComboBox1.ComPort := ComPortBT_USB;
-    ComPortBT_USB.Connected := true;
-    if ComPortBT_USB.Connected then
-    begin
 
-      fullconnect := check_connection();
-      Timer1.Enabled := fullconnect;
-      if not(fullconnect) then
-        showmessage('No response');
-    end;
-  end
-  else
-  begin
-    if ClientSocket1.active then
-      ClientSocket1.active := false;
+  case imode of
 
-    ClientSocket1.Host := EditAddr.Text;
-    ClientSocket1.Port := LongEditPort.Value;
-    ClientSocket1.active := true;
-    repeat
-      sleep(100);
-      inc(n);
-      Application.ProcessMessages;
-    until (ClientSocket1.active) or (n >= 50);
-    /// ClientSocket1.active:=(n<5);
-    fullconnect := check_connection();
-    if not(fullconnect) then
-      showmessage('No response');
-    Timer1.Enabled := fullconnect;
+    0:
+      begin
+        ComPortBT_USB.Connected := false;
+        ComPortBT_USB.Port := ComComboBox1.Text;
+        ComPortBT_USB.baudrate := tbaudrate(ComComboBox2.ItemIndex);;
+        ComComboBox1.ComPort := ComPortBT_USB;
+        ComPortBT_USB.Connected := true;
+        if ComPortBT_USB.Connected then
+        begin
+          fullconnect := check_connection();
+          Timer1.Enabled := fullconnect;
+          if not(fullconnect) then
+            showmessage('No response');
+        end;
+      end;
+    1:
+      begin
+        if ClientSocket1.Connected then
+          ClientSocket1.disconnect;
+
+        ClientSocket1.Host := EditAddr.Text;
+        ClientSocket1.Port := LongEditPort.Value;
+        ClientSocket1.connect;
+
+        fullconnect := check_connection();
+        if not(fullconnect) then
+          showmessage('No response');
+        Timer1.Enabled := fullconnect;
+      end;
+    2:
+      begin
+        if checkBtSock then
+          exit;
+
+        if connectbt(cbxpaired.Text) then
+        begin
+          Label2.caption := 'BlueTooth connected.';
+          fullconnect := check_connection();
+          if not(fullconnect) then
+            showmessage('No response');
+          Timer1.Enabled := fullconnect;
+        end
+        else
+          Label2.caption := 'Bluetooth not connected.'
+      end;
+
   end;
+  if fullconnect then
+  begin
+   if not get_pierside() then label3.caption:='East';
+   if  get_flip() then chkflip.Checked:=true;
+  end;
+end;
+
+procedure TEsp32frm.btnEClick(Sender: TObject);
+begin
+ setpierside(false);
+ if not get_pierside then label3.Caption:='East';
+    labelar1.Font.Color:=Cllime;
+    labeldec1.Font.Color:=Cllime;
+end;
+
+procedure TEsp32frm.btnwClick(Sender: TObject);
+begin
+setpierside(true);
+  if get_pierside then label3.Caption:='West';
+     labelar1.Font.Color:=Clred;
+    labeldec1.Font.Color:=Clred;
 end;
 
 procedure TEsp32frm.Button2Click(Sender: TObject);
@@ -235,6 +342,104 @@ begin
 
 end;
 
+procedure TEsp32frm.Button4Click(Sender: TObject);
+var
+  cstring,str: string;
+  lines: Tstringlist;
+begin
+  try
+    lines := Tstringlist.Create();
+  finally
+
+  end;
+  memo1.Lines.Clear;
+  if (ClientSocket1.Connected) or (ComPortBT_USB.Connected) or (checkBtSock) then
+
+  begin
+    //Memo1.lines.Clear;
+    Timer1.Enabled := false;
+    send(':cA#');
+
+      if imode=2 then
+      begin
+       recv(cstring,100);
+        //  cstring := stringreplace(cstring,#10,
+        //  '', [rfReplaceAll]);
+        //   cstring := stringreplace(cstring,#13,
+        //  '', [rfReplaceAll]);
+        lines.Text:=cstring;
+       end
+        else
+      repeat
+
+        case imode of
+        1:
+        begin
+        readvln(cstring,#13#10);
+        cstring := stringreplace(cstring, #13#10,
+          '', [rfReplaceAll])
+        end;
+        0:
+          begin
+          readvln(cstring,#10);
+          cstring := stringreplace(cstring,#10,
+          '', [rfReplaceAll]);
+           cstring := stringreplace(cstring,#13,
+          '', [rfReplaceAll]);
+          end;
+        end;
+
+           cstring := stringreplace(cstring, '.',
+          '' + FormatSettings.DecimalSeparator, [rfReplaceAll]);
+        lines.add(cstring);
+        memo1.lines.add(cstring);
+      until inbuff=0;
+
+      Label1.caption := inttostr(lines.Count)+lines[0];
+    Timer1.Enabled := true;
+    if lines.Count >28 then
+    begin
+
+      NumberBoxcountaz.Text := lines[0];
+      Numberboxcountalt.Text := lines[1];
+      NumberBoxspgaz.Text := lines[2];
+      NumberBoxspcaz.Text := lines[3];
+      NumberBoxspfaz.Text := lines[4];
+      NumberBoxspsaz.Text := lines[5];
+      NumberBoxspgalt.Text := lines[6];
+      NumberBoxspcalt.Text := lines[7];
+      NumberBoxspfalt.Text := lines[8];
+      NumberBoxspsalt.Text := lines[9];
+      NumberBoxpresc.Text := lines[10];
+      NumberBoxlong.Text := lines[11];
+      NumberBoxlat.Text := lines[12];
+      NumberBoxgmtoff.Text := lines[13];
+      NumberBoxFMax.Text := lines[14];
+      NumberBoxFLow.Text := lines[15];
+      NumberBoxFsp.Text := lines[16];
+      NumberBoxrampaz.Text := lines[17];
+      NumberBoxrampalt.Text := lines[18];
+      NumberBoxbackpaz.Text := lines[19];
+      NumberBoxbackpalt.Text := lines[20];
+      ComboBoxEqmode.ItemIndex := lines[21].tointeger;
+      ComboBoxtrack.ItemIndex := strtoint(lines[22]);
+      CheckBoxflip.Checked := lines[23] = '1';
+      CheckBoxinvaz.Checked := lines[24] = '1';
+      CheckBoxinvAlt.Checked := lines[25] = '1';
+      NBXvolt.Text:=lines[26];
+      CheckBoxbackaz.Checked := lines[27] = '1';
+      CheckBoxbackalt.Checked := lines[28] = '1';
+    end;
+    lines.Destroy
+  end;
+end;
+
+procedure TEsp32frm.ButtonbtconnectClick(Sender: TObject);
+
+begin
+  devlist(cbxpaired.Items);
+end;
+
 procedure TEsp32frm.ButtonSyncClick(Sender: TObject);
 begin
   send(':a0#');
@@ -247,16 +452,29 @@ end;
 
 procedure TEsp32frm.Buttonconfig(Sender: TObject);
 begin
-  GroupBoxserial.Visible := not GroupBoxserial.Visible;
+  PageControl1.Visible := not PageControl1.Visible;
+  GroupBox8.Visible := not PageControl1.Visible;
 end;
 
 procedure TEsp32frm.ButtondisconnectMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  if (imode = 1) then
-    ClientSocket1.active := false
-  else
-    ComPortBT_USB.Connected := false;
+  case imode of
+
+    1:
+      ClientSocket1.disconnect();
+    0:
+      ComPortBT_USB.Connected := false;
+    2:
+      begin
+        if checkBtSock then
+        begin
+          FreeBtSock;
+          Label2.caption := 'bt not connected'
+        end;
+      end;
+  end;
+
   fullconnect := false;
 end;
 
@@ -266,8 +484,10 @@ var
 begin
   FloatEditLong.Value := get_long();
   FloatEditLat.Value := get_lat();
+  longi := FloatEditLong.Value;
+  lat := FloatEditLat.Value;
   offset := get_gmtoffset();
-  if offset <> 50 then
+  if offset < 50 then
     LongEditgmt.Value := offset;
 end;
 
@@ -333,32 +553,32 @@ begin
 
   case RadioGroup1.ItemIndex of
     0:
-      send('#:RS#');
+      send(':RS#');
     1:
-      send('#:RM#');
+      send(':RM#');
     2:
-      send('#:RC#');
+      send(':RC#');
     3:
-      send('#:RG#');
+      send(':RG#');
   end;
 
   case TButton(Sender).tag of
     0:
-      send('#:Mn#');
+      send(':Mn#');
     1:
-      send('#:Ms#');
+      send(':Ms#');
     2:
-      send('#:Me#');
+      send(':Me#');
     3:
-      send('#:Mw#');
+      send(':Mw#');
     4:
-      send('#:Mn#:Me#');
+      send(':Mn#:Me#');
     5:
-      send('#:Ms#:Me#');
+      send(':Ms#:Me#');
     6:
-      send('#:Ms#:Mw#');
+      send(':Ms#:Mw#');
     7:
-      send('#:Mn#:Mw#');
+      send(':Mn#:Mw#');
 
   end;
 
@@ -371,16 +591,31 @@ begin
 
   case TButton(Sender).tag of
     0:
-      send('#:Qn#');
+      send(':Qn#');
     1:
-      send('#:Qs#');
+      send(':Qs#');
     2:
-      send('#:Qe#');
+      send(':Qe#');
     3:
-      send('#:Qw#');
+      send(':Qw#');
     4, 5, 6, 7:
-      send('#:Qn#:Qw#');
+      send(':Qn#:Qw#');
   end;
+
+end;
+
+procedure TEsp32frm.CheckBox1Click(Sender: TObject);
+begin
+  if CheckBox1.Checked then
+    send(':Qw#')
+  else
+    send(':Mh#');
+
+end;
+
+procedure TEsp32frm.ChkflipClick(Sender: TObject);
+begin
+setautoflip(chkflip.Checked);
 
 end;
 
@@ -388,6 +623,7 @@ procedure TEsp32frm.FormCreate(Sender: TObject);
 var
   n: Integer;
 begin
+  pagecontrol1.ActivePage:= TabSheet1 ;
   n := 0;
   Joystickex1.EnableJoyStick;
   s_inipath := ExtractFilePath(Application.EXEName);
@@ -396,23 +632,24 @@ begin
   ReadSettings;
   imode := RadioGroupcom.ItemIndex;
   set_interface_mode(imode);
+
   initserial(ComComboBox1.Text, tbaudrate(ComComboBox2.ItemIndex));
   init_tcp(EditAddr.Text, LongEditPort.Value);
+
   ComComboBox1.ComPort := ComPortBT_USB;
-  if imode = 0 then
-    ComPortBT_USB.Connected := true
-  else
-  begin
-    ClientSocket1.active := true;
-    repeat
-      sleep(100);
-      inc(n);
-      Application.ProcessMessages;
-    until (ClientSocket1.active) or (n >= 50);
-    ClientSocket1.active := (n < 50)
+  case imode of
+
+    0:
+      ComPortBT_USB.Connected := true;
+    1:
+      ClientSocket1.connect;
+    2:
+      connectbt(cbxpaired.Text);
+
   end;
 
-  if (ClientSocket1.active) or ComPortBT_USB.Connected then
+  if (ClientSocket1.Connected) or (ComPortBT_USB.Connected) or (checkBtSock)
+  then
   begin
 
     fullconnect := check_connection();
@@ -421,15 +658,28 @@ begin
     if fullconnect then
       Timer1.Enabled := true;
   end;
+  if fullconnect then
+  begin
+    CheckBox1.Checked := (get_track() = 1);
+    CheckAlt.Checked := get_alignmode() = 'A';
+    if not get_pierside() then
+    begin
+    label3.caption:='East';
+    labelar1.Font.Color:=Cllime;
+    labeldec1.Font.Color:=Cllime;
+    end;
+     if  get_flip() then chkflip.Checked:=true;
+  end;
 
 end;
 
 procedure TEsp32frm.FormDestroy(Sender: TObject);
 begin
-  if ClientSocket1.active = true then
-    ClientSocket1.active := false;
+  if ClientSocket1.Connected = true then
+    ClientSocket1.disconnect;
   if ComPortBT_USB.Connected then
     ComPortBT_USB.Connected := false;
+   FreeBtSock;
 
 end;
 
@@ -507,13 +757,15 @@ end;
 procedure TEsp32frm.Joystickex1Button5_Change(Sender: TObject; pressed: Boolean;
   XPos, YPos: Integer);
 begin
-  RadioGroup1.ItemIndex := 1;
+  CheckBox1.Checked := true;
+  send(':Mh');
 end;
 
 procedure TEsp32frm.Joystickex1Button6_Change(Sender: TObject; pressed: Boolean;
   XPos, YPos: Integer);
 begin
-  RadioGroup1.ItemIndex := 1;
+  CheckBox1.Checked := false;
+  send(':Qw#');
 end;
 
 procedure TEsp32frm.Joystickex1JoyMove(Sender: TObject; XPos, YPos: Integer;
@@ -542,10 +794,8 @@ begin
       case XPos of
         0:
           send('#:Me#');
-
         1:
           send('#:Qw#');
-
         2:
           send('#:Mw#');
       end;
@@ -556,7 +806,6 @@ begin
       case YPos of
         0:
           send('#:Mn#');
-
         1:
           send('#:Qn#');
         2:
@@ -602,7 +851,7 @@ begin
   // If this device is a joystick then set its OnData property to read  its input
   name := HidDev.ProductName;
   // IF trim(HidDev.ProductName) = 'Generic  USB  Joystick ' then
-  IF HidDev.Attributes.VendorID = $790 then
+  IF (trim(HidDev.ProductName) = 'Gamepad') then
   // if  HidDev.LinkCollectionNodes[Idx].LinkUsage= HID_USAGE_GENERIC_GAMEPAD
 
   begin
@@ -629,7 +878,7 @@ begin
     lstHidDevices.Items.Objects[count] := nil;
   end;
   // Clear the listbox
-  lstHidDevices.Items.clear;
+  lstHidDevices.Items.Clear;
   // Get a list of connected HID items
   JvHidDeviceController.Enumerate;
 end;
@@ -658,10 +907,10 @@ procedure TEsp32frm.ReadJoysticks(HidDev: TJvHidDevice; ReportID: Byte;
 var
   Xaxis, Yaxis, Btn, cur, trackbnt, n: Integer;
 begin
-  Labelmsg.caption := '';
-  for n := 0 to Size do
+  { Labelmsg.caption := '';
+    for n := 0 to Size do
     Labelmsg.caption := Labelmsg.caption + ' ' +
-      inttohex(Cardinal(Pbyte(Data)[n]), 2);
+    inttohex(Cardinal(Pbyte(Data)[n]), 2); }
   // Check the X and Y axis
   Xaxis := Cardinal(Pbyte(Data)[3]);
   Yaxis := Cardinal(Pbyte(Data)[1]);
@@ -737,20 +986,52 @@ end;
 
 procedure TEsp32frm.Timer1Timer(Sender: TObject);
 var
-  str: string;
+  str, coors, strsideral: string;
   focus, count: Integer;
-
+  png: Cardinal;
 begin
-  if (ClientSocket1.active and (imode = 1)) or
-    ((imode = 0) and ComPortBT_USB.Connected) then
+
+  if (ClientSocket1.Connected and (imode = 1)) or
+    ((imode = 0) and ComPortBT_USB.Connected) or ((imode = 2) and checkBtSock)
+  then
   begin
-    labelAR.caption := get_coords(focus, count);
+    png := gettickCount();
+    // labelAR.caption := get_coords(focus, count);
+    coors := get_coords(focus, count);
+    if coors.Length > 40 then
+    begin
+      labelAR.caption := coors;
+    end;
+
+
+    LabelAR1.caption := DoubletoLXAR(ra, 0);
+
+    LabelDec1.caption := DoubletoLXdec(dec, 0);
+    // labelAR.caption := inttostr(count);
     LabelFocusCount.caption := Format('%0.5d', [focus]);
-    if imode = 1 then
-      Label5.caption := 'TCP'
-    else
-      Label5.caption := 'BT/USB';
-    Label5.caption := Label5.caption + ' ' + inttostr(count);
+    if CheckAlt.Checked then
+    begin
+      // az := get_az();
+      // alt := get_alt();
+
+      LabelAzimuth.caption := DoubletoLXdec(az, 0);
+
+      LabelAltitude.caption := DoubletoLXdec(alt, 0);
+    end;
+    case imode of
+
+      0:
+        Label5.caption := 'USB';
+      1:
+        Label5.caption := 'TCP';
+      2:
+        Label5.caption := 'BT';
+    end;
+    Label5.caption := Label5.caption + ' ' +
+    inttostr(gettickCount() - png)+ ' '+
+    inttostr(inbuff());
+    if inbuff>0 then clearbuff(true,false) ;
+
     Label5.Font.Color := cllime;
   end
 
@@ -760,10 +1041,15 @@ begin
 
     Label5.caption := 'DisConnected';
   end;
-
+  datetimetostring(strsideral, 'hh:nn:ss', Local_Sideral_Time(UTCnow(),
+    -FloatEditLong.Value) / 24.0);
   Labelmsg.caption := 'Local:' + timetostr(UTCnow() + (gmtoffset / 24.0)) +
-    #13#10 + 'GMT: ' + timetostr(UTCnow()); // +'  '+
-  // timetostr( Local_Sideral_Time( UTCnow(),0)/24.0);
+    #13#10 + 'GMT: ' + timetostr(UTCnow()) + #13#10 + 'Sid:' + strsideral;
+
+  if (Joystickex1.ButtonSt = 16) then
+    CheckBox1.Checked := true;
+  if (Joystickex1.ButtonSt = 32) then
+    CheckBox1.Checked := false;
 end;
 
 procedure TEsp32frm.ReadSettings;
@@ -781,9 +1067,76 @@ begin
     FloatEditLat.Value := readfloat('GEO', 'lat', 36.7);
     FloatEditLong.Value := readfloat('GEO', 'long', -4.12);
     LongEditgmt.Value := ReadInteger('GEO', 'offset', 1);
+    cbxpaired.Text := ReadString('Bluetooth', 'device', 'esp32go');
     gmtoffset := LongEditgmt.Value;
+    longi := FloatEditLong.Value;
+    lat := FloatEditLat.Value;
   end;
 end;
+
+procedure TEsp32frm.saveClick(Sender: TObject);
+var
+  s: string;
+  I: Integer;
+  lines: Tstringlist;
+  bytes: Tbytes;
+begin
+  try
+    lines := Tstringlist.Create();
+  finally
+
+  end;
+  if (ClientSocket1.Connected) or (ComPortBT_USB.Connected) or (checkBtSock) then
+  begin
+
+    lines.Add(NumberBoxcountaz.Text);
+    lines.Add(Numberboxcountalt.Text);
+    lines.Add(NumberBoxspgaz.Text);
+    lines.Add(NumberBoxspcaz.Text);
+    lines.Add(NumberBoxspfaz.Text);
+    lines.Add(NumberBoxspsaz.Text);
+    lines.Add(NumberBoxspgalt.Text);
+    lines.Add(NumberBoxspcalt.Text);
+    lines.Add(NumberBoxspfalt.Text);
+    lines.Add(NumberBoxspsalt.Text);
+    lines.Add(NumberBoxpresc.Text);
+    lines.Add(NumberBoxlong.Text);
+    lines.Add(NumberBoxlat.Text);
+    lines.Add(NumberBoxgmtoff.Text);
+    lines.Add(NumberBoxFMax.Text);
+    lines.Add(NumberBoxFLow.Text);
+    lines.Add(NumberBoxFsp.Text);
+    lines.Add(NumberBoxrampaz.Text);
+    lines.Add(NumberBoxrampalt.Text);
+    lines.Add(NumberBoxbackpaz.Text);
+    lines.Add(NumberBoxbackpalt.Text);
+    lines.Add(inttostr(ComboBoxEqmode.ItemIndex));
+    lines.Add(inttostr(ComboBoxtrack.ItemIndex));
+    lines.Add(CheckBoxflip.Checked.tointeger.ToString);
+    lines.Add(CheckBoxinvaz.Checked.tointeger.ToString);
+    lines.Add(CheckBoxinvAlt.Checked.tointeger.ToString);
+    lines.Add(NBXvolt.Text);
+    lines.Add(CheckBoxbackaz.Checked.tointeger.ToString);
+    lines.Add(CheckBoxbackalt.Checked.tointeger.ToString);
+    //Label17.Text := inttostr(lines.Count);
+    memo1.Lines.Clear;
+    if lines.Count = 29 then
+    begin
+      s := ':cs';
+      for I := 0 to 28 do
+        s := s + lines[I] + #13#10;
+
+      s := s + '#';
+      s := stringreplace(s, FormatSettings.DecimalSeparator, '.',
+        [rfReplaceAll]);
+      memo1.Lines.Add(s);
+      send(s);
+    end;
+ end;
+
+  lines.Destroy;
+end;
+
 
 procedure TEsp32frm.WriteSettings;
 var
@@ -800,6 +1153,7 @@ begin
     writefloat('GEO', 'lat', FloatEditLat.Value);
     writefloat('GEO', 'long', FloatEditLong.Value);
     writefloat('GEO', 'offset', LongEditgmt.Value);
+    writeString('Bluetooth', 'device', cbxpaired.Text);
   end;
 end;
 

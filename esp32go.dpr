@@ -8,7 +8,11 @@ uses
   Vcl.Themes,
   Vcl.Styles,
   shared in 'shared.pas',
-  Esp32gofi in 'Esp32gofi.pas';
+  Esp32gofi in 'Esp32gofi.pas',
+  bluetools in 'bluetools.pas',
+  tcptools in 'tcptools.pas',
+  Serialtools in 'Serialtools.pas',
+  LXUtils in 'LXUtils.pas';
 
 {$R *.TLB}
 

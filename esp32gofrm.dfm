@@ -3,8 +3,8 @@ object Esp32frm: TEsp32frm
   Top = 0
   AutoSize = True
   Caption = 'Esp32go'
-  ClientHeight = 272
-  ClientWidth = 337
+  ClientHeight = 297
+  ClientWidth = 410
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -1043,17 +1043,194 @@ object Esp32frm: TEsp32frm
     0000000000000000000000000000000000000000000000000000000000000000
     0000000000000000000000000000000000000000000000000000000000000000
     00000000000000000000000000000000000000000000000000000000}
-  OldCreateOrder = False
   Position = poOwnerFormCenter
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  PixelsPerInch = 96
   TextHeight = 13
-  object RadioGroup1: TRadioGroup
-    Left = 0
-    Top = 139
+  object GroupBox1: TGroupBox
+    Left = 3
+    Top = 4
     Width = 120
-    Height = 37
+    Height = 136
+    Margins.Bottom = 0
+    Caption = 'Telescope'
+    TabOrder = 1
+    object ButtonNE: TButton
+      Tag = 4
+      Left = 8
+      Top = 29
+      Width = 30
+      Height = 30
+      Caption = 'NE'
+      TabOrder = 0
+      OnMouseDown = Button_NMouseDown
+      OnMouseUp = Button_NMouseUp
+    end
+    object Button_N: TButton
+      Left = 40
+      Top = 26
+      Width = 35
+      Height = 35
+      Caption = 'N'
+      TabOrder = 1
+      OnMouseDown = Button_NMouseDown
+      OnMouseUp = Button_NMouseUp
+    end
+    object ButtonNW: TButton
+      Tag = 7
+      Left = 77
+      Top = 29
+      Width = 30
+      Height = 30
+      Caption = 'NW'
+      TabOrder = 2
+      OnMouseDown = Button_NMouseDown
+      OnMouseUp = Button_NMouseUp
+    end
+    object Button_W: TButton
+      Tag = 3
+      Left = 74
+      Top = 60
+      Width = 35
+      Height = 35
+      Caption = 'W'
+      TabOrder = 3
+      OnMouseDown = Button_NMouseDown
+      OnMouseUp = Button_NMouseUp
+    end
+    object ButtonSW: TButton
+      Tag = 6
+      Left = 77
+      Top = 97
+      Width = 30
+      Height = 30
+      Caption = 'SW'
+      TabOrder = 4
+      OnMouseDown = Button_NMouseDown
+      OnMouseUp = Button_NMouseUp
+    end
+    object Button_S: TButton
+      Tag = 1
+      Left = 40
+      Top = 95
+      Width = 35
+      Height = 35
+      Caption = 'S'
+      TabOrder = 5
+      OnMouseDown = Button_NMouseDown
+      OnMouseUp = Button_NMouseUp
+    end
+    object ButtonSE: TButton
+      Tag = 5
+      Left = 8
+      Top = 97
+      Width = 30
+      Height = 30
+      Caption = 'SE'
+      TabOrder = 6
+      OnMouseDown = Button_NMouseDown
+      OnMouseUp = Button_NMouseUp
+    end
+    object Button_E: TButton
+      Tag = 2
+      Left = 5
+      Top = 61
+      Width = 35
+      Height = 35
+      Caption = 'E'
+      TabOrder = 7
+      OnMouseDown = Button_NMouseDown
+      OnMouseUp = Button_NMouseUp
+    end
+    object ButtonH: TButton
+      Left = 42
+      Top = 64
+      Width = 29
+      Height = 15
+      Caption = 'H'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -9
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 8
+      OnClick = ButtonHClick
+    end
+    object ButtonPark: TButton
+      Left = 42
+      Top = 79
+      Width = 29
+      Height = 15
+      Caption = 'Park'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -9
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 9
+      OnClick = ButtonParkClick
+    end
+    object CheckBox1: TCheckBox
+      Left = 12
+      Top = 11
+      Width = 50
+      Height = 17
+      Caption = 'track'
+      TabOrder = 11
+      OnClick = CheckBox1Click
+    end
+    object CheckAlt: TCheckBox
+      Left = 58
+      Top = 11
+      Width = 56
+      Height = 17
+      Caption = 'Alt-Az'
+      TabOrder = 10
+    end
+  end
+  object GroupBox2: TGroupBox
+    Left = 3
+    Top = 169
+    Width = 120
+    Height = 38
+    Caption = 'Status'
+    TabOrder = 2
+    object Label5: TLabel
+      Left = 7
+      Top = 17
+      Width = 67
+      Height = 15
+      AutoSize = False
+      Caption = 'dis'
+      Color = clBlack
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clRed
+      Font.Height = -12
+      Font.Name = 'Arial'
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+      Transparent = False
+      WordWrap = True
+      StyleElements = [seBorder]
+    end
+    object Button1: TButton
+      Left = 77
+      Top = 12
+      Width = 37
+      Height = 20
+      Caption = 'Config'
+      TabOrder = 0
+      OnClick = Buttonconfig
+    end
+  end
+  object RadioGroup1: TRadioGroup
+    Left = 3
+    Top = 143
+    Width = 120
+    Height = 29
     Margins.Top = 0
     Caption = 'Speed'
     Columns = 4
@@ -1073,585 +1250,1026 @@ object Esp32frm: TEsp32frm
     ParentFont = False
     TabOrder = 0
   end
-  object GroupBox1: TGroupBox
-    Left = 0
+  object PageControl1: TPageControl
+    Left = 129
     Top = 0
+    Width = 281
+    Height = 207
+    ActivePage = Align
+    TabOrder = 3
+    Visible = False
+    object TabSheet1: TTabSheet
+      Caption = 'Control'
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Arial'
+      Font.Style = []
+      ImageIndex = 3
+      ParentFont = False
+      object Labelmsg: TLabel
+        Left = 174
+        Top = 67
+        Width = 20
+        Height = 14
+        Caption = 'msg'
+      end
+      object GroupBox9: TGroupBox
+        Left = -4
+        Top = -3
+        Width = 156
+        Height = 74
+        Caption = 'Position'
+        TabOrder = 0
+        object LabelDec1: TLabel
+          AlignWithMargins = True
+          Left = 46
+          Top = 46
+          Width = 102
+          Height = 28
+          Hint = 'Declination'
+          ParentCustomHint = False
+          Alignment = taRightJustify
+          AutoSize = False
+          Caption = '+00'#186'00'#39'00'#39#39
+          Color = clBlack
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clRed
+          Font.Height = -19
+          Font.Name = 'Arial'
+          Font.Style = [fsBold]
+          GlowSize = 60
+          ParentColor = False
+          ParentFont = False
+          Transparent = False
+          StyleElements = [seBorder]
+        end
+        object LabelAR1: TLabel
+          AlignWithMargins = True
+          Left = 8
+          Top = 15
+          Width = 140
+          Height = 28
+          Hint = 'Right Ascension'
+          Alignment = taRightJustify
+          AutoSize = False
+          Caption = '00h00m00s.10'
+          Color = clBlack
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clRed
+          Font.Height = -19
+          Font.Name = 'Arial'
+          Font.Style = [fsBold]
+          GlowSize = 60
+          ParentColor = False
+          ParentFont = False
+          Transparent = False
+          StyleElements = [seBorder]
+        end
+      end
+      object GroupBox10: TGroupBox
+        Left = 150
+        Top = -3
+        Width = 124
+        Height = 67
+        Caption = 'Local Coordinates'
+        TabOrder = 1
+        object LabelAltitude: TLabel
+          Left = 44
+          Top = 41
+          Width = 77
+          Height = 19
+          Hint = 'Altitude'
+          Alignment = taRightJustify
+          AutoSize = False
+          Caption = '+00'#176'00"00'#39
+          Color = clBlack
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clTeal
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = [fsBold]
+          ParentColor = False
+          ParentFont = False
+          Transparent = False
+          StyleElements = []
+        end
+        object LabelAzimuth: TLabel
+          Left = 44
+          Top = 16
+          Width = 76
+          Height = 19
+          Hint = 'Azimuth'
+          Alignment = taRightJustify
+          AutoSize = False
+          BiDiMode = bdLeftToRight
+          Caption = '000'#186'00"00'#39
+          Color = clBlack
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clTeal
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = [fsBold]
+          ParentBiDiMode = False
+          ParentColor = False
+          ParentFont = False
+          Transparent = False
+          StyleElements = []
+        end
+        object StaticText18: TStaticText
+          Left = 3
+          Top = 42
+          Width = 43
+          Height = 18
+          Caption = 'Altitude:'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 0
+        end
+        object StaticText33: TStaticText
+          Left = 3
+          Top = 17
+          Width = 43
+          Height = 18
+          Caption = 'Azimuth'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 1
+        end
+      end
+      object GroupBoxFocus: TGroupBox
+        Left = -4
+        Top = 113
+        Width = 176
+        Height = 63
+        Caption = 'Focuser'
+        TabOrder = 2
+        object LabelFocusCount: TLabel
+          Tag = 1
+          Left = 58
+          Top = 14
+          Width = 61
+          Height = 19
+          Alignment = taRightJustify
+          AutoSize = False
+          Caption = '0'
+          Color = clBlack
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clAqua
+          Font.Height = -12
+          Font.Name = 'Arial'
+          Font.Style = [fsBold]
+          ParentColor = False
+          ParentFont = False
+          Transparent = False
+          StyleElements = []
+          OnDblClick = LabelFocusCountDblClick
+        end
+        object ButtonIn: TButton
+          Tag = 1
+          Left = 6
+          Top = 13
+          Width = 25
+          Height = 20
+          Caption = 'In'
+          TabOrder = 0
+          OnMouseDown = ButtonInMouseDown
+          OnMouseUp = ButtonInMouseUp
+        end
+        object ButtonOut: TButton
+          Left = 33
+          Top = 13
+          Width = 25
+          Height = 20
+          Caption = 'Out'
+          TabOrder = 1
+          OnMouseDown = ButtonInMouseDown
+          OnMouseUp = ButtonInMouseUp
+        end
+        object ButtonM1: TButton
+          Left = 7
+          Top = 38
+          Width = 25
+          Height = 20
+          Caption = 'M1'
+          TabOrder = 2
+          OnClick = ButtonM1Click
+        end
+        object ButtonM2: TButton
+          Left = 36
+          Top = 38
+          Width = 25
+          Height = 20
+          Caption = 'M2'
+          TabOrder = 3
+          OnClick = ButtonM2Click
+        end
+        object ButtonM3: TButton
+          Left = 65
+          Top = 38
+          Width = 25
+          Height = 20
+          Caption = 'M3'
+          TabOrder = 4
+          OnClick = ButtonM3Click
+        end
+        object ButtonM4: TButton
+          Left = 94
+          Top = 38
+          Width = 25
+          Height = 20
+          Caption = 'M4'
+          TabOrder = 5
+        end
+        object CheckBoxJoyf: TCheckBox
+          Left = 125
+          Top = 18
+          Width = 47
+          Height = 17
+          Caption = 'Focus'
+          TabOrder = 6
+        end
+        object CheckBox2: TCheckBox
+          Left = 125
+          Top = 41
+          Width = 45
+          Height = 17
+          Caption = 'Fast'
+          TabOrder = 7
+        end
+      end
+      object GroupBox5: TGroupBox
+        Left = -4
+        Top = 70
+        Width = 169
+        Height = 44
+        Caption = 'Align'
+        TabOrder = 3
+        object ButtonSync: TButton
+          Left = 86
+          Top = 16
+          Width = 36
+          Height = 20
+          Caption = 'Sync'
+          TabOrder = 0
+          OnClick = ButtonSyncClick
+        end
+        object Buttonstar1: TButton
+          Left = 6
+          Top = 16
+          Width = 36
+          Height = 20
+          Caption = 'Star 1'
+          TabOrder = 1
+          OnClick = Buttonstar1Click
+        end
+        object Buttonstar2: TButton
+          Left = 46
+          Top = 16
+          Width = 36
+          Height = 20
+          Caption = 'Star 2'
+          TabOrder = 2
+          OnClick = Buttonstar2Click
+        end
+        object Buttontakireset: TButton
+          Left = 124
+          Top = 16
+          Width = 36
+          Height = 20
+          Caption = 'Reset'
+          TabOrder = 3
+          OnClick = ButtontakiresetClick
+        end
+      end
+      object GroupBox11: TGroupBox
+        Left = 174
+        Top = 108
+        Width = 99
+        Height = 69
+        Caption = 'mount'
+        TabOrder = 4
+        object Label3: TLabel
+          Left = 50
+          Top = 19
+          Width = 25
+          Height = 14
+          Caption = 'West'
+        end
+        object Chkflip: TCheckBox
+          Left = 4
+          Top = 18
+          Width = 40
+          Height = 15
+          Caption = 'Flip'
+          TabOrder = 0
+          OnClick = ChkflipClick
+        end
+        object btnw: TButton
+          Left = 4
+          Top = 39
+          Width = 33
+          Height = 25
+          Caption = 'West'
+          TabOrder = 1
+          OnClick = btnwClick
+        end
+        object btnE: TButton
+          Left = 50
+          Top = 39
+          Width = 33
+          Height = 25
+          Caption = 'East'
+          TabOrder = 2
+          OnClick = btnEClick
+        end
+      end
+    end
+    object Tabconfig: TTabSheet
+      Caption = 'Settings'
+      object Label2: TLabel
+        Left = 143
+        Top = 103
+        Width = 31
+        Height = 13
+        Caption = 'Label2'
+      end
+      object ButtonHome: TButton
+        Left = 7
+        Top = 59
+        Width = 65
+        Height = 20
+        Caption = 'Reset home'
+        TabOrder = 0
+        OnClick = ButtonHomeClick
+      end
+      object groupboxgeo: TGroupBox
+        Left = 0
+        Top = 0
+        Width = 210
+        Height = 57
+        Caption = 'Geo/time'
+        TabOrder = 1
+        object Label4: TLabel
+          Left = 180
+          Top = 35
+          Width = 21
+          Height = 13
+          Caption = 'GMT'
+        end
+        object FloatEditLong: TFloatEdit
+          Left = 3
+          Top = 11
+          Width = 80
+          Height = 21
+          Hint = '-360..360'
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 0
+          Value = -4.200000000000000000
+          Decimals = 4
+          MinValue = -360.000000000000000000
+          MaxValue = 360.000000000000000000
+          Digits = 7
+        end
+        object FloatEditLat: TFloatEdit
+          Left = 3
+          Top = 34
+          Width = 81
+          Height = 21
+          Hint = '-90..90'
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 1
+          Value = 36.700000000000000000
+          Decimals = 4
+          MinValue = -90.000000000000000000
+          MaxValue = 90.000000000000000000
+          Digits = 7
+        end
+        object Button3: TButton
+          Left = 89
+          Top = 12
+          Width = 52
+          Height = 21
+          Caption = 'Set Geo'
+          TabOrder = 2
+          OnClick = Button3Click
+        end
+        object Button2: TButton
+          Left = 144
+          Top = 12
+          Width = 52
+          Height = 21
+          Caption = 'Set Time'
+          TabOrder = 3
+          OnClick = Button2Click
+        end
+        object LongEditgmt: TLongEdit
+          Left = 146
+          Top = 33
+          Width = 28
+          Height = 19
+          Hint = '-13..13'
+          Ctl3D = False
+          ParentCtl3D = False
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 4
+          Value = 0
+          MinValue = -13
+          MaxValue = 13
+        end
+        object Buttongetgeo: TButton
+          Left = 90
+          Top = 33
+          Width = 50
+          Height = 21
+          Caption = 'Get Geo'
+          TabOrder = 5
+          OnClick = ButtongetgeoClick
+        end
+      end
+    end
+    object cb: TTabSheet
+      Caption = 'Connection'
+      ImageIndex = 1
+      object lstHidDevices: TListBox
+        Left = 209
+        Top = 196
+        Width = 61
+        Height = 27
+        ItemHeight = 13
+        TabOrder = 0
+        Visible = False
+      end
+      object GroupBox4: TGroupBox
+        Left = -1
+        Top = 0
+        Width = 137
+        Height = 38
+        Caption = 'Serial'
+        TabOrder = 1
+        object ComComboBox2: TComComboBox
+          Left = 72
+          Top = 14
+          Width = 60
+          Height = 21
+          ComProperty = cpBaudRate
+          Text = '115200'
+          Style = csDropDownList
+          ItemIndex = 13
+          TabOrder = 0
+        end
+        object ComComboBox1: TComComboBox
+          Left = 7
+          Top = 14
+          Width = 63
+          Height = 21
+          ComProperty = cpPort
+          Text = 'CNCA0'
+          Style = csDropDownList
+          ItemIndex = 0
+          TabOrder = 1
+        end
+      end
+      object GroupBox6: TGroupBox
+        Left = 137
+        Top = 0
+        Width = 136
+        Height = 38
+        Caption = 'BlueTooth'
+        TabOrder = 2
+        object cbxpaired: TComboBox
+          Left = 3
+          Top = 14
+          Width = 125
+          Height = 21
+          TabOrder = 0
+          Text = 'cbxpaired'
+        end
+      end
+      object RadioGroupcom: TRadioGroup
+        Left = 123
+        Top = 34
+        Width = 149
+        Height = 39
+        Caption = 'Interface'
+        Columns = 3
+        ItemIndex = 0
+        Items.Strings = (
+          'Serial'
+          'TCP'
+          'Blue')
+        TabOrder = 3
+      end
+      object GroupBox3: TGroupBox
+        Left = 5
+        Top = 37
+        Width = 119
+        Height = 40
+        Caption = 'IP Settings'
+        TabOrder = 4
+        object EditAddr: TEdit
+          Left = 0
+          Top = 15
+          Width = 72
+          Height = 19
+          Ctl3D = False
+          ParentCtl3D = False
+          TabOrder = 0
+          Text = '192.168.1.14'
+        end
+        object LongEditPort: TLongEdit
+          Left = 74
+          Top = 15
+          Width = 40
+          Height = 19
+          Hint = '0..100000'
+          Ctl3D = False
+          ParentCtl3D = False
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 1
+          Value = 10001
+          MaxValue = 100000
+        end
+      end
+      object GroupBox7: TGroupBox
+        Left = 3
+        Top = 71
+        Width = 264
+        Height = 41
+        Caption = 'Control'
+        TabOrder = 5
+        object Label1: TLabel
+          Left = 230
+          Top = 18
+          Width = 31
+          Height = 13
+          Caption = 'Label1'
+          WordWrap = True
+        end
+        object ButtonRecon: TButton
+          Left = 3
+          Top = 15
+          Width = 51
+          Height = 20
+          Caption = 'Connect'
+          TabOrder = 0
+          OnClick = ButtonReconClick
+        end
+        object Buttondisconnect: TButton
+          Left = 53
+          Top = 15
+          Width = 60
+          Height = 20
+          Caption = 'Disconnect'
+          TabOrder = 1
+          OnMouseDown = ButtondisconnectMouseDown
+        end
+        object ButtonSave: TButton
+          Left = 112
+          Top = 15
+          Width = 48
+          Height = 20
+          Caption = 'Save'
+          TabOrder = 2
+          OnClick = ButtonSaveClick
+        end
+        object Buttonbtconnect: TButton
+          Left = 166
+          Top = 13
+          Width = 55
+          Height = 25
+          Caption = 'Paired'
+          TabOrder = 3
+          OnClick = ButtonbtconnectClick
+        end
+      end
+      object Memo1: TMemo
+        Left = 3
+        Top = 118
+        Width = 259
+        Height = 53
+        Lines.Strings = (
+          'Memo1')
+        TabOrder = 6
+      end
+    end
+    object Align: TTabSheet
+      Caption = 'Align'
+      ImageIndex = 2
+      object NumberBoxcountaz: TNumberBox
+        Left = 6
+        Top = 9
+        Width = 62
+        Height = 21
+        Alignment = taRightJustify
+        Decimal = 0
+        MinValue = 100.000000000000000000
+        MaxValue = 20000000.000000000000000000
+        TabOrder = 0
+        Value = 4000000.000000000000000000
+      end
+      object NumberBoxcountalt: TNumberBox
+        Left = 74
+        Top = 9
+        Width = 62
+        Height = 21
+        Alignment = taRightJustify
+        Decimal = 0
+        MinValue = 100.000000000000000000
+        MaxValue = 20000000.000000000000000000
+        TabOrder = 1
+        Value = 4000000.000000000000000000
+      end
+      object NumberBoxspgaz: TNumberBox
+        Left = 33
+        Top = 29
+        Width = 35
+        Height = 21
+        Alignment = taRightJustify
+        Mode = nbmFloat
+        TabOrder = 2
+        Value = 0.500000000000000000
+      end
+      object NumberBoxspgalt: TNumberBox
+        Left = 74
+        Top = 29
+        Width = 35
+        Height = 21
+        Alignment = taRightJustify
+        Mode = nbmFloat
+        TabOrder = 3
+        Value = 0.500000000000000000
+      end
+      object NumberBoxspcaz: TNumberBox
+        Left = 33
+        Top = 50
+        Width = 35
+        Height = 21
+        Alignment = taRightJustify
+        TabOrder = 4
+        Value = 8.000000000000000000
+      end
+      object NumberBoxspcalt: TNumberBox
+        Left = 74
+        Top = 50
+        Width = 35
+        Height = 21
+        Alignment = taRightJustify
+        TabOrder = 5
+        Value = 8.000000000000000000
+      end
+      object NumberBoxspfaz: TNumberBox
+        Left = 33
+        Top = 71
+        Width = 35
+        Height = 21
+        Alignment = taRightJustify
+        TabOrder = 6
+        Value = 64.000000000000000000
+      end
+      object NumberBoxspfalt: TNumberBox
+        Left = 74
+        Top = 72
+        Width = 35
+        Height = 21
+        Alignment = taRightJustify
+        TabOrder = 7
+        Value = 64.000000000000000000
+      end
+      object NumberBoxspsaz: TNumberBox
+        Left = 33
+        Top = 92
+        Width = 35
+        Height = 21
+        Alignment = taRightJustify
+        TabOrder = 8
+        Value = 200.000000000000000000
+      end
+      object NumberBoxspsalt: TNumberBox
+        Left = 74
+        Top = 93
+        Width = 35
+        Height = 21
+        Alignment = taRightJustify
+        TabOrder = 9
+        Value = 200.000000000000000000
+      end
+      object NumberBoxrampaz: TNumberBox
+        Left = 33
+        Top = 114
+        Width = 35
+        Height = 21
+        Alignment = taRightJustify
+        TabOrder = 10
+        Value = 400.000000000000000000
+      end
+      object NumberBoxrampalt: TNumberBox
+        Left = 74
+        Top = 114
+        Width = 35
+        Height = 21
+        Alignment = taRightJustify
+        TabOrder = 11
+        Value = 400.000000000000000000
+      end
+      object NumberBoxbackpaz: TNumberBox
+        Left = 33
+        Top = 134
+        Width = 35
+        Height = 21
+        Alignment = taRightJustify
+        TabOrder = 12
+        Value = 8.000000000000000000
+      end
+      object NumberBoxbackpalt: TNumberBox
+        Left = 74
+        Top = 134
+        Width = 35
+        Height = 21
+        Alignment = taRightJustify
+        TabOrder = 13
+        Value = 8.000000000000000000
+      end
+      object StaticText1: TStaticText
+        Left = 0
+        Top = 32
+        Width = 31
+        Height = 17
+        Caption = 'Guide'
+        TabOrder = 14
+      end
+      object StaticText2: TStaticText
+        Left = 0
+        Top = 53
+        Width = 37
+        Height = 17
+        Caption = 'Center'
+        TabOrder = 15
+      end
+      object StaticText3: TStaticText
+        Left = 0
+        Top = 75
+        Width = 24
+        Height = 17
+        Caption = 'Find'
+        TabOrder = 16
+      end
+      object StaticText4: TStaticText
+        Left = 0
+        Top = 95
+        Width = 26
+        Height = 17
+        Caption = 'Slew'
+        TabOrder = 17
+      end
+      object StaticText5: TStaticText
+        Left = 0
+        Top = 118
+        Width = 31
+        Height = 17
+        Caption = 'Ramp'
+        TabOrder = 18
+      end
+      object ComboBoxEqmode: TComboBox
+        Left = 145
+        Top = 155
+        Width = 63
+        Height = 21
+        ItemIndex = 0
+        TabOrder = 19
+        Text = 'EQ'
+        Items.Strings = (
+          'EQ'
+          'ALT-AZ'
+          'ALING')
+      end
+      object ComboBoxtrack: TComboBox
+        Left = 74
+        Top = 155
+        Width = 69
+        Height = 21
+        ItemIndex = 0
+        TabOrder = 20
+        Text = 'No track'
+        Items.Strings = (
+          'No track'
+          'Sideral'
+          'Solar'
+          'Lunar'
+          'King'
+          '')
+      end
+      object NumberBoxpresc: TNumberBox
+        Left = 33
+        Top = 155
+        Width = 35
+        Height = 21
+        Alignment = taRightJustify
+        Mode = nbmFloat
+        TabOrder = 21
+        Value = 1.000000000000000000
+      end
+      object StaticText7: TStaticText
+        Left = 0
+        Top = 158
+        Width = 30
+        Height = 17
+        Caption = 'Presc'
+        TabOrder = 22
+      end
+      object CheckBoxbackaz: TCheckBox
+        Left = 0
+        Top = 136
+        Width = 34
+        Height = 17
+        Alignment = taLeftJustify
+        Caption = 'bk'
+        TabOrder = 23
+      end
+      object CheckBoxbackalt: TCheckBox
+        Left = 108
+        Top = 136
+        Width = 25
+        Height = 17
+        Caption = 'b'
+        TabOrder = 24
+      end
+      object CheckBoxflip: TCheckBox
+        Left = 214
+        Top = 155
+        Width = 40
+        Height = 17
+        Caption = 'flip'
+        TabOrder = 25
+      end
+      object CheckBoxinvaz: TCheckBox
+        Left = 161
+        Top = 11
+        Width = 50
+        Height = 17
+        Caption = 'inv az'
+        TabOrder = 26
+      end
+      object CheckBoxinvalt: TCheckBox
+        Left = 214
+        Top = 11
+        Width = 50
+        Height = 17
+        Caption = 'inv alt'
+        TabOrder = 27
+      end
+      object NumberBoxgmtoff: TNumberBox
+        Left = 173
+        Top = 29
+        Width = 35
+        Height = 21
+        Alignment = taRightJustify
+        TabOrder = 28
+      end
+      object StaticText6: TStaticText
+        Left = 125
+        Top = 34
+        Width = 42
+        Height = 17
+        Caption = 'GMT off'
+        TabOrder = 29
+      end
+      object NumberBoxlong: TNumberBox
+        Left = 161
+        Top = 54
+        Width = 50
+        Height = 21
+        Alignment = taRightJustify
+        Decimal = 4
+        Mode = nbmFloat
+        TabOrder = 30
+        Value = -4.120000000000000000
+      end
+      object NumberBoxlat: TNumberBox
+        Left = 220
+        Top = 54
+        Width = 50
+        Height = 21
+        Alignment = taRightJustify
+        Decimal = 4
+        Mode = nbmFloat
+        TabOrder = 31
+        Value = 36.720000000000000000
+      end
+      object NumberBoxFmax: TNumberBox
+        Left = 176
+        Top = 81
+        Width = 43
+        Height = 21
+        Alignment = taRightJustify
+        TabOrder = 32
+        Value = 40000.000000000000000000
+      end
+      object NBxVolt: TNumberBox
+        Left = 220
+        Top = 81
+        Width = 43
+        Height = 21
+        Alignment = taRightJustify
+        TabOrder = 33
+        Value = 150.000000000000000000
+      end
+      object NumberBoxFlow: TNumberBox
+        Left = 175
+        Top = 103
+        Width = 43
+        Height = 21
+        Alignment = taRightJustify
+        TabOrder = 34
+        Value = 30.000000000000000000
+      end
+      object NumberBoxfsp: TNumberBox
+        Left = 221
+        Top = 103
+        Width = 43
+        Height = 21
+        Alignment = taRightJustify
+        TabOrder = 35
+        Value = 5.000000000000000000
+      end
+      object StaticText8: TStaticText
+        Left = 115
+        Top = 59
+        Width = 46
+        Height = 17
+        Caption = 'Long/Lat'
+        TabOrder = 36
+      end
+      object save: TButton
+        Left = 143
+        Top = 128
+        Width = 49
+        Height = 25
+        Caption = 'save'
+        TabOrder = 37
+        OnClick = saveClick
+      end
+      object Button4: TButton
+        Left = 195
+        Top = 128
+        Width = 49
+        Height = 25
+        Caption = 'read'
+        TabOrder = 38
+        OnClick = Button4Click
+      end
+    end
+  end
+  object GroupBox8: TGroupBox
+    Left = 0
+    Top = 203
     Width = 120
-    Height = 152
-    Margins.Bottom = 0
-    Caption = 'Telescope'
-    TabOrder = 2
+    Height = 94
+    Caption = 'Ar/Dec'
+    TabOrder = 4
     object labelAR: TLabel
-      Left = 11
+      Left = 44
       Top = 14
-      Width = 43
-      Height = 15
+      Width = 49
+      Height = 16
+      Alignment = taRightJustify
       Caption = 'Waiting'
       Color = clBlack
       Font.Charset = ANSI_CHARSET
       Font.Color = clRed
-      Font.Height = -12
+      Font.Height = -13
       Font.Name = 'Arial'
       Font.Style = [fsBold]
       ParentColor = False
       ParentFont = False
-      Transparent = False
+      Transparent = True
       WordWrap = True
       StyleElements = [seBorder]
-    end
-    object ButtonNE: TButton
-      Tag = 4
-      Left = 9
-      Top = 45
-      Width = 30
-      Height = 30
-      Caption = 'NE'
-      TabOrder = 0
-      OnMouseDown = Button_NMouseDown
-      OnMouseUp = Button_NMouseUp
-    end
-    object Button_N: TButton
-      Left = 40
-      Top = 43
-      Width = 35
-      Height = 35
-      Caption = 'N'
-      TabOrder = 1
-      OnMouseDown = Button_NMouseDown
-      OnMouseUp = Button_NMouseUp
-    end
-    object ButtonNW: TButton
-      Tag = 7
-      Left = 78
-      Top = 45
-      Width = 30
-      Height = 30
-      Caption = 'NW'
-      TabOrder = 2
-      OnMouseDown = Button_NMouseDown
-      OnMouseUp = Button_NMouseUp
-    end
-    object Button_W: TButton
-      Tag = 3
-      Left = 75
-      Top = 76
-      Width = 35
-      Height = 35
-      Caption = 'W'
-      TabOrder = 3
-      OnMouseDown = Button_NMouseDown
-      OnMouseUp = Button_NMouseUp
-    end
-    object ButtonSW: TButton
-      Tag = 6
-      Left = 78
-      Top = 113
-      Width = 30
-      Height = 30
-      Caption = 'SW'
-      TabOrder = 4
-      OnMouseDown = Button_NMouseDown
-      OnMouseUp = Button_NMouseUp
-    end
-    object Button_S: TButton
-      Tag = 1
-      Left = 41
-      Top = 111
-      Width = 35
-      Height = 35
-      Caption = 'S'
-      TabOrder = 5
-      OnMouseDown = Button_NMouseDown
-      OnMouseUp = Button_NMouseUp
-    end
-    object ButtonSE: TButton
-      Tag = 5
-      Left = 9
-      Top = 113
-      Width = 30
-      Height = 30
-      Caption = 'SE'
-      TabOrder = 6
-      OnMouseDown = Button_NMouseDown
-      OnMouseUp = Button_NMouseUp
-    end
-    object Button_E: TButton
-      Tag = 2
-      Left = 6
-      Top = 77
-      Width = 35
-      Height = 35
-      Caption = 'E'
-      TabOrder = 7
-      OnMouseDown = Button_NMouseDown
-      OnMouseUp = Button_NMouseUp
-    end
-    object ButtonH: TButton
-      Left = 43
-      Top = 80
-      Width = 29
-      Height = 15
-      Caption = 'H'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -9
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 8
-      OnClick = ButtonHClick
-    end
-    object ButtonPark: TButton
-      Left = 43
-      Top = 95
-      Width = 29
-      Height = 15
-      Caption = 'Park'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -9
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 9
-      OnClick = ButtonParkClick
-    end
-  end
-  object GroupBoxserial: TGroupBox
-    Left = 120
-    Top = 0
-    Width = 217
-    Height = 272
-    Caption = 'Config'
-    TabOrder = 4
-    Visible = False
-    object Label2: TLabel
-      Left = 105
-      Top = 218
-      Width = 3
-      Height = 13
-    end
-    object Labelmsg: TLabel
-      Left = 8
-      Top = 232
-      Width = 19
-      Height = 13
-      Caption = 'msg'
-    end
-    object GroupBox4: TGroupBox
-      Left = 3
-      Top = 12
-      Width = 209
-      Height = 38
-      Caption = 'Serial'
-      TabOrder = 0
-      object Label1: TLabel
-        Left = 5
-        Top = 14
-        Width = 20
-        Height = 13
-        Caption = 'Port'
-      end
-      object Label3: TLabel
-        Left = 119
-        Top = 14
-        Width = 24
-        Height = 13
-        Caption = 'Baud'
-      end
-      object ComComboBox2: TComComboBox
-        Left = 145
-        Top = 10
-        Width = 60
-        Height = 21
-        ComProperty = cpBaudRate
-        Text = '115200'
-        Style = csDropDownList
-        ItemIndex = 13
-        TabOrder = 0
-      end
-      object ComComboBox1: TComComboBox
-        Left = 35
-        Top = 10
-        Width = 63
-        Height = 21
-        ComProperty = cpPort
-        Text = 'COM1'
-        Style = csDropDownList
-        ItemIndex = 0
-        TabOrder = 1
-      end
-    end
-    object GroupBox3: TGroupBox
-      Left = 2
-      Top = 49
-      Width = 119
-      Height = 40
-      Caption = 'IP Settings'
-      TabOrder = 1
-      object EditAddr: TEdit
-        Left = 0
-        Top = 15
-        Width = 72
-        Height = 19
-        Ctl3D = False
-        ParentCtl3D = False
-        TabOrder = 0
-        Text = '192.168.1.14'
-      end
-      object LongEditPort: TLongEdit
-        Left = 74
-        Top = 15
-        Width = 40
-        Height = 19
-        Hint = '0..100000'
-        Ctl3D = False
-        ParentCtl3D = False
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 1
-        Value = 10001
-        MaxValue = 100000
-      end
-    end
-    object ButtonSave: TButton
-      Left = 108
-      Top = 87
-      Width = 48
-      Height = 20
-      Caption = 'Save'
-      TabOrder = 2
-      OnClick = ButtonSaveClick
-    end
-    object ButtonRecon: TButton
-      Left = -1
-      Top = 87
-      Width = 51
-      Height = 20
-      Caption = 'Connect'
-      TabOrder = 3
-      OnClick = ButtonReconClick
-    end
-    object RadioGroupcom: TRadioGroup
-      Left = 121
-      Top = 49
-      Width = 100
-      Height = 39
-      Caption = 'Interface'
-      Columns = 2
-      ItemIndex = 0
-      Items.Strings = (
-        'Serial'
-        'TCP')
-      TabOrder = 4
-    end
-    object Buttondisconnect: TButton
-      Left = 49
-      Top = 87
-      Width = 60
-      Height = 20
-      Caption = 'Disconnect'
-      TabOrder = 5
-      OnMouseDown = ButtondisconnectMouseDown
-    end
-    object CheckBoxJoyf: TCheckBox
-      Left = 70
-      Top = 110
-      Width = 47
-      Height = 17
-      Caption = 'Focus'
-      TabOrder = 6
-    end
-    object CheckBox2: TCheckBox
-      Left = 120
-      Top = 110
-      Width = 45
-      Height = 17
-      Caption = 'Fast'
-      TabOrder = 7
-    end
-    object ButtonHome: TButton
-      Left = -1
-      Top = 107
-      Width = 65
-      Height = 20
-      Caption = 'Reset home'
-      TabOrder = 8
-      OnClick = ButtonHomeClick
-    end
-    object lstHidDevices: TListBox
-      Left = 10
-      Top = 252
-      Width = 196
-      Height = 13
-      ItemHeight = 13
-      TabOrder = 9
-      Visible = False
-    end
-    object GroupBox5: TGroupBox
-      Left = 2
-      Top = 189
-      Width = 169
-      Height = 44
-      Caption = 'Align'
-      TabOrder = 10
-      object ButtonSync: TButton
-        Left = 85
-        Top = 13
-        Width = 36
-        Height = 20
-        Caption = 'Sync'
-        TabOrder = 0
-        OnClick = ButtonSyncClick
-      end
-      object Buttonstar1: TButton
-        Left = 5
-        Top = 13
-        Width = 36
-        Height = 20
-        Caption = 'Star 1'
-        TabOrder = 1
-        OnClick = Buttonstar1Click
-      end
-      object Buttonstar2: TButton
-        Left = 45
-        Top = 13
-        Width = 36
-        Height = 20
-        Caption = 'Star 2'
-        TabOrder = 2
-        OnClick = Buttonstar2Click
-      end
-      object Buttontakireset: TButton
-        Left = 123
-        Top = 13
-        Width = 36
-        Height = 20
-        Caption = 'Reset'
-        TabOrder = 3
-        OnClick = ButtontakiresetClick
-      end
-    end
-    object groupboxgeo: TGroupBox
-      Left = 2
-      Top = 129
-      Width = 210
-      Height = 57
-      Caption = 'Geo/time'
-      TabOrder = 11
-      object Label4: TLabel
-        Left = 180
-        Top = 35
-        Width = 21
-        Height = 13
-        Caption = 'GMT'
-      end
-      object FloatEditLong: TFloatEdit
-        Left = 3
-        Top = 12
-        Width = 80
-        Height = 21
-        Hint = '-360..360'
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 0
-        Value = -4.200000000000000000
-        Decimals = 4
-        MinValue = -360.000000000000000000
-        MaxValue = 360.000000000000000000
-        Digits = 7
-      end
-      object FloatEditLat: TFloatEdit
-        Left = 3
-        Top = 34
-        Width = 81
-        Height = 21
-        Hint = '-90..90'
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 1
-        Value = 36.700000000000000000
-        Decimals = 4
-        MinValue = -90.000000000000000000
-        MaxValue = 90.000000000000000000
-        Digits = 7
-      end
-      object Button3: TButton
-        Left = 89
-        Top = 12
-        Width = 52
-        Height = 21
-        Caption = 'Set Geo'
-        TabOrder = 2
-        OnClick = Button3Click
-      end
-      object Button2: TButton
-        Left = 144
-        Top = 12
-        Width = 52
-        Height = 21
-        Caption = 'Set Time'
-        TabOrder = 3
-        OnClick = Button2Click
-      end
-      object LongEditgmt: TLongEdit
-        Left = 146
-        Top = 33
-        Width = 28
-        Height = 19
-        Hint = '-13..13'
-        Ctl3D = False
-        ParentCtl3D = False
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 4
-        Value = 0
-        MinValue = -13
-        MaxValue = 13
-      end
-      object Buttongetgeo: TButton
-        Left = 89
-        Top = 32
-        Width = 50
-        Height = 21
-        Caption = 'Get Geo'
-        TabOrder = 5
-        OnClick = ButtongetgeoClick
-      end
-    end
-  end
-  object GroupBoxFocus: TGroupBox
-    Left = 0
-    Top = 174
-    Width = 120
-    Height = 63
-    Caption = 'Focuser'
-    TabOrder = 1
-    object LabelFocusCount: TLabel
-      Tag = 1
-      Left = 55
-      Top = 14
-      Width = 61
-      Height = 19
-      Alignment = taRightJustify
-      AutoSize = False
-      Caption = '0'
-      Color = clBlack
-      Font.Charset = ANSI_CHARSET
-      Font.Color = clAqua
-      Font.Height = -12
-      Font.Name = 'Arial'
-      Font.Style = [fsBold]
-      ParentColor = False
-      ParentFont = False
-      Transparent = False
-      StyleElements = []
-      OnDblClick = LabelFocusCountDblClick
-    end
-    object ButtonIn: TButton
-      Tag = 1
-      Left = 3
-      Top = 14
-      Width = 25
-      Height = 20
-      Caption = 'In'
-      TabOrder = 0
-      OnMouseDown = ButtonInMouseDown
-      OnMouseUp = ButtonInMouseUp
-    end
-    object ButtonOut: TButton
-      Left = 30
-      Top = 14
-      Width = 25
-      Height = 20
-      Caption = 'Out'
-      TabOrder = 1
-      OnMouseDown = ButtonInMouseDown
-      OnMouseUp = ButtonInMouseUp
-    end
-    object ButtonM1: TButton
-      Left = 3
-      Top = 35
-      Width = 25
-      Height = 20
-      Caption = 'M1'
-      TabOrder = 2
-      OnClick = ButtonM1Click
-    end
-    object ButtonM2: TButton
-      Left = 32
-      Top = 35
-      Width = 25
-      Height = 20
-      Caption = 'M2'
-      TabOrder = 3
-      OnClick = ButtonM2Click
-    end
-    object ButtonM3: TButton
-      Left = 61
-      Top = 36
-      Width = 25
-      Height = 20
-      Caption = 'M3'
-      TabOrder = 4
-      OnClick = ButtonM3Click
-    end
-    object ButtonM4: TButton
-      Left = 90
-      Top = 35
-      Width = 25
-      Height = 20
-      Caption = 'M4'
-      TabOrder = 5
-    end
-  end
-  object GroupBox2: TGroupBox
-    Left = 0
-    Top = 234
-    Width = 120
-    Height = 38
-    Caption = 'Status'
-    TabOrder = 3
-    object Label5: TLabel
-      Left = 7
-      Top = 12
-      Width = 67
-      Height = 15
-      AutoSize = False
-      Caption = 'dis'
-      Color = clBlack
-      Font.Charset = ANSI_CHARSET
-      Font.Color = clRed
-      Font.Height = -12
-      Font.Name = 'Arial'
-      Font.Style = [fsBold]
-      ParentColor = False
-      ParentFont = False
-      Transparent = False
-      WordWrap = True
-      StyleElements = [seBorder]
-    end
-    object Button1: TButton
-      Left = 77
-      Top = 9
-      Width = 37
-      Height = 20
-      Caption = 'Config'
-      TabOrder = 0
-      OnClick = Buttonconfig
     end
   end
   object Timer1: TTimer
     Enabled = False
     OnTimer = Timer1Timer
-    Left = 291
-    Top = 91
+    Left = 245
+    Top = 221
   end
   object adpInstanceControl1: TadpInstanceControl
     Enabled = True
     MaxInstances = 1
-    Left = 296
-    Top = 191
+    Left = 337
+    Top = 239
   end
   object Joystickex1: TJoystickex
     GamePort = Gameport1
@@ -1671,14 +2289,13 @@ object Esp32frm: TEsp32frm
     OnButton5_Change = Joystickex1Button5_Change
     OnButton6_Change = Joystickex1Button6_Change
     JoyMove = Joystickex1JoyMove
-    Left = 81
-    Top = 14
+    Left = 374
+    Top = 234
   end
   object JvHidDeviceController: TJvHidDeviceController
     OnEnumerate = JvHidDeviceControllerEnumerate
     OnDeviceChange = JvHidDeviceControllerDeviceChange
-    OnDeviceCreateError = JvHidDeviceControllerDeviceCreateError
-    Left = 288
-    Top = 141
+    Left = 193
+    Top = 242
   end
 end

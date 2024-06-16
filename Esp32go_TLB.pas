@@ -12,10 +12,10 @@ unit Esp32go_TLB;
 // ************************************************************************ //
 
 // $Rev: 98336 $
-// File generated on 11/12/2022 19:14:29 from Type Library described below.
+// File generated on 09/05/2024 20:30:28 from Type Library described below.
 
 // ************************************************************************  //
-// Type Lib: C:\Users\masut\Documents\Embarcadero\Studio\Projects\Esp32Go-ASCOM\esp32go (1)
+// Type Lib: C:\Users\masut\Documents\Embarcadero\Studio\Projects\Esp32Go-ASCOMBT\esp32go (1)
 // LIBID: {1E06C881-9ACE-461A-AE17-0A0981B24AB1}
 // LCID: 0
 // Helpfile:
@@ -239,6 +239,7 @@ type
     procedure SyncToCoordinates(RightAscension: Double; Declination: Double); safecall;
     procedure SyncToTarget; safecall;
     procedure Unpark; safecall;
+    function Get_SupportedActions: OleVariant; safecall;
     property AlignmentMode: AlignmentModes read Get_AlignmentMode;
     property Altitude: Double read Get_Altitude;
     property ApertureArea: Double read Get_ApertureArea;
@@ -291,6 +292,7 @@ type
     property TrackingRate: DriveRates read Get_TrackingRate write Set_TrackingRate;
     property TrackingRates: ITrackingRates read Get_TrackingRates;
     property UTCDate: TDateTime read Get_UTCDate write Set_UTCDate;
+    property SupportedActions: OleVariant read Get_SupportedActions;
   end;
 
 // *********************************************************************//
@@ -375,6 +377,7 @@ type
     procedure SyncToCoordinates(RightAscension: Double; Declination: Double); dispid 73;
     procedure SyncToTarget; dispid 74;
     procedure Unpark; dispid 75;
+    property SupportedActions: OleVariant readonly dispid 201;
   end;
 
 // *********************************************************************//

@@ -6,7 +6,7 @@ interface
 
 uses
   dialogs, ComObj, ActiveX, Esp32go_TLB, StdVcl, CPort, shared, classes,
-  Windows;
+  Windows,lxutils;
 
 const
   DRIVER_NAME = 'Esp32go';
@@ -33,6 +33,8 @@ type
 
 type
   TTelescope = class(TAutoObject, ITelescope)
+  protected
+    function Get_SupportedActions: OleVariant; safecall;
   Public
     function CanMoveAxis(Axis: TelescopeAxes): WordBool; safecall;
     function Get_AlignmentMode: AlignmentModes; safecall;
@@ -178,7 +180,7 @@ end;
 
 function TTelescope.Get_Altitude: Double;
 begin
-  result := Get_Alt();
+  result := alt; // Get_Alt();
 end;
 
 function TTelescope.Get_ApertureArea: Double;
@@ -205,7 +207,7 @@ function TTelescope.Get_Azimuth: Double;
 var
   d: Double;
 begin
-  result := Get_Az;
+  result := az; // Get_Az;
 
 end;
 
@@ -241,7 +243,7 @@ end;
 
 function TTelescope.Get_CanSetPierSide: WordBool;
 begin
-  result := false;
+  result := true;
 end;
 
 function TTelescope.Get_CanSetRightAscensionRate: WordBool;
@@ -300,12 +302,13 @@ end;
 function TTelescope.Get_Declination: Double;
 
 begin
-  result := Get_Dec();
+  result := dec;
+  //result :=  Get_Dec();
 end;
 
 function TTelescope.Get_DeclinationRate: Double;
 begin
-  result := 1;
+  result := 0;
 end;
 
 function TTelescope.Get_Description: WideString;
@@ -370,7 +373,8 @@ end;
 function TTelescope.Get_RightAscension: Double;
 
 begin
-  result := Get_RA();
+  result := ra;
+ // result := Get_RA();
 
 end;
 
@@ -381,13 +385,23 @@ end;
 
 function TTelescope.Get_SideOfPier: PierSide;
 begin
-  /// / Send(':GW#');
-  result := pierwest;
+
+if   get_pierside()then
+  result := pierwest else
+  result:=piereast;
 end;
 
 function TTelescope.Get_SiderealTime: Double;
+var
+  strsideral: string;
+  n: Integer;
+  sid: Double;
 begin
-  result := get_sideral();
+  datetimetostring(strsideral, 'hh:nn:ss#', Local_Sideral_Time(UTCnow(),
+    -longi) / 24.0);
+  n := LX200Artoint(strsideral, true);
+  sid := (n / (15.0 * 3600.0));
+  result := sid; // get_sideral();
 end;
 
 function TTelescope.Get_SiteElevation: Double;
@@ -402,7 +416,7 @@ end;
 
 function TTelescope.Get_SiteLongitude: Double;
 begin
-  result := get_long();
+  result := -get_long();
 end;
 
 function TTelescope.Get_Slewing: WordBool;
@@ -429,7 +443,8 @@ function TTelescope.Get_Tracking: WordBool;
 var
   str: string;
 begin
-  result := (get_track() = 1);
+  result := track=1;//(get_track() = 1);
+  // result:=true;
 end;
 
 function TTelescope.Get_TrackingRate: DriveRates;
@@ -445,6 +460,7 @@ begin
   // trackr:=ttrackingrates.Create;
   itrackr := trackr.Create();
   trackr.lrates.add();
+  // trackr.lrates.Items[1]:=
   // trackr.lrates.Items[1]
   result := itrackr;
   showmessage('gettr');
@@ -587,8 +603,8 @@ end;
 
 procedure TTelescope.Set_SideOfPier(Value: PierSide);
 begin
-
-end;
+     setpierside(value=pierWest);
+ end;
 
 procedure TTelescope.Set_SiteElevation(Value: Double);
 begin
@@ -635,7 +651,7 @@ end;
 procedure TTelescope.Set_Tracking(Value: WordBool);
 begin
   if Value then
-    send(':Q#')
+    send(':Qw#')
   else
     send(':Mh#');
 end;
@@ -759,8 +775,12 @@ begin
 end;
 
 function TTrackingRates.GetEnumerator: IEnumVARIANT;
+var
+  UpdateCollection: OleVariant;
 begin
-  result := self as IEnumVARIANT;
+  result := IUnknown(UpdateCollection._NewEnum) as IEnumVARIANT;
+  // result := self as IEnumVARIANT;
+  // result := self ;
 end;
 
 function TAxisRates.Get_Count: Integer; safecall;
@@ -773,6 +793,9 @@ var
   r: IRate;
   r1: Rate;
 begin
+  // r:=IRate.Create;
+  r.Minimum := 0;
+  r.Maximum := 0;
   r := r1;
 
   result := r;
@@ -781,6 +804,21 @@ end;
 function TAxisRates.Get_NewEnum: IEnumVARIANT;
 begin
   result := self as IEnumVARIANT;
+end;
+
+function TTelescope.Get_SupportedActions: OleVariant;
+var
+  capacity: Integer;
+  item: Variant;
+  dotNetArrayList: Variant;
+begin
+  { Create object }
+  dotNetArrayList := CreateOLEObject('System.Collections.ArrayList');
+
+  { Add an element }
+  dotNetArrayList.add('NULL');
+  item := dotNetArrayList.item(0);
+  result := dotNetArrayList;
 end;
 
 initialization
