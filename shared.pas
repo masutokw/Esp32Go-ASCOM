@@ -115,6 +115,8 @@ begin
         recv := readcvBT;
         readvln := readlnBT;
         readchar := readcharbt;
+        inbuff:= inputcountbt;
+         clearBuff :=clearbuffblue;
       end;
   end;
 end;

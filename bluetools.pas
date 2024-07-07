@@ -18,6 +18,8 @@ function readcvBT(var value: string; count: Integer): Integer;
 function checkBtSock(): boolean;
 function FreeBtSock(): boolean;
 function connectbt(pdevice: string): boolean;
+function inputcountbt():integer;
+procedure clearbuffblue(input, output: boolean);
 procedure devlist(t: Tstrings);
 
 implementation
@@ -172,6 +174,15 @@ begin
   result := value.length;
 
 end;
+function inputcountbt():integer;
+begin result:=0;
+end;
+procedure clearbuffblue(input, output: boolean);
+
+begin
+
+  end;
+
 
 initialization
 

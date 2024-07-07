@@ -294,25 +294,31 @@ begin
   end;
   if fullconnect then
   begin
-   if not get_pierside() then label3.caption:='East';
-   if  get_flip() then chkflip.Checked:=true;
+
+    if not get_pierside() then
+      Label3.caption := 'East';
+    if get_flip() then
+      Chkflip.Checked := true;
+    Button4Click(self);
   end;
 end;
 
 procedure TEsp32frm.btnEClick(Sender: TObject);
 begin
- setpierside(false);
- if not get_pierside then label3.Caption:='East';
-    labelar1.Font.Color:=Cllime;
-    labeldec1.Font.Color:=Cllime;
+  setpierside(false);
+  if not get_pierside then
+    Label3.caption := 'East';
+  LabelAR1.Font.Color := Cllime;
+  LabelDec1.Font.Color := Cllime;
 end;
 
 procedure TEsp32frm.btnwClick(Sender: TObject);
 begin
-setpierside(true);
-  if get_pierside then label3.Caption:='West';
-     labelar1.Font.Color:=Clred;
-    labeldec1.Font.Color:=Clred;
+  setpierside(true);
+  if get_pierside then
+    Label3.caption := 'West';
+  LabelAR1.Font.Color := Clred;
+  LabelDec1.Font.Color := Clred;
 end;
 
 procedure TEsp32frm.Button2Click(Sender: TObject);
@@ -344,7 +350,7 @@ end;
 
 procedure TEsp32frm.Button4Click(Sender: TObject);
 var
-  cstring,str: string;
+  cstring, str: string;
   lines: Tstringlist;
 begin
   try
@@ -352,56 +358,55 @@ begin
   finally
 
   end;
-  memo1.Lines.Clear;
-  if (ClientSocket1.Connected) or (ComPortBT_USB.Connected) or (checkBtSock) then
+  Memo1.lines.Clear;
+  if (ClientSocket1.Connected) or (ComPortBT_USB.Connected) or (checkBtSock)
+  then
 
   begin
-    //Memo1.lines.Clear;
+    // Memo1.lines.Clear;
     Timer1.Enabled := false;
     send(':cA#');
 
-      if imode=2 then
-      begin
-       recv(cstring,100);
-        //  cstring := stringreplace(cstring,#10,
-        //  '', [rfReplaceAll]);
-        //   cstring := stringreplace(cstring,#13,
-        //  '', [rfReplaceAll]);
-        lines.Text:=cstring;
-       end
-        else
+    if imode = 2 then
+    begin
+      recv(cstring, 100);
+      // cstring := stringreplace(cstring,#10,
+      // '', [rfReplaceAll]);
+      // cstring := stringreplace(cstring,#13,
+      // '', [rfReplaceAll]);
+      lines.Text := cstring;
+
+    end
+    else
       repeat
 
         case imode of
-        1:
-        begin
-        readvln(cstring,#13#10);
-        cstring := stringreplace(cstring, #13#10,
-          '', [rfReplaceAll])
-        end;
-        0:
-          begin
-          readvln(cstring,#10);
-          cstring := stringreplace(cstring,#10,
-          '', [rfReplaceAll]);
-           cstring := stringreplace(cstring,#13,
-          '', [rfReplaceAll]);
-          end;
+          1:
+            begin
+              readvln(cstring, #13#10);
+              cstring := stringreplace(cstring, #13#10, '', [rfReplaceAll])
+            end;
+          0:
+            begin
+              readvln(cstring, #10);
+              cstring := stringreplace(cstring, #10, '', [rfReplaceAll]);
+              cstring := stringreplace(cstring, #13, '', [rfReplaceAll]);
+            end;
         end;
 
-           cstring := stringreplace(cstring, '.',
+        cstring := stringreplace(cstring, '.',
           '' + FormatSettings.DecimalSeparator, [rfReplaceAll]);
         lines.add(cstring);
-        memo1.lines.add(cstring);
-      until inbuff=0;
+        Memo1.lines.add(cstring);
+      until inbuff = 0;
 
-      Label1.caption := inttostr(lines.Count)+lines[0];
+    Label1.caption := inttostr(lines.Count) + lines[0];
     Timer1.Enabled := true;
-    if lines.Count >28 then
+    if lines.Count > 28 then
     begin
 
       NumberBoxcountaz.Text := lines[0];
-      Numberboxcountalt.Text := lines[1];
+      NumberBoxcountalt.Text := lines[1];
       NumberBoxspgaz.Text := lines[2];
       NumberBoxspcaz.Text := lines[3];
       NumberBoxspfaz.Text := lines[4];
@@ -414,9 +419,9 @@ begin
       NumberBoxlong.Text := lines[11];
       NumberBoxlat.Text := lines[12];
       NumberBoxgmtoff.Text := lines[13];
-      NumberBoxFMax.Text := lines[14];
-      NumberBoxFLow.Text := lines[15];
-      NumberBoxFsp.Text := lines[16];
+      NumberBoxFmax.Text := lines[14];
+      NumberBoxFlow.Text := lines[15];
+      NumberBoxfsp.Text := lines[16];
       NumberBoxrampaz.Text := lines[17];
       NumberBoxrampalt.Text := lines[18];
       NumberBoxbackpaz.Text := lines[19];
@@ -425,8 +430,8 @@ begin
       ComboBoxtrack.ItemIndex := strtoint(lines[22]);
       CheckBoxflip.Checked := lines[23] = '1';
       CheckBoxinvaz.Checked := lines[24] = '1';
-      CheckBoxinvAlt.Checked := lines[25] = '1';
-      NBXvolt.Text:=lines[26];
+      CheckBoxinvalt.Checked := lines[25] = '1';
+      NBxVolt.Text := lines[26];
       CheckBoxbackaz.Checked := lines[27] = '1';
       CheckBoxbackalt.Checked := lines[28] = '1';
     end;
@@ -615,7 +620,7 @@ end;
 
 procedure TEsp32frm.ChkflipClick(Sender: TObject);
 begin
-setautoflip(chkflip.Checked);
+  setautoflip(Chkflip.Checked);
 
 end;
 
@@ -623,7 +628,7 @@ procedure TEsp32frm.FormCreate(Sender: TObject);
 var
   n: Integer;
 begin
-  pagecontrol1.ActivePage:= TabSheet1 ;
+  PageControl1.ActivePage := TabSheet1;
   n := 0;
   Joystickex1.EnableJoyStick;
   s_inipath := ExtractFilePath(Application.EXEName);
@@ -643,8 +648,7 @@ begin
       ComPortBT_USB.Connected := true;
     1:
       ClientSocket1.connect;
-    2:
-      connectbt(cbxpaired.Text);
+    2: connectbt(cbxpaired.Text);
 
   end;
 
@@ -656,19 +660,28 @@ begin
     if not(fullconnect) then
       showmessage('No response');
     if fullconnect then
+    begin
+   // showmessage('fullconnect');
       Timer1.Enabled := true;
+
+    end;
   end;
   if fullconnect then
   begin
     CheckBox1.Checked := (get_track() = 1);
     CheckAlt.Checked := get_alignmode() = 'A';
+
     if not get_pierside() then
     begin
-    label3.caption:='East';
-    labelar1.Font.Color:=Cllime;
-    labeldec1.Font.Color:=Cllime;
+      Label3.caption := 'East';
+      LabelAR1.Font.Color := Cllime;
+      LabelDec1.Font.Color := Cllime;
     end;
-     if  get_flip() then chkflip.Checked:=true;
+    if get_flip() then
+      Chkflip.Checked := true;
+    Button4Click(self);
+   // showmessage('okread');
+    Timer1.Enabled := true;
   end;
 
 end;
@@ -679,7 +692,7 @@ begin
     ClientSocket1.disconnect;
   if ComPortBT_USB.Connected then
     ComPortBT_USB.Connected := false;
-   FreeBtSock;
+  FreeBtSock;
 
 end;
 
@@ -689,6 +702,7 @@ begin
   if pressed then
 
     if CheckBoxJoyf.Checked then
+
     begin
       CheckBox2.Checked := NOT CheckBox2.Checked;
       // Tele.FocusSeleclSpeed := CheckBox5.Checked
@@ -837,11 +851,11 @@ begin
   // UsageAndUsagePageText(HidDev.LinkCollectionNodes[Idx].LinkUsagePage,
   // HidDev.LinkCollectionNodes[Idx].LinkUsage, UsagePageText, UsageText);
   if HidDev.ProductName <> '' then
-    DevID := lstHidDevices.Items.Add(HidDev.ProductName +
+    DevID := lstHidDevices.Items.add(HidDev.ProductName +
       Format('Device VID=%x PID=%x ', [HidDev.Attributes.VendorID,
       HidDev.Attributes.ProductID]))
   else
-    DevID := lstHidDevices.Items.Add(Format('Device VID=%x PID=%x  %x %s %x',
+    DevID := lstHidDevices.Items.add(Format('Device VID=%x PID=%x  %x %s %x',
       [HidDev.Attributes.VendorID, HidDev.Attributes.ProductID, Idx, UsageText,
       HidDev.LinkCollectionNodes[Idx].LinkUsage]));
   // Retrive the device and assign it to the list
@@ -865,17 +879,17 @@ end;
 
 procedure TEsp32frm.JvHidDeviceControllerDeviceChange(Sender: TObject);
 var
-  count: Integer;
+  Count: Integer;
   Dev: TJvHidDevice;
 begin
 
   // This procedure clears all the HID items:
   // Check in all items and remove objects from the list
-  for count := 0 to lstHidDevices.Items.count - 1 do
+  for Count := 0 to lstHidDevices.Items.Count - 1 do
   begin
-    Dev := TJvHidDevice(lstHidDevices.Items.Objects[count]);
+    Dev := TJvHidDevice(lstHidDevices.Items.Objects[Count]);
     JvHidDeviceController.CheckIn(Dev);
-    lstHidDevices.Items.Objects[count] := nil;
+    lstHidDevices.Items.Objects[Count] := nil;
   end;
   // Clear the listbox
   lstHidDevices.Items.Clear;
@@ -987,7 +1001,7 @@ end;
 procedure TEsp32frm.Timer1Timer(Sender: TObject);
 var
   str, coors, strsideral: string;
-  focus, count: Integer;
+  focus, Count: Integer;
   png: Cardinal;
 begin
 
@@ -997,17 +1011,17 @@ begin
   begin
     png := gettickCount();
     // labelAR.caption := get_coords(focus, count);
-    coors := get_coords(focus, count);
+    coors := get_coords(focus, Count);
     if coors.Length > 40 then
     begin
       labelAR.caption := coors;
     end;
 
-
     LabelAR1.caption := DoubletoLXAR(ra, 0);
 
     LabelDec1.caption := DoubletoLXdec(dec, 0);
     // labelAR.caption := inttostr(count);
+
     LabelFocusCount.caption := Format('%0.5d', [focus]);
     if CheckAlt.Checked then
     begin
@@ -1018,6 +1032,7 @@ begin
 
       LabelAltitude.caption := DoubletoLXdec(alt, 0);
     end;
+
     case imode of
 
       0:
@@ -1027,20 +1042,21 @@ begin
       2:
         Label5.caption := 'BT';
     end;
-    Label5.caption := Label5.caption + ' ' +
-    inttostr(gettickCount() - png)+ ' '+
-    inttostr(inbuff());
-    if inbuff>0 then clearbuff(true,false) ;
 
-    Label5.Font.Color := cllime;
+    Label5.caption := Label5.caption + ' ' + inttostr(gettickCount() - png) +
+      ' ' + inttostr(inbuff());
+    if inbuff > 0 then   clearbuff(true, false);
+
+    Label5.Font.Color := Cllime;
   end
 
   else
   begin
-    Label5.Font.Color := clred;
+    Label5.Font.Color := Clred;
 
     Label5.caption := 'DisConnected';
   end;
+
   datetimetostring(strsideral, 'hh:nn:ss', Local_Sideral_Time(UTCnow(),
     -FloatEditLong.Value) / 24.0);
   Labelmsg.caption := 'Local:' + timetostr(UTCnow() + (gmtoffset / 24.0)) +
@@ -1086,40 +1102,41 @@ begin
   finally
 
   end;
-  if (ClientSocket1.Connected) or (ComPortBT_USB.Connected) or (checkBtSock) then
+  if (ClientSocket1.Connected) or (ComPortBT_USB.Connected) or (checkBtSock)
+  then
   begin
 
-    lines.Add(NumberBoxcountaz.Text);
-    lines.Add(Numberboxcountalt.Text);
-    lines.Add(NumberBoxspgaz.Text);
-    lines.Add(NumberBoxspcaz.Text);
-    lines.Add(NumberBoxspfaz.Text);
-    lines.Add(NumberBoxspsaz.Text);
-    lines.Add(NumberBoxspgalt.Text);
-    lines.Add(NumberBoxspcalt.Text);
-    lines.Add(NumberBoxspfalt.Text);
-    lines.Add(NumberBoxspsalt.Text);
-    lines.Add(NumberBoxpresc.Text);
-    lines.Add(NumberBoxlong.Text);
-    lines.Add(NumberBoxlat.Text);
-    lines.Add(NumberBoxgmtoff.Text);
-    lines.Add(NumberBoxFMax.Text);
-    lines.Add(NumberBoxFLow.Text);
-    lines.Add(NumberBoxFsp.Text);
-    lines.Add(NumberBoxrampaz.Text);
-    lines.Add(NumberBoxrampalt.Text);
-    lines.Add(NumberBoxbackpaz.Text);
-    lines.Add(NumberBoxbackpalt.Text);
-    lines.Add(inttostr(ComboBoxEqmode.ItemIndex));
-    lines.Add(inttostr(ComboBoxtrack.ItemIndex));
-    lines.Add(CheckBoxflip.Checked.tointeger.ToString);
-    lines.Add(CheckBoxinvaz.Checked.tointeger.ToString);
-    lines.Add(CheckBoxinvAlt.Checked.tointeger.ToString);
-    lines.Add(NBXvolt.Text);
-    lines.Add(CheckBoxbackaz.Checked.tointeger.ToString);
-    lines.Add(CheckBoxbackalt.Checked.tointeger.ToString);
-    //Label17.Text := inttostr(lines.Count);
-    memo1.Lines.Clear;
+    lines.add(NumberBoxcountaz.Text);
+    lines.add(NumberBoxcountalt.Text);
+    lines.add(NumberBoxspgaz.Text);
+    lines.add(NumberBoxspcaz.Text);
+    lines.add(NumberBoxspfaz.Text);
+    lines.add(NumberBoxspsaz.Text);
+    lines.add(NumberBoxspgalt.Text);
+    lines.add(NumberBoxspcalt.Text);
+    lines.add(NumberBoxspfalt.Text);
+    lines.add(NumberBoxspsalt.Text);
+    lines.add(NumberBoxpresc.Text);
+    lines.add(NumberBoxlong.Text);
+    lines.add(NumberBoxlat.Text);
+    lines.add(NumberBoxgmtoff.Text);
+    lines.add(NumberBoxFmax.Text);
+    lines.add(NumberBoxFlow.Text);
+    lines.add(NumberBoxfsp.Text);
+    lines.add(NumberBoxrampaz.Text);
+    lines.add(NumberBoxrampalt.Text);
+    lines.add(NumberBoxbackpaz.Text);
+    lines.add(NumberBoxbackpalt.Text);
+    lines.add(inttostr(ComboBoxEqmode.ItemIndex));
+    lines.add(inttostr(ComboBoxtrack.ItemIndex));
+    lines.add(CheckBoxflip.Checked.tointeger.ToString);
+    lines.add(CheckBoxinvaz.Checked.tointeger.ToString);
+    lines.add(CheckBoxinvalt.Checked.tointeger.ToString);
+    lines.add(NBxVolt.Text);
+    lines.add(CheckBoxbackaz.Checked.tointeger.ToString);
+    lines.add(CheckBoxbackalt.Checked.tointeger.ToString);
+    // Label17.Text := inttostr(lines.Count);
+    Memo1.lines.Clear;
     if lines.Count = 29 then
     begin
       s := ':cs';
@@ -1129,14 +1146,13 @@ begin
       s := s + '#';
       s := stringreplace(s, FormatSettings.DecimalSeparator, '.',
         [rfReplaceAll]);
-      memo1.Lines.Add(s);
+      Memo1.lines.add(s);
       send(s);
     end;
- end;
+  end;
 
   lines.Destroy;
 end;
-
 
 procedure TEsp32frm.WriteSettings;
 var

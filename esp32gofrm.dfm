@@ -3,8 +3,8 @@ object Esp32frm: TEsp32frm
   Top = 0
   AutoSize = True
   Caption = 'Esp32go'
-  ClientHeight = 297
-  ClientWidth = 410
+  ClientHeight = 301
+  ClientWidth = 412
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -1866,7 +1866,7 @@ object Esp32frm: TEsp32frm
       end
     end
     object Align: TTabSheet
-      Caption = 'Align'
+      Caption = 'Config'
       ImageIndex = 2
       object NumberBoxcountaz: TNumberBox
         Left = 6
@@ -2261,9 +2261,10 @@ object Esp32frm: TEsp32frm
   end
   object Timer1: TTimer
     Enabled = False
+    Interval = 500
     OnTimer = Timer1Timer
-    Left = 245
-    Top = 221
+    Left = 244
+    Top = 222
   end
   object adpInstanceControl1: TadpInstanceControl
     Enabled = True
