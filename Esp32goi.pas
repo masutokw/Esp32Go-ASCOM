@@ -151,9 +151,9 @@ function TTelescope.CanMoveAxis(Axis: TelescopeAxes): WordBool;
 begin
   case Axis of
     axisprimary:
-      result := false;
+      result := true;
     axissecondary:
-      result := false;
+      result := true;
     axistertiary:
       result := false;
   end;
@@ -175,7 +175,7 @@ begin
     'A':
       alm := algAltAz;
   end;
-
+    Get_AlignmentMode:=alm;
 end;
 
 function TTelescope.Get_Altitude: Double;

@@ -20,7 +20,7 @@ function sendtcp(value: string): Integer;
 begin
   if ClientSocket1.connected then
   begin
-    // clearbufftcp(true, true);
+     clearbufftcp(true, true);
     ClientSocket1.Socket.write(value);
     Result := value.length;
   end

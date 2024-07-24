@@ -198,6 +198,8 @@ type
     procedure btnEClick(Sender: TObject);
     procedure saveClick(Sender: TObject);
     procedure Button4Click(Sender: TObject);
+    procedure ButtonM1ContextPopup(Sender: TObject; MousePos: TPoint;
+      var Handled: Boolean);
 
   private
     { Private declarations }
@@ -532,8 +534,19 @@ begin
 end;
 
 procedure TEsp32frm.ButtonM1Click(Sender: TObject);
+var
+  stpos: string;
 begin
-  send(':FA-00300#');
+  stpos := Format('%0.5d#', [focuspos[TButton(Sender).tag]]);
+  send(':FA-' + stpos);
+end;
+
+procedure TEsp32frm.ButtonM1ContextPopup(Sender: TObject; MousePos: TPoint;
+  var Handled: Boolean);
+begin
+  showmessage('Setting changed');
+  focuspos[TButton(Sender).tag] := strtoint(LabelFocusCount.caption);
+  TButton(Sender).Hint := LabelFocusCount.caption;
 end;
 
 procedure TEsp32frm.ButtonM2Click(Sender: TObject);
@@ -648,7 +661,8 @@ begin
       ComPortBT_USB.Connected := true;
     1:
       ClientSocket1.connect;
-    2: connectbt(cbxpaired.Text);
+    2:
+      connectbt(cbxpaired.Text);
 
   end;
 
@@ -661,7 +675,7 @@ begin
       showmessage('No response');
     if fullconnect then
     begin
-   // showmessage('fullconnect');
+      // showmessage('fullconnect');
       Timer1.Enabled := true;
 
     end;
@@ -680,7 +694,7 @@ begin
     if get_flip() then
       Chkflip.Checked := true;
     Button4Click(self);
-   // showmessage('okread');
+    // showmessage('okread');
     Timer1.Enabled := true;
   end;
 
@@ -1044,10 +1058,22 @@ begin
     end;
 
     Label5.caption := Label5.caption + ' ' + inttostr(gettickCount() - png) +
-      ' ' + inttostr(inbuff());
-    if inbuff > 0 then   clearbuff(true, false);
-
+      ' ' + inttostr(coors.Length); // (inbuff());
+    if inbuff > 0 then
+      clearbuff(true, false);
     Label5.Font.Color := Cllime;
+    if get_pierside then
+    begin
+      Label3.caption := 'West';
+      LabelAR1.Font.Color := Clred;
+      LabelDec1.Font.Color := Clred;
+    end
+    else
+    begin
+      Label3.caption := 'East';
+      LabelAR1.Font.Color := Cllime;
+      LabelDec1.Font.Color := Cllime;
+    end;
   end
 
   else
@@ -1071,6 +1097,7 @@ end;
 procedure TEsp32frm.ReadSettings;
 var
   inifile: TiniFile;
+  I: Integer;
 begin
   inifile := TiniFile.Create(s_inipath + inifile_name);
   with inifile do
@@ -1087,6 +1114,13 @@ begin
     gmtoffset := LongEditgmt.Value;
     longi := FloatEditLong.Value;
     lat := FloatEditLat.Value;
+    for I := 0 to 3 do
+      focuspos[I] := ReadInteger('Focus', 'focuspos' + inttostr(I),
+        (I + 1) * 1000);
+    ButtonM1.Hint := Format('%0.5d', [focuspos[0]]);
+    ButtonM2.Hint := Format('%0.5d', [focuspos[1]]);
+    ButtonM3.Hint := Format('%0.5d', [focuspos[2]]);
+    ButtonM4.Hint := Format('%0.5d', [focuspos[3]]);
   end;
 end;
 
@@ -1157,6 +1191,7 @@ end;
 procedure TEsp32frm.WriteSettings;
 var
   inifile: TiniFile;
+  I: Integer;
 begin
   inifile := TiniFile.Create(s_inipath + inifile_name);
   with inifile do
@@ -1170,6 +1205,9 @@ begin
     writefloat('GEO', 'long', FloatEditLong.Value);
     writefloat('GEO', 'offset', LongEditgmt.Value);
     writeString('Bluetooth', 'device', cbxpaired.Text);
+    for I := 0 to 3 do
+      writeInteger('Focus', 'focuspos' + inttostr(I), focuspos[I]);
+
   end;
 end;
 

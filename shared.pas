@@ -32,7 +32,7 @@ var
   readchar: function(var c: char): Integer;
   inbuff: function: Integer;
   clearBuff: procedure(input, output: boolean);
-
+  focuspos:array[0..3] of cardinal  ;
 
 procedure set_interface_mode(mode: Integer);
 procedure initserial(port: string; baudrate: tbaudrate);
@@ -172,7 +172,6 @@ begin
   else
     Result := false;
 end;
-
 Function get_coords(var focus, count: Integer): string;
 
 var
@@ -189,7 +188,7 @@ begin
 
   send(':GR#:GD#:GZ#:GA#:Gk#:Fp#');
   readvln(str, '#');
-  if str.length < 13 then
+  if str.length <13 then
   begin
     readvln(str1, '#');
     str := str + str1;
@@ -231,6 +230,64 @@ begin
   sl.Free;
 end;
 
+{Function get_coords(var focus, count: Integer): string;
+
+var
+  str, str1, coord_str: string;
+
+  n: Integer;
+  sl: TStringList;
+  c: char;
+begin
+  sl := TStringList.Create();
+  sl.delimiter := '#';
+  send(':Ga#:Fp#');
+
+
+ // send(':GR#:GD#:GZ#:GA#:Gk#:Fp#');
+  readvln(str, '#');
+  if str.length < 13 then
+  begin
+    readvln(str1, '#');
+    str := str + str1;
+    readvln(str1, '#');
+    str := str + str1;
+    readvln(str1, '#');
+    str := str + str1;
+    readvln(str1, '#');
+    str := str + str1;
+    readvln(str1, '#');
+    str := str + str1;
+  end;
+  sl.DelimitedText := str;
+  if (sl.count > 4) and (str.Length>47) then
+  begin
+   ra := LX200Artoint(sl.Strings[0] + '#', true) / (3600.0 * 15.0);
+    dec := LX200Dectoint(sl.Strings[1] + '#', true) / (3600.0);
+    az := LX200AZtoint(sl.Strings[2] + '#', true) / (3600.0);
+    alt := LX200Dectoint(sl.Strings[3] + '#', true) / (3600.0);
+    track := strtoint (sl.Strings[4]);
+    focus := strtoint(sl.Strings[5]);
+
+  //  str1:=sl.Strings[4];
+   // track:=strtointdef(Copy(sl.Strings[4], 1, 1),0);
+   //focus := strtointdef(Copy(sl.Strings[4], 2,str1.length ),0);
+  end;
+  // readvln(str0, '#');
+
+  // str0:=str;
+  if str.length > 40 then
+  begin
+    coord_str := StringReplace(sl.text, '�', 'º', [rfReplaceAll]);
+    coord_str := StringReplace(sl.text, 'á', 'º', [rfReplaceAll]);
+  end
+  else
+    coord_str := str.length.ToString();
+
+  Result := coord_str;
+  sl.Free;
+end;
+}
 Function get_focuspos(): Integer;
 var
   temp, n: Integer;

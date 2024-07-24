@@ -1255,7 +1255,7 @@ object Esp32frm: TEsp32frm
     Top = 0
     Width = 281
     Height = 207
-    ActivePage = Align
+    ActivePage = TabSheet1
     TabOrder = 3
     Visible = False
     object TabSheet1: TTabSheet
@@ -1460,34 +1460,50 @@ object Esp32frm: TEsp32frm
           Width = 25
           Height = 20
           Caption = 'M1'
+          ParentShowHint = False
+          ShowHint = True
           TabOrder = 2
           OnClick = ButtonM1Click
+          OnContextPopup = ButtonM1ContextPopup
         end
         object ButtonM2: TButton
+          Tag = 1
           Left = 36
           Top = 38
           Width = 25
           Height = 20
           Caption = 'M2'
+          ParentShowHint = False
+          ShowHint = True
           TabOrder = 3
-          OnClick = ButtonM2Click
+          OnClick = ButtonM1Click
+          OnContextPopup = ButtonM1ContextPopup
         end
         object ButtonM3: TButton
+          Tag = 2
           Left = 65
           Top = 38
           Width = 25
           Height = 20
           Caption = 'M3'
+          ParentShowHint = False
+          ShowHint = True
           TabOrder = 4
-          OnClick = ButtonM3Click
+          OnClick = ButtonM1Click
+          OnContextPopup = ButtonM1ContextPopup
         end
         object ButtonM4: TButton
+          Tag = 3
           Left = 94
           Top = 38
           Width = 25
           Height = 20
           Caption = 'M4'
+          ParentShowHint = False
+          ShowHint = True
           TabOrder = 5
+          OnClick = ButtonM1Click
+          OnContextPopup = ButtonM1ContextPopup
         end
         object CheckBoxJoyf: TCheckBox
           Left = 125
@@ -1758,10 +1774,10 @@ object Esp32frm: TEsp32frm
         end
       end
       object RadioGroupcom: TRadioGroup
-        Left = 123
-        Top = 34
-        Width = 149
-        Height = 39
+        Left = 133
+        Top = 38
+        Width = 137
+        Height = 36
         Caption = 'Interface'
         Columns = 3
         ItemIndex = 0
@@ -1774,24 +1790,25 @@ object Esp32frm: TEsp32frm
       object GroupBox3: TGroupBox
         Left = 5
         Top = 37
-        Width = 119
+        Width = 129
         Height = 40
         Caption = 'IP Settings'
         TabOrder = 4
         object EditAddr: TEdit
           Left = 0
           Top = 15
-          Width = 72
+          Width = 86
           Height = 19
+          Alignment = taRightJustify
           Ctl3D = False
           ParentCtl3D = False
           TabOrder = 0
           Text = '192.168.1.14'
         end
         object LongEditPort: TLongEdit
-          Left = 74
+          Left = 86
           Top = 15
-          Width = 40
+          Width = 36
           Height = 19
           Hint = '0..100000'
           Ctl3D = False
@@ -1876,7 +1893,7 @@ object Esp32frm: TEsp32frm
         Alignment = taRightJustify
         Decimal = 0
         MinValue = 100.000000000000000000
-        MaxValue = 20000000.000000000000000000
+        MaxValue = 400000000.000000000000000000
         TabOrder = 0
         Value = 4000000.000000000000000000
       end
@@ -1888,7 +1905,7 @@ object Esp32frm: TEsp32frm
         Alignment = taRightJustify
         Decimal = 0
         MinValue = 100.000000000000000000
-        MaxValue = 20000000.000000000000000000
+        MaxValue = 400000000.000000000000000000
         TabOrder = 1
         Value = 4000000.000000000000000000
       end
@@ -2261,7 +2278,6 @@ object Esp32frm: TEsp32frm
   end
   object Timer1: TTimer
     Enabled = False
-    Interval = 500
     OnTimer = Timer1Timer
     Left = 244
     Top = 222
