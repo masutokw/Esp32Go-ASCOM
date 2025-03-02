@@ -3,7 +3,7 @@ unit Esp32gofi;
 interface
 
 uses
-  ComObj, ActiveX, Esp32go_TLB;
+  ComObj, ActiveX, Esp32go_TLB, StdVcl,globalvar;
 
 const
   DRIVER_NAME = 'Esp32Go';
@@ -29,6 +29,13 @@ type
     function Get_MaxStep: integer; safecall;
     procedure Set_MaxStep(value: integer); safecall;
     function Get_TempCompAvailable: wordbool; safecall;
+    function Get_Connected: WordBool; safecall;
+    procedure Set_Connected(Value: WordBool); safecall;
+    function Get_Description: WideString; safecall;
+    function Get_DriverInfo: WideString; safecall;
+    function Get_DriverVersion: WideString; safecall;
+    function Get_InterfaceVersion: SYSINT; safecall;
+    function Get_Name: WideString; safecall;
 
   end;
 
@@ -43,8 +50,11 @@ var
 
 function TFocuser.Get_IsMoving: wordbool;
 begin
+// If fullconnect then
+//   result:= (get_focusmoving()>0)
+ //  else
+ result:=false;
 
-   result:= (get_focusmoving()>0);
 end;
 
 function TFocuser.Get_Link: wordbool;
@@ -63,9 +73,10 @@ begin
 end;
 
 function TFocuser.Get_Position: integer;
- var focus,count:integer;
+ var count:integer;
 begin
- result:=get_focuspos();
+ //result:=get_focuspos();
+ result:=focus;
 end;
 
 function TFocuser.Get_StepSize: double;
@@ -152,6 +163,16 @@ function TFocuser.Get_TempCompAvailable: wordbool;
 begin
   result := true;
 end;
+function TFocuser.Get_Connected: WordBool;
+begin
+result:=true; //fullconnect;
+end;
+
+procedure TFocuser.Set_Connected(Value: WordBool);
+begin
+
+end;
+
 
 { -------------------------------------------------------------- }
 procedure RegisterThySelf;
@@ -174,6 +195,32 @@ begin
     // set persistent default values if any
   end;
 
+end;
+
+
+function TFocuser.Get_Description: WideString;
+begin
+     Result:='ESP32go focuser' ;
+end;
+
+function TFocuser.Get_DriverInfo: WideString;
+begin
+    Result:='ESP32go focuser driver info';
+end;
+
+function TFocuser.Get_DriverVersion: WideString;
+begin
+   Result:='V1'
+end;
+
+function TFocuser.Get_InterfaceVersion: SYSINT;
+begin
+    result:=1
+end;
+
+function TFocuser.Get_Name: WideString;
+begin
+  Result:='ESP32go focuser';
 end;
 
 initialization

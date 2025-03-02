@@ -12,7 +12,7 @@ unit Esp32go_TLB;
 // ************************************************************************ //
 
 // $Rev: 98336 $
-// File generated on 14/07/2024 12:50:37 from Type Library described below.
+// File generated on 02/03/2025 10:48:39 from Type Library described below.
 
 // ************************************************************************  //
 // Type Lib: C:\Users\masut\Documents\Embarcadero\Studio\Projects\Esp32Go-ASCOM\esp32go (1)
@@ -428,6 +428,13 @@ type
     procedure Halt; safecall;
     procedure SetUpDialog; safecall;
     procedure Move(val: Integer); safecall;
+    function Get_Connected: WordBool; safecall;
+    procedure Set_Connected(Value: WordBool); safecall;
+    function Get_Name: WideString; safecall;
+    function Get_InterfaceVersion: SYSINT; safecall;
+    function Get_DriverInfo: WideString; safecall;
+    function Get_Description: WideString; safecall;
+    function Get_DriverVersion: WideString; safecall;
     property Absolute: WordBool read Get_Absolute;
     property IsMoving: WordBool read Get_IsMoving;
     property Link: WordBool read Get_Link write Set_Link;
@@ -438,6 +445,12 @@ type
     property TempComp: WordBool read Get_TempComp write Set_TempComp;
     property TempCompAvailable: WordBool read Get_TempCompAvailable;
     property Temperature: Double read Get_Temperature;
+    property Connected: WordBool read Get_Connected write Set_Connected;
+    property Name: WideString read Get_Name;
+    property InterfaceVersion: SYSINT read Get_InterfaceVersion;
+    property DriverInfo: WideString read Get_DriverInfo;
+    property Description: WideString read Get_Description;
+    property DriverVersion: WideString read Get_DriverVersion;
   end;
 
 // *********************************************************************//
@@ -460,6 +473,12 @@ type
     procedure Halt; dispid 401;
     procedure SetUpDialog; dispid 402;
     procedure Move(val: Integer); dispid 403;
+    property Connected: WordBool dispid 201;
+    property Name: WideString readonly dispid 202;
+    property InterfaceVersion: SYSINT readonly dispid 203;
+    property DriverInfo: WideString readonly dispid 204;
+    property Description: WideString readonly dispid 205;
+    property DriverVersion: WideString readonly dispid 206;
   end;
 
 // *********************************************************************//

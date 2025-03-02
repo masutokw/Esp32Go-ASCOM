@@ -253,7 +253,7 @@ end;
 
 function TTelescope.Get_CanSetTracking: WordBool;
 begin
-  result := true;
+  result := false;
 end;
 
 function TTelescope.Get_CanSlew: WordBool;
@@ -347,12 +347,12 @@ end;
 
 function TTelescope.Get_GuideRateDeclination: Double;
 begin
-  result := 1.0;
+  result := guide_de;
 end;
 
 function TTelescope.Get_GuideRateRightAscension: Double;
 begin
-  result := 0.7;
+  result := guide_ra;
 end;
 
 function TTelescope.Get_InterfaceVersion: SYSINT;
@@ -386,7 +386,8 @@ end;
 function TTelescope.Get_SideOfPier: PierSide;
 begin
 
-if   get_pierside()then
+//if   get_pierside()then
+if   piersid then
   result := pierwest else
   result:=piereast;
 end;
@@ -416,7 +417,7 @@ end;
 
 function TTelescope.Get_SiteLongitude: Double;
 begin
-  result := -get_long();
+  result := get_long();
 end;
 
 function TTelescope.Get_Slewing: WordBool;
@@ -588,12 +589,12 @@ end;
 
 procedure TTelescope.Set_GuideRateDeclination(Value: Double);
 begin
-
+ guide_de:=value;
 end;
 
 procedure TTelescope.Set_GuideRateRightAscension(Value: Double);
 begin
-
+   guide_ra:=value;
 end;
 
 procedure TTelescope.Set_RightAscensionRate(Value: Double);

@@ -12,7 +12,8 @@ uses
   bluetools in 'bluetools.pas',
   tcptools in 'tcptools.pas',
   Serialtools in 'Serialtools.pas',
-  LXUtils in 'LXUtils.pas';
+  LXUtils in 'LXUtils.pas',
+  globalvar in 'globalvar.pas';
 
 {$R *.TLB}
 

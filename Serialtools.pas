@@ -2,7 +2,7 @@ unit Serialtools;
 
 interface
 
-uses SysUtils, cport;
+uses SysUtils, cport,dialogs,globalvar;
 const READ_DELAY =20;
 var
   ComPortBT_USB: TComPort;
@@ -25,7 +25,19 @@ begin
   begin
 
      count := length(value);
-    Result := ComPortBT_USB.writestr(value)
+     try
+    Result := ComPortBT_USB.writestr(value) ;
+
+      EXCEPT
+       on E : Exception do
+     begin
+       ShowMessage('Exception class name = '+E.ClassName);
+       ShowMessage('Exception message = '+E.Message);
+       ComPortBT_USB.close;
+       fullconnect := false;
+     end;
+
+     end;
   end;
 
 end;

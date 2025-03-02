@@ -6,7 +6,7 @@
 // However, when applying changes via the Editor this file will be regenerated
 // and comments or formatting changes will be lost.
 // ************************************************************************ //
-// File generated on 22/07/2024 17:09:01 (- $Rev: 12980 $, 977457296).
+// File generated on 02/03/2025 11:22:08 (- $Rev: 12980 $, 94535609).
 
 [
   uuid(1E06C881-9ACE-461A-AE17-0A0981B24AB1),
@@ -353,6 +353,20 @@ library Esp32go
     HRESULT _stdcall SetUpDialog(void);
     [id(0x00000193)]
     HRESULT _stdcall Move([in] long val);
+    [propget, id(0x000000C9)]
+    HRESULT _stdcall Connected([out, retval] VARIANT_BOOL* Value);
+    [propput, id(0x000000C9)]
+    HRESULT _stdcall Connected([in] VARIANT_BOOL Value);
+    [propget, id(0x000000CA)]
+    HRESULT _stdcall Name([out, retval] BSTR* Value);
+    [propget, id(0x000000CB)]
+    HRESULT _stdcall InterfaceVersion([out, retval] int* Value);
+    [propget, id(0x000000CC)]
+    HRESULT _stdcall DriverInfo([out, retval] BSTR* Value);
+    [propget, id(0x000000CD)]
+    HRESULT _stdcall Description([out, retval] BSTR* Value);
+    [propget, id(0x000000CE)]
+    HRESULT _stdcall DriverVersion([out, retval] BSTR* Value);
   };
 
   [

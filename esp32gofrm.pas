@@ -8,7 +8,8 @@ uses
   Vcl.StdCtrls, Vcl.ExtCtrls, CPort, esp32goi, shared, inifiles,
   EnhEdits, CPortCtl, adpInstanceControl, System.Win.ScktComp, serial,
   Joystickex, JvComponentBase, JvHidControllerClass, HidUsage, Vcl.ComCtrls,
-  System.Bluetooth, bluetools, tcptools, serialtools, lxutils, Vcl.NumberBox;
+  System.Bluetooth, bluetools, tcptools, serialtools, lxutils, Vcl.NumberBox,
+  globalvar;
 
 type
   TEsp32frm = class(TForm)
@@ -135,6 +136,11 @@ type
     Memo1: TMemo;
     save: TButton;
     Button4: TButton;
+    Label6: TLabel;
+    StaticText9: TStaticText;
+    StaticText10: TStaticText;
+    StaticText11: TStaticText;
+    CheckBoxDCFocus: TCheckBox;
 
     procedure FormCreate(Sender: TObject);
     procedure Button_NMouseDown(Sender: TObject; Button: TMouseButton;
@@ -206,7 +212,7 @@ type
   public
     { Public declarations }
   end;
-
+ Const config_lines=29;
 var
   Esp32frm: TEsp32frm;
   // telescope: Ttelescope;
@@ -354,12 +360,14 @@ procedure TEsp32frm.Button4Click(Sender: TObject);
 var
   cstring, str: string;
   lines: Tstringlist;
+  cLines:integer;
 begin
   try
     lines := Tstringlist.Create();
   finally
 
   end;
+  clines:=0;
   Memo1.lines.Clear;
   if (ClientSocket1.Connected) or (ComPortBT_USB.Connected) or (checkBtSock)
   then
@@ -399,12 +407,12 @@ begin
         cstring := stringreplace(cstring, '.',
           '' + FormatSettings.DecimalSeparator, [rfReplaceAll]);
         lines.add(cstring);
-        Memo1.lines.add(cstring);
-      until inbuff = 0;
+        Memo1.lines.add(cstring)
+      until (inbuff = 0)   ;
 
     Label1.caption := inttostr(lines.Count) + lines[0];
     Timer1.Enabled := true;
-    if lines.Count > 28 then
+    if lines.Count >= config_lines then
     begin
 
       NumberBoxcountaz.Text := lines[0];
@@ -436,6 +444,11 @@ begin
       NBxVolt.Text := lines[26];
       CheckBoxbackaz.Checked := lines[27] = '1';
       CheckBoxbackalt.Checked := lines[28] = '1';
+      CheckBoxDCfocus.checked := lines[29] = '1';
+      str:= NumberBoxspgaz.Text;
+      guide_ra:=str.ToDouble*(15.0/3600.0);
+      str:= NumberBoxspgalt.Text;
+      guide_de:=str.ToDouble*(15.0/3600.0);
     end;
     lines.Destroy
   end;
@@ -693,8 +706,8 @@ begin
     end;
     if get_flip() then
       Chkflip.Checked := true;
-    Button4Click(self);
-    // showmessage('okread');
+      Button4Click(self);
+     //showmessage('okread');
     Timer1.Enabled := true;
   end;
 
@@ -875,12 +888,14 @@ begin
   // Retrive the device and assign it to the list
   JvHidDeviceController.CheckOutByIndex(Dev, Idx);
   lstHidDevices.Items.Objects[DevID] := Dev;
-
+  Memo1.Lines.add(HidDev.ProductName+Format('Device VID=%x PID=%x  %x %s %x',
+      [HidDev.Attributes.VendorID, HidDev.Attributes.ProductID, Idx, UsageText,
+      HidDev.LinkCollectionNodes[Idx].LinkUsage]));
   // If this device is a joystick then set its OnData property to read  its input
   name := HidDev.ProductName;
   // IF trim(HidDev.ProductName) = 'Generic  USB  Joystick ' then
-  IF (trim(HidDev.ProductName) = 'Gamepad') then
-  // if  HidDev.LinkCollectionNodes[Idx].LinkUsage= HID_USAGE_GENERIC_GAMEPAD
+  IF (trim(HidDev.ProductName) = '') then
+ //  if  HidDev.LinkCollectionNodes[Idx].LinkUsage= HID_USAGE_GENERIC_GAMEPAD
 
   begin
     Dev.OnData := ReadJoysticks;
@@ -935,10 +950,10 @@ procedure TEsp32frm.ReadJoysticks(HidDev: TJvHidDevice; ReportID: Byte;
 var
   Xaxis, Yaxis, Btn, cur, trackbnt, n: Integer;
 begin
-  { Labelmsg.caption := '';
+   Label6.caption := '';
     for n := 0 to Size do
-    Labelmsg.caption := Labelmsg.caption + ' ' +
-    inttohex(Cardinal(Pbyte(Data)[n]), 2); }
+    Label6.caption := Label6.caption + ' ' +
+    inttohex(Cardinal(Pbyte(Data)[n]), 2);
   // Check the X and Y axis
   Xaxis := Cardinal(Pbyte(Data)[3]);
   Yaxis := Cardinal(Pbyte(Data)[1]);
@@ -1015,7 +1030,8 @@ end;
 procedure TEsp32frm.Timer1Timer(Sender: TObject);
 var
   str, coors, strsideral: string;
-  focus, Count: Integer;
+  //focus, Count: Integer;
+    Count: Integer;
   png: Cardinal;
 begin
 
@@ -1169,12 +1185,13 @@ begin
     lines.add(NBxVolt.Text);
     lines.add(CheckBoxbackaz.Checked.tointeger.ToString);
     lines.add(CheckBoxbackalt.Checked.tointeger.ToString);
+    lines.add(CheckBoxDCFocus.Checked.tointeger.ToString);
     // Label17.Text := inttostr(lines.Count);
     Memo1.lines.Clear;
-    if lines.Count = 29 then
+    if lines.Count > config_lines then
     begin
       s := ':cs';
-      for I := 0 to 28 do
+      for I := 0 to config_lines do
         s := s + lines[I] + #13#10;
 
       s := s + '#';

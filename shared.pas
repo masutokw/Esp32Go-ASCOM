@@ -3,7 +3,7 @@
 interface
 
 uses Windows, SysUtils, Classes, Controls, Cport, dialogs, serial,
- DateUtils, bluetools, tcptools,serialtools,lxutils;
+ DateUtils, bluetools, tcptools,serialtools,lxutils,globalvar;
 
 const
   ra_pack = 11;
@@ -18,14 +18,15 @@ const
 var
 
 
-  fullconnect: boolean;
+  //fullconnect,
+  piersid: boolean;
   lastdec, lastar, lastaz, lastalt: Double;
   gmtoffset: Integer;
   imode: Integer;
   Sport: THandle;
   connected: boolean;
-  alt, ra, dec, az, longi, lat: Double;
-  track: Integer;
+  alt, ra, dec, az, longi, lat,guide_ra,guide_de: Double;
+  track,focus: Integer;
   send: function(values: String): Integer;
   recv: function(var value: string; count: Integer): Integer;
   readvln: function(var value: string; delimiter: string): Integer;
@@ -723,7 +724,8 @@ var str:string;
 begin
   send(':pS#');
  readvln(str,'#');
- result :=(Str='WEST#');
+ piersid :=(Str='WEST#');
+ result:=piersid;
 
 end;
 function get_flip():boolean;

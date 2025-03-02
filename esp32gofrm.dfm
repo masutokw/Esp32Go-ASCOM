@@ -3,8 +3,8 @@ object Esp32frm: TEsp32frm
   Top = 0
   AutoSize = True
   Caption = 'Esp32go'
-  ClientHeight = 301
-  ClientWidth = 412
+  ClientHeight = 297
+  ClientWidth = 410
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -1049,7 +1049,7 @@ object Esp32frm: TEsp32frm
   TextHeight = 13
   object GroupBox1: TGroupBox
     Left = 3
-    Top = 4
+    Top = 0
     Width = 120
     Height = 136
     Margins.Bottom = 0
@@ -1255,7 +1255,7 @@ object Esp32frm: TEsp32frm
     Top = 0
     Width = 281
     Height = 207
-    ActivePage = TabSheet1
+    ActivePage = Align
     TabOrder = 3
     Visible = False
     object TabSheet1: TTabSheet
@@ -1617,6 +1617,13 @@ object Esp32frm: TEsp32frm
         Width = 31
         Height = 13
         Caption = 'Label2'
+      end
+      object Label6: TLabel
+        Left = 8
+        Top = 144
+        Width = 31
+        Height = 13
+        Caption = 'Label6'
       end
       object ButtonHome: TButton
         Left = 7
@@ -2107,32 +2114,32 @@ object Esp32frm: TEsp32frm
         TabOrder = 22
       end
       object CheckBoxbackaz: TCheckBox
-        Left = 0
-        Top = 136
+        Left = -4
+        Top = 141
         Width = 34
         Height = 17
         Alignment = taLeftJustify
-        Caption = 'bk'
+        Caption = 'bkR'
         TabOrder = 23
       end
       object CheckBoxbackalt: TCheckBox
-        Left = 108
-        Top = 136
-        Width = 25
+        Left = 114
+        Top = 141
+        Width = 49
         Height = 17
-        Caption = 'b'
+        Caption = 'bkD'
         TabOrder = 24
       end
       object CheckBoxflip: TCheckBox
         Left = 214
-        Top = 155
+        Top = 159
         Width = 40
         Height = 17
         Caption = 'flip'
         TabOrder = 25
       end
       object CheckBoxinvaz: TCheckBox
-        Left = 161
+        Left = 158
         Top = 11
         Width = 50
         Height = 17
@@ -2148,15 +2155,15 @@ object Esp32frm: TEsp32frm
         TabOrder = 27
       end
       object NumberBoxgmtoff: TNumberBox
-        Left = 173
-        Top = 29
+        Left = 157
+        Top = 32
         Width = 35
         Height = 21
         Alignment = taRightJustify
         TabOrder = 28
       end
       object StaticText6: TStaticText
-        Left = 125
+        Left = 115
         Top = 34
         Width = 42
         Height = 17
@@ -2186,8 +2193,8 @@ object Esp32frm: TEsp32frm
         Value = 36.720000000000000000
       end
       object NumberBoxFmax: TNumberBox
-        Left = 176
-        Top = 81
+        Left = 167
+        Top = 76
         Width = 43
         Height = 21
         Alignment = taRightJustify
@@ -2195,8 +2202,8 @@ object Esp32frm: TEsp32frm
         Value = 40000.000000000000000000
       end
       object NBxVolt: TNumberBox
-        Left = 220
-        Top = 81
+        Left = 235
+        Top = 76
         Width = 43
         Height = 21
         Alignment = taRightJustify
@@ -2204,8 +2211,8 @@ object Esp32frm: TEsp32frm
         Value = 150.000000000000000000
       end
       object NumberBoxFlow: TNumberBox
-        Left = 175
-        Top = 103
+        Left = 167
+        Top = 100
         Width = 43
         Height = 21
         Alignment = taRightJustify
@@ -2213,8 +2220,8 @@ object Esp32frm: TEsp32frm
         Value = 30.000000000000000000
       end
       object NumberBoxfsp: TNumberBox
-        Left = 221
-        Top = 103
+        Left = 216
+        Top = 101
         Width = 43
         Height = 21
         Alignment = taRightJustify
@@ -2230,22 +2237,54 @@ object Esp32frm: TEsp32frm
         TabOrder = 36
       end
       object save: TButton
-        Left = 143
-        Top = 128
-        Width = 49
+        Left = 185
+        Top = 124
+        Width = 45
         Height = 25
         Caption = 'save'
         TabOrder = 37
         OnClick = saveClick
       end
       object Button4: TButton
-        Left = 195
-        Top = 128
-        Width = 49
+        Left = 229
+        Top = 124
+        Width = 45
         Height = 25
         Caption = 'read'
         TabOrder = 38
         OnClick = Button4Click
+      end
+      object StaticText9: TStaticText
+        Left = 115
+        Top = 77
+        Width = 55
+        Height = 17
+        Caption = 'Max Focus'
+        TabOrder = 39
+      end
+      object StaticText10: TStaticText
+        Left = 216
+        Top = 80
+        Width = 22
+        Height = 17
+        Caption = 'Volt'
+        TabOrder = 40
+      end
+      object StaticText11: TStaticText
+        Left = 115
+        Top = 100
+        Width = 51
+        Height = 17
+        Caption = 'Focus F/S'
+        TabOrder = 41
+      end
+      object CheckBoxDCFocus: TCheckBox
+        Left = 115
+        Top = 123
+        Width = 64
+        Height = 17
+        Caption = 'DC Focus'
+        TabOrder = 42
       end
     end
   end
