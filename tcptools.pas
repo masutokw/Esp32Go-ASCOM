@@ -70,7 +70,7 @@ var
 begin
   if ClientSocket1.connected then
   begin
-    str := ClientSocket1.Socket.readln(delimiter);
+    str := ClientSocket1.Socket.readln(delimiter,1000);
 
     if str.length > 0 then
       str := str + delimiter;

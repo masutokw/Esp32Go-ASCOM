@@ -141,6 +141,38 @@ type
     StaticText10: TStaticText;
     StaticText11: TStaticText;
     CheckBoxDCFocus: TCheckBox;
+    TMC: TTabSheet;
+    NumberBoxraSt: TNumberBox;
+    NumberBoxDecSt: TNumberBox;
+    NumberBoxF1St: TNumberBox;
+    NumberBoxF2St: TNumberBox;
+    NumberBoxF1Cur: TNumberBox;
+    NumberBoxF2Cur: TNumberBox;
+    NumberBoxDecCur: TNumberBox;
+    NumberBoxRACur: TNumberBox;
+    NumberBoxdecSp: TNumberBox;
+    NumberBoxf1Sp: TNumberBox;
+    NumberBoxf2Sp: TNumberBox;
+    Label7: TLabel;
+    Button5: TButton;
+    Button6: TButton;
+    Label8: TLabel;
+    Label9: TLabel;
+    Label10: TLabel;
+    Label11: TLabel;
+    CheckRASp: TCheckBox;
+    checkdecsp: TCheckBox;
+    checkf1sp: TCheckBox;
+    checkf2sp: TCheckBox;
+    checkdecpol: TCheckBox;
+    Checkf2pol: TCheckBox;
+    Checkf1pol: TCheckBox;
+    Checkrapol: TCheckBox;
+    Label12: TLabel;
+    NumberBoxraSp: TNumberBox;
+    Label13: TLabel;
+    Label14: TLabel;
+    Label15: TLabel;
 
     procedure FormCreate(Sender: TObject);
     procedure Button_NMouseDown(Sender: TObject; Button: TMouseButton;
@@ -206,13 +238,18 @@ type
     procedure Button4Click(Sender: TObject);
     procedure ButtonM1ContextPopup(Sender: TObject; MousePos: TPoint;
       var Handled: Boolean);
+    procedure Button5Click(Sender: TObject);
+    procedure Button6Click(Sender: TObject);
 
   private
     { Private declarations }
   public
     { Public declarations }
   end;
- Const config_lines=29;
+
+Const
+  config_lines = 29;
+
 var
   Esp32frm: TEsp32frm;
   // telescope: Ttelescope;
@@ -360,14 +397,14 @@ procedure TEsp32frm.Button4Click(Sender: TObject);
 var
   cstring, str: string;
   lines: Tstringlist;
-  cLines:integer;
+  cLines: Integer;
 begin
   try
     lines := Tstringlist.Create();
   finally
 
   end;
-  clines:=0;
+  cLines := 0;
   Memo1.lines.Clear;
   if (ClientSocket1.Connected) or (ComPortBT_USB.Connected) or (checkBtSock)
   then
@@ -408,7 +445,7 @@ begin
           '' + FormatSettings.DecimalSeparator, [rfReplaceAll]);
         lines.add(cstring);
         Memo1.lines.add(cstring)
-      until (inbuff = 0)   ;
+      until (inbuff = 0);
 
     Label1.caption := inttostr(lines.Count) + lines[0];
     Timer1.Enabled := true;
@@ -444,11 +481,156 @@ begin
       NBxVolt.Text := lines[26];
       CheckBoxbackaz.Checked := lines[27] = '1';
       CheckBoxbackalt.Checked := lines[28] = '1';
-      CheckBoxDCfocus.checked := lines[29] = '1';
-      str:= NumberBoxspgaz.Text;
-      guide_ra:=str.ToDouble*(15.0/3600.0);
-      str:= NumberBoxspgalt.Text;
-      guide_de:=str.ToDouble*(15.0/3600.0);
+      CheckBoxDCFocus.Checked := lines[29] = '1';
+      str := NumberBoxspgaz.Text;
+      guide_ra := str.ToDouble * (15.0 / 3600.0);
+      str := NumberBoxspgalt.Text;
+      guide_de := str.ToDouble * (15.0 / 3600.0);
+    end;
+    lines.Destroy
+  end;
+end;
+
+procedure TEsp32frm.Button5Click(Sender: TObject);
+var
+  s: string;
+  I: Integer;
+  lines: Tstringlist;
+  bytes: Tbytes;
+begin
+  try
+    lines := Tstringlist.Create();
+  finally
+
+  end;
+  if (ClientSocket1.Connected) or (ComPortBT_USB.Connected) or (checkBtSock)
+  then
+  begin
+
+    lines.add(NumberBoxraSt.Text);
+    lines.add(NumberBoxRACur.Text);
+    lines.add(NumberBoxraSp.Text);
+    lines.add(CheckRASp.Checked.tointeger.ToString);
+    lines.add(Checkrapol.Checked.tointeger.ToString);
+    lines.add(NumberBoxDecSt.Text);
+    lines.add(NumberBoxDecCur.Text);
+    lines.add(NumberBoxdecSp.Text);
+    lines.add(checkdecsp.Checked.tointeger.ToString);
+    lines.add(checkdecpol.Checked.tointeger.ToString);
+    lines.add(NumberBoxF1St.Text);
+    lines.add(NumberBoxF1Cur.Text);
+    lines.add(NumberBoxf1Sp.Text);
+    lines.add(checkf1sp.Checked.tointeger.ToString);
+    lines.add(Checkf1pol.Checked.tointeger.ToString);
+    lines.add(NumberBoxF2St.Text);
+    lines.add(NumberBoxF2Cur.Text);
+    lines.add(NumberBoxf2Sp.Text);
+    lines.add(checkf2sp.Checked.tointeger.ToString);
+    lines.add(Checkf2pol.Checked.tointeger.ToString);
+
+    // Label17.Text := inttostr(lines.Count);
+    Memo1.lines.Clear;
+    if true then
+    begin
+      s := ':ct';
+      for I := 0 to 19 do
+        s := s + lines[I] + #13#10;
+
+      s := s + '#';
+      s := stringreplace(s, FormatSettings.DecimalSeparator, '.',
+        [rfReplaceAll]);
+      Memo1.lines.add(s);
+      send(s);
+    end;
+  end;
+
+  lines.Destroy;
+
+end;
+
+procedure TEsp32frm.Button6Click(Sender: TObject);
+
+var
+  cstring, str: string;
+  lines: Tstringlist;
+  cLines: Integer;
+begin
+  try
+    lines := Tstringlist.Create();
+  finally
+
+  end;
+  cLines := 0;
+  Memo1.lines.Clear;
+  if (ClientSocket1.Connected) or (ComPortBT_USB.Connected) or (checkBtSock)
+  then
+
+  begin
+    // Memo1.lines.Clear;
+    Timer1.Enabled := false;
+    send(':cT#');
+
+    if imode = 2 then
+    begin
+      recv(cstring, 100);
+      // cstring := stringreplace(cstring,#10,
+      // '', [rfReplaceAll]);
+      // cstring := stringreplace(cstring,#13,
+      // '', [rfReplaceAll]);
+      lines.Text := cstring;
+
+    end
+    else
+      repeat
+
+        case imode of
+          1:
+            begin
+              readvln(cstring, #10);
+              cstring := stringreplace(cstring, #10, '', [rfReplaceAll])
+            end;
+          0:
+            begin
+              readvln(cstring, #10);
+              cstring := stringreplace(cstring, #10, '', [rfReplaceAll]);
+              cstring := stringreplace(cstring, #13, '', [rfReplaceAll]);
+            end;
+        end;
+
+        cstring := stringreplace(cstring, '.',
+          '' + FormatSettings.DecimalSeparator, [rfReplaceAll]);
+        lines.add(cstring);
+        Memo1.lines.add(cstring)
+      until (inbuff = 0);
+
+    Label1.caption := inttostr(lines.Count) + lines[0];
+    Timer1.Enabled := true;
+    if lines.Count >= 20 then
+    begin
+      NumberBoxraSt.Text := lines[0];
+      NumberBoxRACur.Text := lines[1];
+      NumberBoxraSp.Text := lines[2];
+      CheckRASp.Checked := lines[3] = '1';
+      Checkrapol.Checked := lines[4] = '1';
+
+      NumberBoxDecSt.Text := lines[5];
+      NumberBoxDecCur.Text := lines[6];
+      NumberBoxdecSp.Text := lines[7];
+      checkdecsp.Checked := lines[8] = '1';
+      checkdecpol.Checked := lines[9] = '1';
+
+      NumberBoxF1St.Text := lines[10];
+      NumberBoxF1Cur.Text := lines[11];
+      NumberBoxf1Sp.Text := lines[12];
+      checkf1sp.Checked := lines[13] = '1';
+      Checkf1pol.Checked := lines[14] = '1';
+
+      NumberBoxF2St.Text := lines[15];
+      NumberBoxF2Cur.Text := lines[16];
+      NumberBoxf2Sp.Text := lines[17];
+      checkf2sp.Checked := lines[18] = '1';
+      Checkf2pol.Checked := lines[19] = '1';
+
     end;
     lines.Destroy
   end;
@@ -706,8 +888,8 @@ begin
     end;
     if get_flip() then
       Chkflip.Checked := true;
-      Button4Click(self);
-     //showmessage('okread');
+    Button4Click(self);
+    // showmessage('okread');
     Timer1.Enabled := true;
   end;
 
@@ -888,14 +1070,14 @@ begin
   // Retrive the device and assign it to the list
   JvHidDeviceController.CheckOutByIndex(Dev, Idx);
   lstHidDevices.Items.Objects[DevID] := Dev;
-  Memo1.Lines.add(HidDev.ProductName+Format('Device VID=%x PID=%x  %x %s %x',
-      [HidDev.Attributes.VendorID, HidDev.Attributes.ProductID, Idx, UsageText,
-      HidDev.LinkCollectionNodes[Idx].LinkUsage]));
+  Memo1.lines.add(HidDev.ProductName + Format('Device VID=%x PID=%x  %x %s %x',
+    [HidDev.Attributes.VendorID, HidDev.Attributes.ProductID, Idx, UsageText,
+    HidDev.LinkCollectionNodes[Idx].LinkUsage]));
   // If this device is a joystick then set its OnData property to read  its input
   name := HidDev.ProductName;
   // IF trim(HidDev.ProductName) = 'Generic  USB  Joystick ' then
   IF (trim(HidDev.ProductName) = '') then
- //  if  HidDev.LinkCollectionNodes[Idx].LinkUsage= HID_USAGE_GENERIC_GAMEPAD
+  // if  HidDev.LinkCollectionNodes[Idx].LinkUsage= HID_USAGE_GENERIC_GAMEPAD
 
   begin
     Dev.OnData := ReadJoysticks;
@@ -950,10 +1132,10 @@ procedure TEsp32frm.ReadJoysticks(HidDev: TJvHidDevice; ReportID: Byte;
 var
   Xaxis, Yaxis, Btn, cur, trackbnt, n: Integer;
 begin
-   Label6.caption := '';
-    for n := 0 to Size do
+  Label6.caption := '';
+  for n := 0 to Size do
     Label6.caption := Label6.caption + ' ' +
-    inttohex(Cardinal(Pbyte(Data)[n]), 2);
+      inttohex(Cardinal(Pbyte(Data)[n]), 2);
   // Check the X and Y axis
   Xaxis := Cardinal(Pbyte(Data)[3]);
   Yaxis := Cardinal(Pbyte(Data)[1]);
@@ -1030,8 +1212,8 @@ end;
 procedure TEsp32frm.Timer1Timer(Sender: TObject);
 var
   str, coors, strsideral: string;
-  //focus, Count: Integer;
-    Count: Integer;
+  // focus, Count: Integer;
+  Count: Integer;
   png: Cardinal;
 begin
 

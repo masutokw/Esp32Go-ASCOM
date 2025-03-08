@@ -299,7 +299,9 @@ begin
     n := 0;
 
     send(':Fp#');
-    if readvln(str, '#') = 6 then
+      readvln(str, '#');
+   // showmessage(Str);
+    if str.Length >= 5 then
     begin
       str := StringReplace(str, '#', '', [rfReplaceAll]);
       temp := StrToIntDef(str, 0);
@@ -308,7 +310,7 @@ begin
       temp := 0;
     Result := temp;
   end;
-  Result := 0;
+//  Result := 18;
 end;
 
 Function get_focusmoving(): Integer;
@@ -320,14 +322,10 @@ begin
   if (inbuff) > 0 then
     clearBuff(true, false);
   send(':FB#');
-  while (inbuff < 2) and (n < 100) do
-  begin
-    sleep(20);
-    inc(n);
-  end;
-  // count := n;
-  if recv(str, 6) >= 0 then
-  begin
+         readvln(str, '#');
+  // showmessage(Str);
+    if str.Length >0 then
+   begin
     str := StringReplace(str, '#', '', [rfReplaceAll]);
     temp := StrToIntDef(str, 0);
 

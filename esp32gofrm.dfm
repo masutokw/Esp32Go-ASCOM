@@ -1255,7 +1255,7 @@ object Esp32frm: TEsp32frm
     Top = 0
     Width = 281
     Height = 207
-    ActivePage = Align
+    ActivePage = TMC
     TabOrder = 3
     Visible = False
     object TabSheet1: TTabSheet
@@ -2285,6 +2285,329 @@ object Esp32frm: TEsp32frm
         Height = 17
         Caption = 'DC Focus'
         TabOrder = 42
+      end
+    end
+    object TMC: TTabSheet
+      Caption = 'TMC'
+      ImageIndex = 4
+      object Label7: TLabel
+        Left = 3
+        Top = 28
+        Width = 57
+        Height = 13
+        Caption = 'M _steps  '
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label8: TLabel
+        Left = 65
+        Top = 9
+        Width = 19
+        Height = 13
+        Caption = 'RA:'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label9: TLabel
+        Left = 107
+        Top = 9
+        Width = 24
+        Height = 13
+        Caption = 'Dec:'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label10: TLabel
+        Left = 150
+        Top = 9
+        Width = 26
+        Height = 13
+        Caption = 'Foc1'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label11: TLabel
+        Left = 193
+        Top = 9
+        Width = 26
+        Height = 13
+        Caption = 'Foc2'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label12: TLabel
+        Left = 3
+        Top = 58
+        Width = 43
+        Height = 13
+        Caption = 'mAmps'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label13: TLabel
+        Left = 3
+        Top = 85
+        Width = 41
+        Height = 13
+        Caption = 'Trigger'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label14: TLabel
+        Left = 3
+        Top = 110
+        Width = 44
+        Height = 13
+        Caption = 'SpCycle'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label15: TLabel
+        Left = 3
+        Top = 133
+        Width = 46
+        Height = 13
+        Caption = 'Interpol'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object NumberBoxraSt: TNumberBox
+        Left = 65
+        Top = 28
+        Width = 35
+        Height = 21
+        Alignment = taRightJustify
+        MaxValue = 256.000000000000000000
+        TabOrder = 0
+        Value = 16.000000000000000000
+      end
+      object NumberBoxDecSt: TNumberBox
+        Left = 106
+        Top = 28
+        Width = 35
+        Height = 21
+        Alignment = taRightJustify
+        MaxValue = 256.000000000000000000
+        TabOrder = 1
+        Value = 16.000000000000000000
+      end
+      object NumberBoxF1St: TNumberBox
+        Left = 147
+        Top = 28
+        Width = 35
+        Height = 21
+        Alignment = taRightJustify
+        MaxValue = 256.000000000000000000
+        TabOrder = 2
+        Value = 16.000000000000000000
+      end
+      object NumberBoxF2St: TNumberBox
+        Left = 188
+        Top = 28
+        Width = 35
+        Height = 21
+        Alignment = taRightJustify
+        MaxValue = 256.000000000000000000
+        TabOrder = 3
+        Value = 16.000000000000000000
+      end
+      object NumberBoxF1Cur: TNumberBox
+        Left = 147
+        Top = 55
+        Width = 35
+        Height = 21
+        Alignment = taRightJustify
+        MaxValue = 1500.000000000000000000
+        TabOrder = 4
+        Value = 1000.000000000000000000
+      end
+      object NumberBoxF2Cur: TNumberBox
+        Left = 188
+        Top = 55
+        Width = 35
+        Height = 21
+        Alignment = taRightJustify
+        MaxValue = 1500.000000000000000000
+        TabOrder = 5
+        Value = 1000.000000000000000000
+      end
+      object NumberBoxDecCur: TNumberBox
+        Left = 106
+        Top = 55
+        Width = 35
+        Height = 21
+        Alignment = taRightJustify
+        MaxValue = 1500.000000000000000000
+        TabOrder = 6
+        Value = 1000.000000000000000000
+      end
+      object NumberBoxRACur: TNumberBox
+        Left = 65
+        Top = 55
+        Width = 35
+        Height = 21
+        Alignment = taRightJustify
+        MaxValue = 1500.000000000000000000
+        TabOrder = 7
+        Value = 1000.000000000000000000
+      end
+      object NumberBoxdecSp: TNumberBox
+        Left = 106
+        Top = 82
+        Width = 35
+        Height = 21
+        Alignment = taRightJustify
+        MaxValue = 1500.000000000000000000
+        TabOrder = 8
+        Value = 500.000000000000000000
+      end
+      object NumberBoxf1Sp: TNumberBox
+        Left = 147
+        Top = 82
+        Width = 35
+        Height = 21
+        Alignment = taRightJustify
+        MaxValue = 1500.000000000000000000
+        TabOrder = 9
+        Value = 500.000000000000000000
+      end
+      object NumberBoxf2Sp: TNumberBox
+        Left = 188
+        Top = 82
+        Width = 35
+        Height = 21
+        Alignment = taRightJustify
+        MaxValue = 1500.000000000000000000
+        TabOrder = 10
+        Value = 500.000000000000000000
+      end
+      object Button5: TButton
+        Left = 176
+        Top = 155
+        Width = 41
+        Height = 17
+        Caption = 'Save'
+        TabOrder = 11
+        OnClick = Button5Click
+      end
+      object Button6: TButton
+        Left = 216
+        Top = 155
+        Width = 41
+        Height = 17
+        Caption = 'Read'
+        TabOrder = 12
+        OnClick = Button6Click
+      end
+      object CheckRASp: TCheckBox
+        Left = 69
+        Top = 109
+        Width = 33
+        Height = 17
+        Caption = 'on'
+        TabOrder = 13
+      end
+      object checkdecsp: TCheckBox
+        Left = 108
+        Top = 109
+        Width = 33
+        Height = 17
+        Caption = 'on'
+        TabOrder = 14
+      end
+      object checkf1sp: TCheckBox
+        Left = 151
+        Top = 109
+        Width = 33
+        Height = 17
+        Caption = 'on'
+        TabOrder = 15
+      end
+      object checkf2sp: TCheckBox
+        Left = 194
+        Top = 109
+        Width = 33
+        Height = 17
+        Caption = 'on'
+        TabOrder = 16
+      end
+      object checkdecpol: TCheckBox
+        Left = 108
+        Top = 132
+        Width = 33
+        Height = 17
+        Caption = 'on'
+        TabOrder = 17
+      end
+      object Checkf2pol: TCheckBox
+        Left = 194
+        Top = 132
+        Width = 33
+        Height = 17
+        Caption = 'on'
+        TabOrder = 18
+      end
+      object Checkf1pol: TCheckBox
+        Left = 151
+        Top = 132
+        Width = 33
+        Height = 17
+        Caption = 'on'
+        TabOrder = 19
+      end
+      object Checkrapol: TCheckBox
+        Left = 69
+        Top = 132
+        Width = 33
+        Height = 17
+        Caption = 'on'
+        TabOrder = 20
+      end
+      object NumberBoxraSp: TNumberBox
+        Left = 65
+        Top = 82
+        Width = 35
+        Height = 21
+        Alignment = taRightJustify
+        MaxValue = 1500.000000000000000000
+        TabOrder = 21
+        Value = 500.000000000000000000
       end
     end
   end
