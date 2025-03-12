@@ -3,8 +3,8 @@ object Esp32frm: TEsp32frm
   Top = 0
   AutoSize = True
   Caption = 'Esp32go'
-  ClientHeight = 297
-  ClientWidth = 410
+  ClientHeight = 309
+  ClientWidth = 401
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -1048,7 +1048,7 @@ object Esp32frm: TEsp32frm
   OnDestroy = FormDestroy
   TextHeight = 13
   object GroupBox1: TGroupBox
-    Left = 3
+    Left = 0
     Top = 0
     Width = 120
     Height = 136
@@ -1191,8 +1191,8 @@ object Esp32frm: TEsp32frm
     end
   end
   object GroupBox2: TGroupBox
-    Left = 3
-    Top = 169
+    Left = 0
+    Top = 171
     Width = 120
     Height = 38
     Caption = 'Status'
@@ -1227,8 +1227,8 @@ object Esp32frm: TEsp32frm
     end
   end
   object RadioGroup1: TRadioGroup
-    Left = 3
-    Top = 143
+    Left = 0
+    Top = 144
     Width = 120
     Height = 29
     Margins.Top = 0
@@ -1251,8 +1251,8 @@ object Esp32frm: TEsp32frm
     TabOrder = 0
   end
   object PageControl1: TPageControl
-    Left = 129
-    Top = 0
+    Left = 120
+    Top = 2
     Width = 281
     Height = 207
     ActivePage = TMC
@@ -1612,8 +1612,8 @@ object Esp32frm: TEsp32frm
     object Tabconfig: TTabSheet
       Caption = 'Settings'
       object Label2: TLabel
-        Left = 143
-        Top = 103
+        Left = 8
+        Top = 119
         Width = 31
         Height = 13
         Caption = 'Label2'
@@ -2613,7 +2613,7 @@ object Esp32frm: TEsp32frm
   end
   object GroupBox8: TGroupBox
     Left = 0
-    Top = 203
+    Top = 215
     Width = 120
     Height = 94
     Caption = 'Ar/Dec'

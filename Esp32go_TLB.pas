@@ -12,7 +12,7 @@ unit Esp32go_TLB;
 // ************************************************************************ //
 
 // $Rev: 98336 $
-// File generated on 02/03/2025 10:48:39 from Type Library described below.
+// File generated on 10/03/2025 12:33:34 from Type Library described below.
 
 // ************************************************************************  //
 // Type Lib: C:\Users\masut\Documents\Embarcadero\Studio\Projects\Esp32Go-ASCOM\esp32go (1)
@@ -222,7 +222,7 @@ type
     procedure CommandBlind(const Command: WideString; Raw: WordBool); safecall;
     procedure CommandBool(const Command: WideString; Raw: Integer); safecall;
     procedure CommandString(const Command: WideString; Raw: WordBool); safecall;
-    procedure DestinationSideOfPier(RightAscension: Double; Declination: Double); safecall;
+    function DestinationSideOfPier(RightAscension: Double; Declination: Double): PierSide; stdcall;
     procedure FindHome; safecall;
     procedure MoveAxis(Axis: TelescopeAxes; Rate: Double); safecall;
     procedure Park; safecall;
@@ -360,7 +360,7 @@ type
     procedure CommandBlind(const Command: WideString; Raw: WordBool); dispid 56;
     procedure CommandBool(const Command: WideString; Raw: Integer); dispid 57;
     procedure CommandString(const Command: WideString; Raw: WordBool); dispid 58;
-    procedure DestinationSideOfPier(RightAscension: Double; Declination: Double); dispid 59;
+    function DestinationSideOfPier(RightAscension: Double; Declination: Double): PierSide; dispid 59;
     procedure FindHome; dispid 60;
     procedure MoveAxis(Axis: TelescopeAxes; Rate: Double); dispid 61;
     procedure Park; dispid 62;

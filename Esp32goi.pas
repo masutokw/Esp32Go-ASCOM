@@ -6,7 +6,7 @@ interface
 
 uses
   dialogs, ComObj, ActiveX, Esp32go_TLB, StdVcl, CPort, shared, classes,
-  Windows,lxutils;
+  Windows, lxutils;
 
 const
   DRIVER_NAME = 'Esp32go';
@@ -23,12 +23,20 @@ type
 
 type
   TTrackingRates = class(TAutoObject, ITrackingRates)
+
+
   private
     lrates: tcollection;
+    FList: array of DriveRates;
+
+   // enumerator : Collections.IEnumerator;
+
   protected
+
     function Get_Count: Integer; safecall;
     function Get_Item(Index: Integer): DriveRates; safecall;
     function GetEnumerator: IEnumVARIANT; safecall;
+
   end;
 
 type
@@ -94,8 +102,10 @@ type
     procedure CommandBlind(const Command: WideString; Raw: WordBool); safecall;
     procedure CommandBool(const Command: WideString; Raw: Integer); safecall;
     procedure CommandString(const Command: WideString; Raw: WordBool); safecall;
-    procedure DestinationSideOfPier(RightAscension,
-      Declination: Double); safecall;
+    function DestinationSideOfPier(RightAscension, Declination: Double)
+      : PierSide;
+    winapi;
+
     procedure FindHome; safecall;
     procedure MoveAxis(Axis: TelescopeAxes; Rate: Double); safecall;
     procedure Park; safecall;
@@ -122,8 +132,7 @@ type
     procedure SlewToAltAz(Azimut, Altitude: Double); safecall;
     procedure SlewToAltAzAsync(Azimut, Altitude: Double); safecall;
     procedure SlewToCoordinates(RightAscension, Declination: Double); safecall;
-    procedure SlewToCoordinatesAsync(RightAscension,
-      Declination: Double); safecall;
+    procedure SlewToCoordinatesAsync(RightAscension,Declination: Double); safecall;
     procedure SlewToTarget; safecall;
     procedure SlewToTargetAsync; safecall;
     procedure SyncToAltAz(Azimuth, Altitude: Double); safecall;
@@ -143,8 +152,9 @@ var
   trackr: TTrackingRates;
   itrackr: ITrackingRates;
   ratearr: array [0 .. 3] of DriveRates;
-
+  enumerator :olevariant;
   lastguideTimestamp: longint;
+  drv:driverates;
 
 function TTelescope.CanMoveAxis(Axis: TelescopeAxes): WordBool;
 
@@ -175,7 +185,7 @@ begin
     'A':
       alm := algAltAz;
   end;
-    Get_AlignmentMode:=alm;
+  Get_AlignmentMode := alm;
 end;
 
 function TTelescope.Get_Altitude: Double;
@@ -200,7 +210,7 @@ end;
 
 function TTelescope.Get_AtPark: WordBool;
 begin
-  result := false
+  result := get_parked();
 end;
 
 function TTelescope.Get_Azimuth: Double;
@@ -228,7 +238,7 @@ end;
 
 function TTelescope.Get_CanSetDeclinationRate: WordBool;
 begin
-  result := false;
+  result := true;
 end;
 
 function TTelescope.Get_CanSetGuideRates: WordBool;
@@ -248,12 +258,12 @@ end;
 
 function TTelescope.Get_CanSetRightAscensionRate: WordBool;
 begin
-  result := false;
+  result := true;
 end;
 
 function TTelescope.Get_CanSetTracking: WordBool;
 begin
-  result := false;
+  result := true;
 end;
 
 function TTelescope.Get_CanSlew: WordBool;
@@ -263,12 +273,12 @@ end;
 
 function TTelescope.Get_CanSlewAltAz: WordBool;
 begin
-  result := false;
+  result :=false;
 end;
 
 function TTelescope.Get_CanSlewAltAzAsync: WordBool;
 begin
-  result := false;
+  result := false
 end;
 
 function TTelescope.Get_CanSlewAsync: WordBool;
@@ -303,7 +313,7 @@ function TTelescope.Get_Declination: Double;
 
 begin
   result := dec;
-  //result :=  Get_Dec();
+  // result :=  Get_Dec();
 end;
 
 function TTelescope.Get_DeclinationRate: Double;
@@ -357,6 +367,7 @@ end;
 
 function TTelescope.Get_InterfaceVersion: SYSINT;
 begin
+//showmessage('version');
   result := 3;
 end;
 
@@ -374,7 +385,7 @@ function TTelescope.Get_RightAscension: Double;
 
 begin
   result := ra;
- // result := Get_RA();
+  // result := Get_RA();
 
 end;
 
@@ -386,10 +397,11 @@ end;
 function TTelescope.Get_SideOfPier: PierSide;
 begin
 
-//if   get_pierside()then
-if   piersid then
-  result := pierwest else
-  result:=piereast;
+  // if   get_pierside()then
+  if piersid then
+    result := pierwest
+  else
+    result := piereast;
 end;
 
 function TTelescope.Get_SiderealTime: Double;
@@ -407,17 +419,29 @@ end;
 
 function TTelescope.Get_SiteElevation: Double;
 begin
-  result := 0;
+  result := elevation_site;
 end;
 
 function TTelescope.Get_SiteLatitude: Double;
+var
+  lat: Double;
 begin
-  result := get_lat();
+  lat := get_lat();
+  if abs(lat) > 90.0 then
+    raise EOLEexception.Create('Out of range', $80040400, 'none', '0', 0)
+  else
+    result := lat;
 end;
 
 function TTelescope.Get_SiteLongitude: Double;
+var
+  long: Double;
 begin
-  result := get_long();
+  long := get_long();
+  if abs(long) > 180.0 then
+    raise EOLEexception.Create('Out of range', $80040400, 'none', '0', 0)
+  else
+    result := long;
 end;
 
 function TTelescope.Get_Slewing: WordBool;
@@ -432,49 +456,67 @@ end;
 
 function TTelescope.Get_TargetDeclination: Double;
 begin
-
+  result := dec_target;
 end;
 
 function TTelescope.Get_TargetRightAscension: Double;
 begin
-
+  result := ra_target;
 end;
 
 function TTelescope.Get_Tracking: WordBool;
 var
   str: string;
 begin
-  result := track=1;//(get_track() = 1);
+  result := track = 1; // (get_track() = 1);
   // result:=true;
 end;
 
 function TTelescope.Get_TrackingRate: DriveRates;
 begin
-  result := driveSidereal;
+  result :=trackr.flist[drv];// driveSidereal;
 end;
 
 function TTelescope.Get_TrackingRates: ITrackingRates;
 var
   tracking_Rates: ITrackingRates;
 begin
+  // raise EOLEexception.Create('Not Implemented', $80040400, 'none', '0', 0);exit;
   // showmessage(inttostr(trackr.Get_Item(1)))  ;
-  // trackr:=ttrackingrates.Create;
-  itrackr := trackr.Create();
-  trackr.lrates.add();
+  trackr := TTrackingRates.Create;
+
+  SetLength(trackr.FList, 4);
+  trackr.FList[0] := driveSidereal;
+  trackr.FList[1] := DriveLunar;
+  trackr.FList[2] := DriveSolar;
+  trackr.FList[3] := DriveKing;
+  // enumerator.next
+  // showmessage('gettr');
+  // itrackr := trackr.Create();
+  // result := tracking_Rates;
+  // trackr.lrates.add();
   // trackr.lrates.Items[1]:=
   // trackr.lrates.Items[1]
-  result := itrackr;
-  showmessage('gettr');
+  // result := itrackr;
+  // showmessage('gettr');
+  // Result := TTrackingRates.Create;
+  result := trackr;
 end;
 
 function TTelescope.Get_UTCDate: TDateTime;
+var
+  ASystemTime: TSystemTime;
+  UTCnowDateTime: TDateTime;
 begin
-
+  GetSystemTime(ASystemTime);
+  UTCnowDateTime := SystemTimeToDateTime(ASystemTime);
+  result := UTCnowDateTime;
 end;
 
 procedure TTelescope.AbortSlew;
 begin
-  abort_slew();
+  if not parked then
+    abort_slew();
 end;
 
 procedure TTelescope.AxisRates(Axis: TelescopeAxes);
@@ -497,9 +539,13 @@ begin
 
 end;
 
-procedure TTelescope.DestinationSideOfPier(RightAscension, Declination: Double);
-begin
+function TTelescope.DestinationSideOfPier(RightAscension, Declination: Double)
+  : PierSide;
 
+begin
+if calc_lha(RightAscension)>0.0 then
+  result := piereast
+  else    result := pierwest;
 end;
 
 procedure TTelescope.FindHome;
@@ -589,12 +635,12 @@ end;
 
 procedure TTelescope.Set_GuideRateDeclination(Value: Double);
 begin
- guide_de:=value;
+  guide_de := Value;
 end;
 
 procedure TTelescope.Set_GuideRateRightAscension(Value: Double);
 begin
-   guide_ra:=value;
+  guide_ra := Value;
 end;
 
 procedure TTelescope.Set_RightAscensionRate(Value: Double);
@@ -604,27 +650,40 @@ end;
 
 procedure TTelescope.Set_SideOfPier(Value: PierSide);
 begin
-     setpierside(value=pierWest);
- end;
+  setpierside(Value = pierwest);
+end;
 
 procedure TTelescope.Set_SiteElevation(Value: Double);
 begin
-
+  if (Value >= -300.0) and (Value < 10000) then
+    elevation_site := Value
+  else
+    raise EOLEexception.Create('Out of range', $80040401, 'none', '0', 0)
 end;
 
 procedure TTelescope.Set_SiteLatitude(Value: Double);
 begin
-  Set_latitude(Value);
+  if abs(Value) > 90.0 then
+    raise EOLEexception.Create('Out of range', $80040401, 'none', '0', 0)
+  else
+
+    Set_latitude(Value);
 end;
 
 procedure TTelescope.Set_SiteLongitude(Value: Double);
 begin
-  Set_longitude(Value);
+
+  if abs(Value) > 180.0 then
+    raise EOLEexception.Create('Out of range', $80040401, 'none', '0', 0)
+  else
+
+    Set_longitude(Value);
 end;
 
 procedure TTelescope.Set_SlewSettleTime(Value: SYSINT);
 begin
-
+  if (Value < 1.0) then
+    raise EOLEexception.Create('Out of range', $80040401, 'none', '0', 0)
 end;
 
 procedure TTelescope.Set_TargetDeclination(Value: Double);
@@ -632,21 +691,24 @@ var
   str: string;
   n: Integer;
 begin
-  if abs(Value) < 90 then
+  dec_target := Value;
+  if abs(Value) <= 90.0 then
   begin
     Set_TargetDec(Value);
   end
   else
-    raise EOLEexception.Create('Value Not Set 1', $80040402, 'none', '0', 0);
+    raise EOLEexception.Create('Value Not Set 1', $80040401, 'none', '0', 0);
 end;
 
 procedure TTelescope.Set_TargetRightAscension(Value: Double);
 var
   str: string;
 begin
-  Set_TargetRA(Value);
-  // raise EOLEexception.Create('Not Implemented', $80040400, 'none', '0', 0);
-  // raise Exception.Create('Not Implemented');
+  ra_target := Value;
+  if (Value >= 0) and (Value <= 24.0) then
+    Set_TargetRA(Value)
+  else
+    raise EOLEexception.Create('RA value out ', $80040401, 'none', '0', 0)
 end;
 
 procedure TTelescope.Set_Tracking(Value: WordBool);
@@ -658,8 +720,14 @@ begin
 end;
 
 procedure TTelescope.Set_TrackingRate(Value: DriveRates);
+var s:string;
 begin
-  showmessage('sett');
+s:=inttostr(value);
+     drv:=value;
+        //showmessage('write trackirates'+s);
+  if (value >3) or (value<0)  then
+   raise EOLEexception.Create('Not Implemented', $80040401, 'none', '0', 0);
+
 end;
 
 procedure TTelescope.Set_UTCDate(Value: TDateTime);
@@ -672,7 +740,7 @@ end;
 
 procedure TTelescope.SetPark;
 begin
-
+  raise EOLEexception.Create('Not Implemented', $80040400, 'none', '0', 0);
 end;
 
 procedure TTelescope.SetUpDialog;
@@ -682,54 +750,85 @@ end;
 
 procedure TTelescope.SlewToAltAz(Azimut, Altitude: Double);
 begin
-
+  raise EOLEexception.Create('Not Implemented', $80040400, 'none', '0', 0);
 end;
 
 procedure TTelescope.SlewToAltAzAsync(Azimut, Altitude: Double);
 begin
-
+  raise EOLEexception.Create('Not Implemented', $80040400, 'none', '0', 0);
 end;
 
 procedure TTelescope.SlewToCoordinates(RightAscension, Declination: Double);
 begin
-  Slew_ToCoor(RightAscension, Declination);
+  ra_target := RightAscension;
+  dec_target := Declination;
+
+  if (ra_target <= 24.0) and (ra_target >= 0.0) and (abs(dec_target) <= 90) then
+    Slew_ToCoor(RightAscension, Declination)
+  else
+    raise EOLEexception.Create('Out of range', $80040401, 'none', '0', 0)
+
 end;
 
 procedure TTelescope.SlewToCoordinatesAsync(RightAscension,
   Declination: Double);
 
 begin
-  Slew_ToCoor(RightAscension, Declination);
+  ra_target := RightAscension;
+  dec_target := Declination;
+
+  if (ra_target <= 24.0) and (ra_target >= 0.0) and (abs(dec_target) <= 90) then
+    Slew_ToCoor(RightAscension, Declination)
+  else
+    raise EOLEexception.Create('Out of range', $80040401, 'none', '0', 0)
 
 end;
 
 procedure TTelescope.SlewToTarget;
 begin
-  Slew_ToCoor();
+  if (ra_target <= 24.0) and (ra_target >= 0.0) and (abs(dec_target) <= 90) then
+    Slew_ToCoor()
+  else
+    raise EOLEexception.Create('Out of range', $80040402, 'none', '0', 0)
+
 end;
 
 procedure TTelescope.SlewToTargetAsync;
 begin
-  Slew_ToCoor();
+  if (ra_target <= 24.0) and (ra_target >= 0.0) and (abs(dec_target) <= 90) then
+    Slew_ToCoor()
+  else
+    raise EOLEexception.Create('Out of range', $80040401, 'none', '0', 0)
 end;
 
 procedure TTelescope.SyncToAltAz(Azimuth, Altitude: Double);
 begin
-
+  raise EOLEexception.Create('Not Implemented', $80040400, 'none', '0', 0);
 end;
 
 procedure TTelescope.SyncToCoordinates(RightAscension, Declination: Double);
 begin
-  SyncTo_Coord(RightAscension, Declination);
+  if (RightAscension <= 24.0) and (RightAscension >= 0.0) and
+    (abs(Declination) <= 90) then
+    SyncTo_Coord(RightAscension, Declination)
+  else
+    raise EOLEexception.Create('Out of range', $80040401, 'none', '0', 0)
 end;
 
 procedure TTelescope.SyncToTarget;
 begin
-  SyncTo_Coord();
+  if (ra_target <= 24.0) and (ra_target >= 0.0) and (abs(dec_target) <= 90) then
+    SyncTo_Coord()
+  else
+    raise EOLEexception.Create('Out of range', $80040401, 'none', '0', 0)
 end;
 
 procedure TTelescope.Unpark;
 begin
+  if parked then
+  begin
+    AbortSlew()
+  end;
 
 end;
 
@@ -758,35 +857,42 @@ end;
 
 function TTrackingRates.Get_Count: Integer; safecall;
 begin
-  result := 4;
+  //result := 4;
+   Result := Length(FList);
 end;
 
 function TTrackingRates.Get_Item(Index: Integer): DriveRates; safecall;
 begin
-  case index of
+//showmessage('item '+inttostr(index));
+result:=trackr.flist[index-1]   ;
+  {case index of
     0:
       result := driveSidereal;
     1:
-      result := driveLunar;
+      result := DriveLunar;
     2:
-      result := driveSolar;
+      result := DriveSolar;
     3:
-      result := driveKing;
+      result := DriveKing;
+
   end;
+  result:=driveSolar;  }
 end;
 
 function TTrackingRates.GetEnumerator: IEnumVARIANT;
 var
   UpdateCollection: OleVariant;
 begin
-  result := IUnknown(UpdateCollection._NewEnum) as IEnumVARIANT;
-  // result := self as IEnumVARIANT;
-  // result := self ;
+//showmessage('enu');
+   //result := IUnknown(UpdateCollection._NewEnum) as IEnumVARIANT;
+ result :=self as IEnumVARIANT;
+
+  // result := self
 end;
 
 function TAxisRates.Get_Count: Integer; safecall;
 begin
-  result := 4;
+  result := 0;
 end;
 
 function TAxisRates.Get_Item(Index: Integer): IRate; safecall;
@@ -820,6 +926,7 @@ begin
   dotNetArrayList.add('NULL');
   item := dotNetArrayList.item(0);
   result := dotNetArrayList;
+
 end;
 
 initialization
@@ -834,5 +941,8 @@ TAutoObjectFactory.Create(ComServer, TTrackingRates, Class_TrackingRates,
 
 TAutoObjectFactory.Create(ComServer, TTelescope, Class_Telescope,
   cimultiInstance, tmApartment);
+
+  //enumerator:=CreateOLEObject('System.Collections.IEnumerator');
+
 
 end.

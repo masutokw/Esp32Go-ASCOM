@@ -1211,7 +1211,7 @@ end;
 
 procedure TEsp32frm.Timer1Timer(Sender: TObject);
 var
-  str, coors, strsideral: string;
+  str, coors, strsideral,strangle: string;
   // focus, Count: Integer;
   Count: Integer;
   png: Cardinal;
@@ -1255,12 +1255,13 @@ begin
         Label5.caption := 'BT';
     end;
 
-    Label5.caption := Label5.caption + ' ' + inttostr(gettickCount() - png) +
-      ' ' + inttostr(coors.Length); // (inbuff());
+  //  Label5.caption := Label5.caption + ' ' + inttostr(gettickCount() - png)   ;
+    Label5.caption := Label5.caption + ' ' +Format('%0.3d', [ gettickCount() - png])+'ms';
+    // +  ' ' + inttostr(coors.Length); // (inbuff());
     if inbuff > 0 then
       clearbuff(true, false);
     Label5.Font.Color := Cllime;
-    if get_pierside then
+    if piersid then
     begin
       Label3.caption := 'West';
       LabelAR1.Font.Color := Clred;
@@ -1283,9 +1284,11 @@ begin
 
   datetimetostring(strsideral, 'hh:nn:ss', Local_Sideral_Time(UTCnow(),
     -FloatEditLong.Value) / 24.0);
+
+     datetimetostring(strangle, 'hh:nn:ss',calc_lha(rA));
   Labelmsg.caption := 'Local:' + timetostr(UTCnow() + (gmtoffset / 24.0)) +
     #13#10 + 'GMT: ' + timetostr(UTCnow()) + #13#10 + 'Sid:' + strsideral;
-
+  label2.Caption:=floattostr(calc_lha(rA))+' '+floattostr(ra);
   if (Joystickex1.ButtonSt = 16) then
     CheckBox1.Checked := true;
   if (Joystickex1.ButtonSt = 32) then

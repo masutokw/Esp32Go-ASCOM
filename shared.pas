@@ -24,8 +24,8 @@ var
   gmtoffset: Integer;
   imode: Integer;
   Sport: THandle;
-  connected: boolean;
-  alt, ra, dec, az, longi, lat,guide_ra,guide_de: Double;
+  connected,parked: boolean;
+  alt, ra, dec, az, longi, lat,guide_ra,guide_de,ra_target,dec_target,elevation_site: Double;
   track,focus: Integer;
   send: function(values: String): Integer;
   recv: function(var value: string; count: Integer): Integer;
@@ -74,6 +74,8 @@ procedure setautoflip(b:boolean);
 procedure setpierside(b:boolean);
 function get_pierside():boolean;
 function get_flip():boolean;
+function get_parked():boolean;
+function calc_lha(ra:double):double ;
 implementation
 
 function UTCNow: tdatetime;
@@ -178,16 +180,17 @@ Function get_coords(var focus, count: Integer): string;
 var
   str, str1, coord_str: string;
 
-  n: Integer;
+  n,tmp: Integer;
   sl: TStringList;
   c: char;
+
 begin
   sl := TStringList.Create();
   sl.delimiter := '#';
-  //send(':Ga#:Fp#');
+  send(':Gx#');
 
 
-  send(':GR#:GD#:GZ#:GA#:Gk#:Fp#');
+ // send(':GR#:GD#:GZ#:GA#:Gk#:Fp#');
   readvln(str, '#');
   if str.length <13 then
   begin
@@ -213,7 +216,10 @@ begin
    // focus := strtoint(sl.Strings[5]);
 
     str1:=sl.Strings[4];
-    track:=strtointdef(Copy(sl.Strings[4], 1, 1),0);
+    tmp:=strtointdef(Copy(sl.Strings[4], 1, 1),0);
+    track:=tmp and 1;
+    parked:=((tmp and 2)shr 1)=1;
+    piersid:=((tmp and 4)shr 2)=1;
    focus := strtointdef(Copy(sl.Strings[4], 2,str1.length ),0);
   end;
   // readvln(str0, '#');
@@ -476,6 +482,7 @@ var
   response: char;
 
 begin
+  dec_target:=value;
   send(':Sd' + DoubletoLXdec(value, 1));
 
   readchar(response);
@@ -487,6 +494,8 @@ var
   response: char;
 
 begin
+value:=abs(value);
+ra_target:=abs(value);
   send(':Sr' + DoubleToLXAr(value, 1));
 
   readchar(response);
@@ -734,6 +743,14 @@ begin
  result :=(Str='1#');
 
 end;
+function get_parked():boolean;
+var str:string;
+begin
+//  send(':PP#');
+// readvln(str,'#');
+// result :=(Str='1#');
+   result:=parked;
+end;
 
 procedure sconnect;
 
@@ -747,6 +764,15 @@ begin
   // fh := sport;
   // PurgeBuffer(sport);
 
+end;
+
+function calc_lha(ra:double):double ;
+  var sid,tmp:double;
+begin
+  tmp:= Local_Sideral_Time(UTCnow(),-longi)-ra;
+
+  //if (tmp < 0.0 )then tmp := tmp+24;
+  result:= tmp ;
 end;
 
 initialization
