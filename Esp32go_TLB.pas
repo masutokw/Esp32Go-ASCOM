@@ -12,7 +12,7 @@ unit Esp32go_TLB;
 // ************************************************************************ //
 
 // $Rev: 98336 $
-// File generated on 10/03/2025 12:33:34 from Type Library described below.
+// File generated on 02/04/2025 15:54:53 from Type Library described below.
 
 // ************************************************************************  //
 // Type Lib: C:\Users\masut\Documents\Embarcadero\Studio\Projects\Esp32Go-ASCOM\esp32go (1)
@@ -139,6 +139,12 @@ type
   Focuser = IFocuser;
   TrackingRates = ITrackingRates;
   AxisRates = IAxisRates;
+
+
+// *********************************************************************//
+// Declaration of structures, unions and aliases.
+// *********************************************************************//
+  PPUserType1 = ^IEnumVARIANT; {*}
 
 
 // *********************************************************************//
@@ -518,6 +524,8 @@ type
     function Get_Count: Integer; safecall;
     function Get_Item(Index: Integer): DriveRates; safecall;
     function GetEnumerator: IEnumVARIANT; safecall;
+    function MoveNext: WordBool; stdcall;
+    procedure Dispose; safecall;
     property Count: Integer read Get_Count;
     property Item[Index: Integer]: DriveRates read Get_Item;
   end;
@@ -532,6 +540,8 @@ type
     property Count: Integer readonly dispid 101;
     property Item[Index: Integer]: DriveRates readonly dispid 113;
     function GetEnumerator: IEnumVARIANT; dispid 112;
+    function MoveNext: WordBool; dispid 201;
+    procedure Dispose; dispid 202;
   end;
 
 // *********************************************************************//

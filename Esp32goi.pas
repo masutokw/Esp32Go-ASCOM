@@ -36,6 +36,8 @@ type
     function Get_Count: Integer; safecall;
     function Get_Item(Index: Integer): DriveRates; safecall;
     function GetEnumerator: IEnumVARIANT; safecall;
+    function MoveNext: WordBool; winapi;
+    procedure Dispose; safecall;
 
   end;
 
@@ -318,7 +320,7 @@ end;
 
 function TTelescope.Get_DeclinationRate: Double;
 begin
-  result := 0;
+  result := declination_rate;
 end;
 
 function TTelescope.Get_Description: WideString;
@@ -500,7 +502,7 @@ begin
   // result := itrackr;
   // showmessage('gettr');
   // Result := TTrackingRates.Create;
-  result := trackr;
+ result := trackr;
 end;
 
 function TTelescope.Get_UTCDate: TDateTime;
@@ -625,7 +627,7 @@ end;
 
 procedure TTelescope.Set_DeclinationRate(Value: Double);
 begin
-
+    declination_rate:=value;
 end;
 
 procedure TTelescope.Set_DoesRefraction(Value: WordBool);
@@ -724,7 +726,7 @@ var s:string;
 begin
 s:=inttostr(value);
      drv:=value;
-        //showmessage('write trackirates'+s);
+       // showmessage('write trackirates'+s);
   if (value >3) or (value<0)  then
    raise EOLEexception.Create('Not Implemented', $80040401, 'none', '0', 0);
 
@@ -884,10 +886,11 @@ var
   UpdateCollection: OleVariant;
 begin
 //showmessage('enu');
-   //result := IUnknown(UpdateCollection._NewEnum) as IEnumVARIANT;
- result :=self as IEnumVARIANT;
 
-  // result := self
+result :=self  as IEnumVARIANT;
+//result :=trackr as IEnumVARIANT;
+
+//  result := self
 end;
 
 function TAxisRates.Get_Count: Integer; safecall;
@@ -929,9 +932,20 @@ begin
 
 end;
 
+function TTrackingRates.MoveNext: WordBool;
+begin
+showmessage('movenext');
+  result:=false;
+end;
+
+procedure TTrackingRates.Dispose;
+begin
+// showmessage('dispose');
+end;
+
 initialization
 
-CoInitializeex(nil, COINIT_APARTMENTTHREADED);
+CoInitializeex(nil,  COINIT_APARTMENTTHREADED);
 RegisterThySelf;
 TAutoObjectFactory.Create(ComServer, TAxisRates, Class_AxisRates,
   cimultiInstance, tmApartment);

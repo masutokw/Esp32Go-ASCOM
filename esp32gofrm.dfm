@@ -2,9 +2,9 @@ object Esp32frm: TEsp32frm
   Left = 0
   Top = 0
   AutoSize = True
-  Caption = 'Esp32go'
-  ClientHeight = 309
-  ClientWidth = 401
+  Caption = 'Esp32go 3.0'
+  ClientHeight = 297
+  ClientWidth = 417
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -1192,7 +1192,7 @@ object Esp32frm: TEsp32frm
   end
   object GroupBox2: TGroupBox
     Left = 0
-    Top = 171
+    Top = 165
     Width = 120
     Height = 38
     Caption = 'Status'
@@ -1228,7 +1228,7 @@ object Esp32frm: TEsp32frm
   end
   object RadioGroup1: TRadioGroup
     Left = 0
-    Top = 144
+    Top = 136
     Width = 120
     Height = 29
     Margins.Top = 0
@@ -1252,10 +1252,10 @@ object Esp32frm: TEsp32frm
   end
   object PageControl1: TPageControl
     Left = 120
-    Top = 2
-    Width = 281
+    Top = 0
+    Width = 297
     Height = 207
-    ActivePage = TMC
+    ActivePage = Aux
     TabOrder = 3
     Visible = False
     object TabSheet1: TTabSheet
@@ -1284,7 +1284,7 @@ object Esp32frm: TEsp32frm
         object LabelDec1: TLabel
           AlignWithMargins = True
           Left = 46
-          Top = 46
+          Top = 43
           Width = 102
           Height = 28
           Hint = 'Declination'
@@ -1328,14 +1328,14 @@ object Esp32frm: TEsp32frm
         end
       end
       object GroupBox10: TGroupBox
-        Left = 150
+        Left = 155
         Top = -3
         Width = 124
         Height = 67
         Caption = 'Local Coordinates'
         TabOrder = 1
         object LabelAltitude: TLabel
-          Left = 44
+          Left = 43
           Top = 41
           Width = 77
           Height = 19
@@ -1405,130 +1405,13 @@ object Esp32frm: TEsp32frm
           TabOrder = 1
         end
       end
-      object GroupBoxFocus: TGroupBox
-        Left = -4
-        Top = 113
-        Width = 176
-        Height = 63
-        Caption = 'Focuser'
-        TabOrder = 2
-        object LabelFocusCount: TLabel
-          Tag = 1
-          Left = 58
-          Top = 14
-          Width = 61
-          Height = 19
-          Alignment = taRightJustify
-          AutoSize = False
-          Caption = '0'
-          Color = clBlack
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clAqua
-          Font.Height = -12
-          Font.Name = 'Arial'
-          Font.Style = [fsBold]
-          ParentColor = False
-          ParentFont = False
-          Transparent = False
-          StyleElements = []
-          OnDblClick = LabelFocusCountDblClick
-        end
-        object ButtonIn: TButton
-          Tag = 1
-          Left = 6
-          Top = 13
-          Width = 25
-          Height = 20
-          Caption = 'In'
-          TabOrder = 0
-          OnMouseDown = ButtonInMouseDown
-          OnMouseUp = ButtonInMouseUp
-        end
-        object ButtonOut: TButton
-          Left = 33
-          Top = 13
-          Width = 25
-          Height = 20
-          Caption = 'Out'
-          TabOrder = 1
-          OnMouseDown = ButtonInMouseDown
-          OnMouseUp = ButtonInMouseUp
-        end
-        object ButtonM1: TButton
-          Left = 7
-          Top = 38
-          Width = 25
-          Height = 20
-          Caption = 'M1'
-          ParentShowHint = False
-          ShowHint = True
-          TabOrder = 2
-          OnClick = ButtonM1Click
-          OnContextPopup = ButtonM1ContextPopup
-        end
-        object ButtonM2: TButton
-          Tag = 1
-          Left = 36
-          Top = 38
-          Width = 25
-          Height = 20
-          Caption = 'M2'
-          ParentShowHint = False
-          ShowHint = True
-          TabOrder = 3
-          OnClick = ButtonM1Click
-          OnContextPopup = ButtonM1ContextPopup
-        end
-        object ButtonM3: TButton
-          Tag = 2
-          Left = 65
-          Top = 38
-          Width = 25
-          Height = 20
-          Caption = 'M3'
-          ParentShowHint = False
-          ShowHint = True
-          TabOrder = 4
-          OnClick = ButtonM1Click
-          OnContextPopup = ButtonM1ContextPopup
-        end
-        object ButtonM4: TButton
-          Tag = 3
-          Left = 94
-          Top = 38
-          Width = 25
-          Height = 20
-          Caption = 'M4'
-          ParentShowHint = False
-          ShowHint = True
-          TabOrder = 5
-          OnClick = ButtonM1Click
-          OnContextPopup = ButtonM1ContextPopup
-        end
-        object CheckBoxJoyf: TCheckBox
-          Left = 125
-          Top = 18
-          Width = 47
-          Height = 17
-          Caption = 'Focus'
-          TabOrder = 6
-        end
-        object CheckBox2: TCheckBox
-          Left = 125
-          Top = 41
-          Width = 45
-          Height = 17
-          Caption = 'Fast'
-          TabOrder = 7
-        end
-      end
       object GroupBox5: TGroupBox
         Left = -4
         Top = 70
         Width = 169
         Height = 44
         Caption = 'Align'
-        TabOrder = 3
+        TabOrder = 2
         object ButtonSync: TButton
           Left = 86
           Top = 16
@@ -1567,22 +1450,22 @@ object Esp32frm: TEsp32frm
         end
       end
       object GroupBox11: TGroupBox
-        Left = 174
-        Top = 108
-        Width = 99
+        Left = 2
+        Top = 112
+        Width = 85
         Height = 69
         Caption = 'mount'
-        TabOrder = 4
+        TabOrder = 3
         object Label3: TLabel
-          Left = 50
-          Top = 19
+          Left = 45
+          Top = 20
           Width = 25
           Height = 14
           Caption = 'West'
         end
         object Chkflip: TCheckBox
-          Left = 4
-          Top = 18
+          Left = 5
+          Top = 20
           Width = 40
           Height = 15
           Caption = 'Flip'
@@ -1590,8 +1473,8 @@ object Esp32frm: TEsp32frm
           OnClick = ChkflipClick
         end
         object btnw: TButton
-          Left = 4
-          Top = 39
+          Left = 6
+          Top = 41
           Width = 33
           Height = 25
           Caption = 'West'
@@ -1599,8 +1482,8 @@ object Esp32frm: TEsp32frm
           OnClick = btnwClick
         end
         object btnE: TButton
-          Left = 50
-          Top = 39
+          Left = 43
+          Top = 41
           Width = 33
           Height = 25
           Caption = 'East'
@@ -1721,9 +1604,17 @@ object Esp32frm: TEsp32frm
           OnClick = ButtongetgeoClick
         end
       end
+      object TrackBar1: TTrackBar
+        Left = 16
+        Top = 88
+        Width = 161
+        Height = 17
+        TabOrder = 2
+        OnChange = TrackBar1Change
+      end
     end
     object cb: TTabSheet
-      Caption = 'Connection'
+      Caption = 'Connect'
       ImageIndex = 1
       object lstHidDevices: TListBox
         Left = 209
@@ -1765,26 +1656,26 @@ object Esp32frm: TEsp32frm
         end
       end
       object GroupBox6: TGroupBox
-        Left = 137
+        Left = 142
         Top = 0
-        Width = 136
+        Width = 147
         Height = 38
         Caption = 'BlueTooth'
         TabOrder = 2
         object cbxpaired: TComboBox
           Left = 3
           Top = 14
-          Width = 125
+          Width = 141
           Height = 21
           TabOrder = 0
           Text = 'cbxpaired'
         end
       end
       object RadioGroupcom: TRadioGroup
-        Left = 133
-        Top = 38
-        Width = 137
-        Height = 36
+        Left = 153
+        Top = 41
+        Width = 141
+        Height = 40
         Caption = 'Interface'
         Columns = 3
         ItemIndex = 0
@@ -1797,7 +1688,7 @@ object Esp32frm: TEsp32frm
       object GroupBox3: TGroupBox
         Left = 5
         Top = 37
-        Width = 129
+        Width = 142
         Height = 40
         Caption = 'IP Settings'
         TabOrder = 4
@@ -1813,9 +1704,9 @@ object Esp32frm: TEsp32frm
           Text = '192.168.1.14'
         end
         object LongEditPort: TLongEdit
-          Left = 86
+          Left = 90
           Top = 15
-          Width = 36
+          Width = 44
           Height = 19
           Hint = '0..100000'
           Ctl3D = False
@@ -1829,9 +1720,9 @@ object Esp32frm: TEsp32frm
       end
       object GroupBox7: TGroupBox
         Left = 3
-        Top = 71
-        Width = 264
-        Height = 41
+        Top = 77
+        Width = 283
+        Height = 40
         Caption = 'Control'
         TabOrder = 5
         object Label1: TLabel
@@ -1852,7 +1743,7 @@ object Esp32frm: TEsp32frm
           OnClick = ButtonReconClick
         end
         object Buttondisconnect: TButton
-          Left = 53
+          Left = 57
           Top = 15
           Width = 60
           Height = 20
@@ -1861,7 +1752,7 @@ object Esp32frm: TEsp32frm
           OnMouseDown = ButtondisconnectMouseDown
         end
         object ButtonSave: TButton
-          Left = 112
+          Left = 114
           Top = 15
           Width = 48
           Height = 20
@@ -1870,10 +1761,10 @@ object Esp32frm: TEsp32frm
           OnClick = ButtonSaveClick
         end
         object Buttonbtconnect: TButton
-          Left = 166
-          Top = 13
+          Left = 165
+          Top = 15
           Width = 55
-          Height = 25
+          Height = 20
           Caption = 'Paired'
           TabOrder = 3
           OnClick = ButtonbtconnectClick
@@ -1882,8 +1773,8 @@ object Esp32frm: TEsp32frm
       object Memo1: TMemo
         Left = 3
         Top = 118
-        Width = 259
-        Height = 53
+        Width = 283
+        Height = 60
         Lines.Strings = (
           'Memo1')
         TabOrder = 6
@@ -1893,8 +1784,8 @@ object Esp32frm: TEsp32frm
       Caption = 'Config'
       ImageIndex = 2
       object NumberBoxcountaz: TNumberBox
-        Left = 6
-        Top = 9
+        Left = 17
+        Top = -1
         Width = 62
         Height = 21
         Alignment = taRightJustify
@@ -1905,8 +1796,8 @@ object Esp32frm: TEsp32frm
         Value = 4000000.000000000000000000
       end
       object NumberBoxcountalt: TNumberBox
-        Left = 74
-        Top = 9
+        Left = 82
+        Top = -1
         Width = 62
         Height = 21
         Alignment = taRightJustify
@@ -1917,8 +1808,8 @@ object Esp32frm: TEsp32frm
         Value = 4000000.000000000000000000
       end
       object NumberBoxspgaz: TNumberBox
-        Left = 33
-        Top = 29
+        Left = 44
+        Top = 20
         Width = 35
         Height = 21
         Alignment = taRightJustify
@@ -1927,8 +1818,8 @@ object Esp32frm: TEsp32frm
         Value = 0.500000000000000000
       end
       object NumberBoxspgalt: TNumberBox
-        Left = 74
-        Top = 29
+        Left = 82
+        Top = 20
         Width = 35
         Height = 21
         Alignment = taRightJustify
@@ -1937,8 +1828,8 @@ object Esp32frm: TEsp32frm
         Value = 0.500000000000000000
       end
       object NumberBoxspcaz: TNumberBox
-        Left = 33
-        Top = 50
+        Left = 44
+        Top = 41
         Width = 35
         Height = 21
         Alignment = taRightJustify
@@ -1946,8 +1837,8 @@ object Esp32frm: TEsp32frm
         Value = 8.000000000000000000
       end
       object NumberBoxspcalt: TNumberBox
-        Left = 74
-        Top = 50
+        Left = 82
+        Top = 41
         Width = 35
         Height = 21
         Alignment = taRightJustify
@@ -1955,8 +1846,8 @@ object Esp32frm: TEsp32frm
         Value = 8.000000000000000000
       end
       object NumberBoxspfaz: TNumberBox
-        Left = 33
-        Top = 71
+        Left = 44
+        Top = 62
         Width = 35
         Height = 21
         Alignment = taRightJustify
@@ -1964,8 +1855,8 @@ object Esp32frm: TEsp32frm
         Value = 64.000000000000000000
       end
       object NumberBoxspfalt: TNumberBox
-        Left = 74
-        Top = 72
+        Left = 82
+        Top = 62
         Width = 35
         Height = 21
         Alignment = taRightJustify
@@ -1973,8 +1864,8 @@ object Esp32frm: TEsp32frm
         Value = 64.000000000000000000
       end
       object NumberBoxspsaz: TNumberBox
-        Left = 33
-        Top = 92
+        Left = 44
+        Top = 83
         Width = 35
         Height = 21
         Alignment = taRightJustify
@@ -1982,8 +1873,8 @@ object Esp32frm: TEsp32frm
         Value = 200.000000000000000000
       end
       object NumberBoxspsalt: TNumberBox
-        Left = 74
-        Top = 93
+        Left = 82
+        Top = 83
         Width = 35
         Height = 21
         Alignment = taRightJustify
@@ -1991,8 +1882,8 @@ object Esp32frm: TEsp32frm
         Value = 200.000000000000000000
       end
       object NumberBoxrampaz: TNumberBox
-        Left = 33
-        Top = 114
+        Left = 44
+        Top = 104
         Width = 35
         Height = 21
         Alignment = taRightJustify
@@ -2000,8 +1891,8 @@ object Esp32frm: TEsp32frm
         Value = 400.000000000000000000
       end
       object NumberBoxrampalt: TNumberBox
-        Left = 74
-        Top = 114
+        Left = 82
+        Top = 104
         Width = 35
         Height = 21
         Alignment = taRightJustify
@@ -2009,8 +1900,8 @@ object Esp32frm: TEsp32frm
         Value = 400.000000000000000000
       end
       object NumberBoxbackpaz: TNumberBox
-        Left = 33
-        Top = 134
+        Left = 44
+        Top = 125
         Width = 35
         Height = 21
         Alignment = taRightJustify
@@ -2018,8 +1909,8 @@ object Esp32frm: TEsp32frm
         Value = 8.000000000000000000
       end
       object NumberBoxbackpalt: TNumberBox
-        Left = 74
-        Top = 134
+        Left = 82
+        Top = 125
         Width = 35
         Height = 21
         Alignment = taRightJustify
@@ -2028,7 +1919,7 @@ object Esp32frm: TEsp32frm
       end
       object StaticText1: TStaticText
         Left = 0
-        Top = 32
+        Top = 26
         Width = 31
         Height = 17
         Caption = 'Guide'
@@ -2036,7 +1927,7 @@ object Esp32frm: TEsp32frm
       end
       object StaticText2: TStaticText
         Left = 0
-        Top = 53
+        Top = 47
         Width = 37
         Height = 17
         Caption = 'Center'
@@ -2044,7 +1935,7 @@ object Esp32frm: TEsp32frm
       end
       object StaticText3: TStaticText
         Left = 0
-        Top = 75
+        Top = 68
         Width = 24
         Height = 17
         Caption = 'Find'
@@ -2052,7 +1943,7 @@ object Esp32frm: TEsp32frm
       end
       object StaticText4: TStaticText
         Left = 0
-        Top = 95
+        Top = 89
         Width = 26
         Height = 17
         Caption = 'Slew'
@@ -2060,15 +1951,15 @@ object Esp32frm: TEsp32frm
       end
       object StaticText5: TStaticText
         Left = 0
-        Top = 118
+        Top = 110
         Width = 31
         Height = 17
         Caption = 'Ramp'
         TabOrder = 18
       end
       object ComboBoxEqmode: TComboBox
-        Left = 145
-        Top = 155
+        Left = 205
+        Top = 70
         Width = 63
         Height = 21
         ItemIndex = 0
@@ -2080,8 +1971,8 @@ object Esp32frm: TEsp32frm
           'ALING')
       end
       object ComboBoxtrack: TComboBox
-        Left = 74
-        Top = 155
+        Left = 135
+        Top = 70
         Width = 69
         Height = 21
         ItemIndex = 0
@@ -2096,8 +1987,8 @@ object Esp32frm: TEsp32frm
           '')
       end
       object NumberBoxpresc: TNumberBox
-        Left = 33
-        Top = 155
+        Left = 137
+        Top = 147
         Width = 35
         Height = 21
         Alignment = taRightJustify
@@ -2106,73 +1997,68 @@ object Esp32frm: TEsp32frm
         Value = 1.000000000000000000
       end
       object StaticText7: TStaticText
-        Left = 0
-        Top = 158
+        Left = 110
+        Top = 149
         Width = 30
         Height = 17
         Caption = 'Presc'
         TabOrder = 22
       end
       object CheckBoxbackaz: TCheckBox
-        Left = -4
-        Top = 141
+        Left = 44
+        Top = 146
         Width = 34
         Height = 17
-        Alignment = taLeftJustify
-        Caption = 'bkR'
         TabOrder = 23
       end
       object CheckBoxbackalt: TCheckBox
-        Left = 114
-        Top = 141
-        Width = 49
+        Left = 82
+        Top = 146
+        Width = 22
         Height = 17
-        Caption = 'bkD'
         TabOrder = 24
       end
       object CheckBoxflip: TCheckBox
-        Left = 214
-        Top = 159
-        Width = 40
+        Left = 110
+        Top = 164
+        Width = 78
         Height = 17
-        Caption = 'flip'
+        Caption = 'Meridian Flip'
         TabOrder = 25
       end
       object CheckBoxinvaz: TCheckBox
-        Left = 158
-        Top = 11
-        Width = 50
+        Left = 44
+        Top = 165
+        Width = 23
         Height = 17
-        Caption = 'inv az'
         TabOrder = 26
       end
       object CheckBoxinvalt: TCheckBox
-        Left = 214
-        Top = 11
-        Width = 50
+        Left = 82
+        Top = 165
+        Width = 22
         Height = 17
-        Caption = 'inv alt'
         TabOrder = 27
       end
       object NumberBoxgmtoff: TNumberBox
-        Left = 157
-        Top = 32
+        Left = 234
+        Top = 41
         Width = 35
         Height = 21
         Alignment = taRightJustify
         TabOrder = 28
       end
       object StaticText6: TStaticText
-        Left = 115
-        Top = 34
-        Width = 42
+        Left = 171
+        Top = 47
+        Width = 57
         Height = 17
-        Caption = 'GMT off'
+        Caption = 'GMT offset'
         TabOrder = 29
       end
       object NumberBoxlong: TNumberBox
-        Left = 161
-        Top = 54
+        Left = 163
+        Top = 20
         Width = 50
         Height = 21
         Alignment = taRightJustify
@@ -2182,8 +2068,8 @@ object Esp32frm: TEsp32frm
         Value = -4.120000000000000000
       end
       object NumberBoxlat: TNumberBox
-        Left = 220
-        Top = 54
+        Left = 219
+        Top = 20
         Width = 50
         Height = 21
         Alignment = taRightJustify
@@ -2192,224 +2078,188 @@ object Esp32frm: TEsp32frm
         TabOrder = 31
         Value = 36.720000000000000000
       end
-      object NumberBoxFmax: TNumberBox
-        Left = 167
-        Top = 76
-        Width = 43
-        Height = 21
-        Alignment = taRightJustify
-        TabOrder = 32
-        Value = 40000.000000000000000000
-      end
-      object NBxVolt: TNumberBox
-        Left = 235
-        Top = 76
-        Width = 43
-        Height = 21
-        Alignment = taRightJustify
-        TabOrder = 33
-        Value = 150.000000000000000000
-      end
-      object NumberBoxFlow: TNumberBox
-        Left = 167
-        Top = 100
-        Width = 43
-        Height = 21
-        Alignment = taRightJustify
-        TabOrder = 34
-        Value = 30.000000000000000000
-      end
-      object NumberBoxfsp: TNumberBox
-        Left = 216
-        Top = 101
-        Width = 43
-        Height = 21
-        Alignment = taRightJustify
-        TabOrder = 35
-        Value = 5.000000000000000000
-      end
       object StaticText8: TStaticText
-        Left = 115
-        Top = 59
-        Width = 46
+        Left = 163
+        Top = 3
+        Width = 51
         Height = 17
-        Caption = 'Long/Lat'
-        TabOrder = 36
+        Caption = 'Longitude'
+        TabOrder = 32
       end
       object save: TButton
-        Left = 185
-        Top = 124
+        Left = 201
+        Top = 155
         Width = 45
         Height = 25
         Caption = 'save'
-        TabOrder = 37
+        TabOrder = 33
         OnClick = saveClick
       end
       object Button4: TButton
-        Left = 229
-        Top = 124
+        Left = 245
+        Top = 155
         Width = 45
         Height = 25
         Caption = 'read'
-        TabOrder = 38
+        TabOrder = 34
         OnClick = Button4Click
       end
       object StaticText9: TStaticText
-        Left = 115
-        Top = 77
-        Width = 55
+        Left = 0
+        Top = 128
+        Width = 45
         Height = 17
-        Caption = 'Max Focus'
-        TabOrder = 39
+        Caption = 'Backlash'
+        TabOrder = 35
       end
       object StaticText10: TStaticText
-        Left = 216
-        Top = 80
-        Width = 22
+        Left = 2
+        Top = 146
+        Width = 34
         Height = 17
-        Caption = 'Volt'
-        TabOrder = 40
+        Caption = 'Active'
+        TabOrder = 36
       end
       object StaticText11: TStaticText
-        Left = 115
-        Top = 100
-        Width = 51
+        Left = 3
+        Top = 165
+        Width = 34
         Height = 17
-        Caption = 'Focus F/S'
-        TabOrder = 41
+        Caption = 'Invert'
+        TabOrder = 37
       end
-      object CheckBoxDCFocus: TCheckBox
-        Left = 115
-        Top = 123
-        Width = 64
+      object StaticText19: TStaticText
+        Left = 220
+        Top = 3
+        Width = 43
         Height = 17
-        Caption = 'DC Focus'
-        TabOrder = 42
+        Caption = 'Latitude'
+        TabOrder = 38
       end
     end
     object TMC: TTabSheet
-      Caption = 'TMC'
+      Caption = 'TMC/Aux'
       ImageIndex = 4
       object Label7: TLabel
         Left = 3
-        Top = 28
-        Width = 57
+        Top = 15
+        Width = 49
         Height = 13
         Caption = 'M _steps  '
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
         Font.Name = 'Tahoma'
-        Font.Style = [fsBold]
+        Font.Style = []
         ParentFont = False
       end
       object Label8: TLabel
-        Left = 65
-        Top = 9
-        Width = 19
+        Left = 48
+        Top = 2
+        Width = 18
         Height = 13
         Caption = 'RA:'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
         Font.Name = 'Tahoma'
-        Font.Style = [fsBold]
+        Font.Style = []
         ParentFont = False
       end
       object Label9: TLabel
-        Left = 107
-        Top = 9
-        Width = 24
+        Left = 83
+        Top = 2
+        Width = 22
         Height = 13
         Caption = 'Dec:'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
         Font.Name = 'Tahoma'
-        Font.Style = [fsBold]
+        Font.Style = []
         ParentFont = False
       end
       object Label10: TLabel
-        Left = 150
-        Top = 9
-        Width = 26
+        Left = 118
+        Top = 2
+        Width = 23
         Height = 13
         Caption = 'Foc1'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
         Font.Name = 'Tahoma'
-        Font.Style = [fsBold]
+        Font.Style = []
         ParentFont = False
       end
       object Label11: TLabel
-        Left = 193
-        Top = 9
-        Width = 26
+        Left = 153
+        Top = 2
+        Width = 23
         Height = 13
         Caption = 'Foc2'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
         Font.Name = 'Tahoma'
-        Font.Style = [fsBold]
+        Font.Style = []
         ParentFont = False
       end
       object Label12: TLabel
         Left = 3
-        Top = 58
-        Width = 43
+        Top = 35
+        Width = 34
         Height = 13
         Caption = 'mAmps'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
         Font.Name = 'Tahoma'
-        Font.Style = [fsBold]
+        Font.Style = []
         ParentFont = False
       end
       object Label13: TLabel
         Left = 3
-        Top = 85
-        Width = 41
+        Top = 55
+        Width = 34
         Height = 13
         Caption = 'Trigger'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
         Font.Name = 'Tahoma'
-        Font.Style = [fsBold]
+        Font.Style = []
         ParentFont = False
       end
       object Label14: TLabel
         Left = 3
-        Top = 110
-        Width = 44
+        Top = 75
+        Width = 38
         Height = 13
         Caption = 'SpCycle'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
         Font.Name = 'Tahoma'
-        Font.Style = [fsBold]
+        Font.Style = []
         ParentFont = False
       end
       object Label15: TLabel
         Left = 3
-        Top = 133
-        Width = 46
+        Top = 95
+        Width = 38
         Height = 13
         Caption = 'Interpol'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
         Font.Name = 'Tahoma'
-        Font.Style = [fsBold]
+        Font.Style = []
         ParentFont = False
       end
       object NumberBoxraSt: TNumberBox
-        Left = 65
-        Top = 28
+        Left = 48
+        Top = 14
         Width = 35
         Height = 21
         Alignment = taRightJustify
@@ -2418,8 +2268,8 @@ object Esp32frm: TEsp32frm
         Value = 16.000000000000000000
       end
       object NumberBoxDecSt: TNumberBox
-        Left = 106
-        Top = 28
+        Left = 83
+        Top = 14
         Width = 35
         Height = 21
         Alignment = taRightJustify
@@ -2428,8 +2278,8 @@ object Esp32frm: TEsp32frm
         Value = 16.000000000000000000
       end
       object NumberBoxF1St: TNumberBox
-        Left = 147
-        Top = 28
+        Left = 118
+        Top = 14
         Width = 35
         Height = 21
         Alignment = taRightJustify
@@ -2438,8 +2288,8 @@ object Esp32frm: TEsp32frm
         Value = 16.000000000000000000
       end
       object NumberBoxF2St: TNumberBox
-        Left = 188
-        Top = 28
+        Left = 153
+        Top = 14
         Width = 35
         Height = 21
         Alignment = taRightJustify
@@ -2448,8 +2298,8 @@ object Esp32frm: TEsp32frm
         Value = 16.000000000000000000
       end
       object NumberBoxF1Cur: TNumberBox
-        Left = 147
-        Top = 55
+        Left = 118
+        Top = 35
         Width = 35
         Height = 21
         Alignment = taRightJustify
@@ -2458,8 +2308,8 @@ object Esp32frm: TEsp32frm
         Value = 1000.000000000000000000
       end
       object NumberBoxF2Cur: TNumberBox
-        Left = 188
-        Top = 55
+        Left = 153
+        Top = 35
         Width = 35
         Height = 21
         Alignment = taRightJustify
@@ -2468,8 +2318,8 @@ object Esp32frm: TEsp32frm
         Value = 1000.000000000000000000
       end
       object NumberBoxDecCur: TNumberBox
-        Left = 106
-        Top = 55
+        Left = 83
+        Top = 35
         Width = 35
         Height = 21
         Alignment = taRightJustify
@@ -2478,8 +2328,8 @@ object Esp32frm: TEsp32frm
         Value = 1000.000000000000000000
       end
       object NumberBoxRACur: TNumberBox
-        Left = 65
-        Top = 55
+        Left = 48
+        Top = 34
         Width = 35
         Height = 21
         Alignment = taRightJustify
@@ -2488,8 +2338,8 @@ object Esp32frm: TEsp32frm
         Value = 1000.000000000000000000
       end
       object NumberBoxdecSp: TNumberBox
-        Left = 106
-        Top = 82
+        Left = 83
+        Top = 56
         Width = 35
         Height = 21
         Alignment = taRightJustify
@@ -2498,8 +2348,8 @@ object Esp32frm: TEsp32frm
         Value = 500.000000000000000000
       end
       object NumberBoxf1Sp: TNumberBox
-        Left = 147
-        Top = 82
+        Left = 118
+        Top = 56
         Width = 35
         Height = 21
         Alignment = taRightJustify
@@ -2508,8 +2358,8 @@ object Esp32frm: TEsp32frm
         Value = 500.000000000000000000
       end
       object NumberBoxf2Sp: TNumberBox
-        Left = 188
-        Top = 82
+        Left = 153
+        Top = 56
         Width = 35
         Height = 21
         Alignment = taRightJustify
@@ -2518,8 +2368,8 @@ object Esp32frm: TEsp32frm
         Value = 500.000000000000000000
       end
       object Button5: TButton
-        Left = 176
-        Top = 155
+        Left = 186
+        Top = 92
         Width = 41
         Height = 17
         Caption = 'Save'
@@ -2527,8 +2377,8 @@ object Esp32frm: TEsp32frm
         OnClick = Button5Click
       end
       object Button6: TButton
-        Left = 216
-        Top = 155
+        Left = 233
+        Top = 92
         Width = 41
         Height = 17
         Caption = 'Read'
@@ -2536,72 +2386,72 @@ object Esp32frm: TEsp32frm
         OnClick = Button6Click
       end
       object CheckRASp: TCheckBox
-        Left = 69
-        Top = 109
+        Left = 48
+        Top = 77
         Width = 33
         Height = 17
         Caption = 'on'
         TabOrder = 13
       end
       object checkdecsp: TCheckBox
-        Left = 108
-        Top = 109
+        Left = 81
+        Top = 78
         Width = 33
         Height = 17
         Caption = 'on'
         TabOrder = 14
       end
       object checkf1sp: TCheckBox
-        Left = 151
-        Top = 109
+        Left = 114
+        Top = 78
         Width = 33
         Height = 17
         Caption = 'on'
         TabOrder = 15
       end
       object checkf2sp: TCheckBox
-        Left = 194
-        Top = 109
+        Left = 147
+        Top = 78
         Width = 33
         Height = 17
         Caption = 'on'
         TabOrder = 16
       end
       object checkdecpol: TCheckBox
-        Left = 108
-        Top = 132
+        Left = 81
+        Top = 94
         Width = 33
         Height = 17
         Caption = 'on'
         TabOrder = 17
       end
       object Checkf2pol: TCheckBox
-        Left = 194
-        Top = 132
+        Left = 147
+        Top = 94
         Width = 33
         Height = 17
         Caption = 'on'
         TabOrder = 18
       end
       object Checkf1pol: TCheckBox
-        Left = 151
-        Top = 132
+        Left = 114
+        Top = 94
         Width = 33
         Height = 17
         Caption = 'on'
         TabOrder = 19
       end
       object Checkrapol: TCheckBox
-        Left = 69
-        Top = 132
+        Left = 48
+        Top = 93
         Width = 33
         Height = 17
         Caption = 'on'
         TabOrder = 20
       end
       object NumberBoxraSp: TNumberBox
-        Left = 65
-        Top = 82
+        Left = 48
+        Top = 55
         Width = 35
         Height = 21
         Alignment = taRightJustify
@@ -2609,11 +2459,653 @@ object Esp32frm: TEsp32frm
         TabOrder = 21
         Value = 500.000000000000000000
       end
+      object Panel1: TPanel
+        Left = 2
+        Top = 115
+        Width = 287
+        Height = 62
+        TabOrder = 22
+        object StaticText16: TStaticText
+          Left = 2
+          Top = 22
+          Width = 32
+          Height = 17
+          Caption = 'Focus'
+          TabOrder = 0
+        end
+        object StaticText17: TStaticText
+          Left = 2
+          Top = 45
+          Width = 23
+          Height = 17
+          Caption = 'Aux'
+          TabOrder = 1
+        end
+        object StaticText12: TStaticText
+          Left = 33
+          Top = 3
+          Width = 31
+          Height = 17
+          Caption = 'Steps'
+          TabOrder = 2
+        end
+        object NumberBoxFM: TNumberBox
+          Left = 30
+          Top = 18
+          Width = 43
+          Height = 21
+          Alignment = taRightJustify
+          TabOrder = 3
+          Value = 50000.000000000000000000
+        end
+        object NumberBoxAM: TNumberBox
+          Left = 30
+          Top = 39
+          Width = 43
+          Height = 21
+          Alignment = taRightJustify
+          TabOrder = 4
+          Value = 40000.000000000000000000
+        end
+        object StaticText13: TStaticText
+          Left = 73
+          Top = 3
+          Width = 26
+          Height = 17
+          Caption = 'Slow'
+          TabOrder = 5
+        end
+        object NumberBoxFS: TNumberBox
+          Left = 73
+          Top = 18
+          Width = 35
+          Height = 21
+          Alignment = taRightJustify
+          TabOrder = 6
+          Value = 15000.000000000000000000
+        end
+        object NumberBoxAs: TNumberBox
+          Left = 73
+          Top = 39
+          Width = 35
+          Height = 21
+          Alignment = taRightJustify
+          TabOrder = 7
+          Value = 15000.000000000000000000
+        end
+        object NumberBoxFF: TNumberBox
+          Left = 108
+          Top = 18
+          Width = 35
+          Height = 21
+          Alignment = taRightJustify
+          TabOrder = 8
+          Value = 3000.000000000000000000
+        end
+        object NumberBoxAF: TNumberBox
+          Left = 108
+          Top = 39
+          Width = 35
+          Height = 21
+          Alignment = taRightJustify
+          TabOrder = 9
+          Value = 3500.000000000000000000
+        end
+        object NumberBoxFpwm: TNumberBox
+          Left = 143
+          Top = 18
+          Width = 30
+          Height = 21
+          Alignment = taRightJustify
+          TabOrder = 10
+          Value = 150.000000000000000000
+        end
+        object NumberBoxApwm: TNumberBox
+          Left = 143
+          Top = 39
+          Width = 30
+          Height = 21
+          Alignment = taRightJustify
+          TabOrder = 11
+          Value = 150.000000000000000000
+        end
+        object StaticText15: TStaticText
+          Left = 143
+          Top = 3
+          Width = 28
+          Height = 17
+          Caption = 'PWM'
+          TabOrder = 12
+        end
+        object StaticText14: TStaticText
+          Left = 108
+          Top = 3
+          Width = 25
+          Height = 17
+          Caption = 'Fast'
+          TabOrder = 13
+        end
+        object ButtonAuxSave: TButton
+          Left = 175
+          Top = 18
+          Width = 41
+          Height = 21
+          Caption = 'Save'
+          TabOrder = 14
+          OnClick = ButtonAuxSaveClick
+        end
+        object ButtonAuxRead: TButton
+          Left = 175
+          Top = 39
+          Width = 41
+          Height = 21
+          Caption = 'Read'
+          TabOrder = 15
+          OnClick = ButtonAuxReadClick
+        end
+        object CheckBoxDCF: TCheckBox
+          Left = 222
+          Top = 39
+          Width = 64
+          Height = 17
+          Caption = 'DC Focus'
+          TabOrder = 16
+        end
+      end
+    end
+    object Aux: TTabSheet
+      Caption = 'drv'
+      ImageIndex = 5
+      object GroupRotator: TGroupBox
+        Left = 142
+        Top = 0
+        Width = 149
+        Height = 98
+        Caption = 'Rotator'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 0
+        Visible = False
+        object SpinButton3: TSpinButton
+          Left = 63
+          Top = 36
+          Width = 15
+          Height = 20
+          DownGlyph.Data = {
+            0E010000424D0E01000000000000360000002800000009000000060000000100
+            200000000000D800000000000000000000000000000000000000008080000080
+            8000008080000080800000808000008080000080800000808000008080000080
+            8000008080000080800000808000000000000080800000808000008080000080
+            8000008080000080800000808000000000000000000000000000008080000080
+            8000008080000080800000808000000000000000000000000000000000000000
+            0000008080000080800000808000000000000000000000000000000000000000
+            0000000000000000000000808000008080000080800000808000008080000080
+            800000808000008080000080800000808000}
+          TabOrder = 0
+          UpGlyph.Data = {
+            0E010000424D0E01000000000000360000002800000009000000060000000100
+            200000000000D800000000000000000000000000000000000000008080000080
+            8000008080000080800000808000008080000080800000808000008080000080
+            8000000000000000000000000000000000000000000000000000000000000080
+            8000008080000080800000000000000000000000000000000000000000000080
+            8000008080000080800000808000008080000000000000000000000000000080
+            8000008080000080800000808000008080000080800000808000000000000080
+            8000008080000080800000808000008080000080800000808000008080000080
+            800000808000008080000080800000808000}
+        end
+        object CCButton: TButton
+          Left = 66
+          Top = 14
+          Width = 37
+          Height = 20
+          Caption = 'CC'
+          TabOrder = 1
+          OnMouseDown = CCButtonMouseDown
+          OnMouseUp = CCButtonMouseUp
+        end
+        object CCWButton: TButton
+          Tag = 1
+          Left = 103
+          Top = 15
+          Width = 37
+          Height = 20
+          Caption = 'CCW'
+          TabOrder = 2
+          OnMouseDown = CCButtonMouseDown
+          OnMouseUp = CCButtonMouseUp
+        end
+        object SyncButton3: TButton
+          Tag = 4
+          Left = 103
+          Top = 37
+          Width = 37
+          Height = 20
+          Caption = 'Sync'
+          TabOrder = 3
+          OnClick = SyncButton3Click
+        end
+        object MoveButton3: TButton
+          Tag = 1000
+          Left = 66
+          Top = 37
+          Width = 37
+          Height = 20
+          Caption = 'Move'
+          TabOrder = 4
+          OnMouseDown = RButton1MouseDown
+        end
+        object CounterFloatEdit: TFloatEdit
+          Left = 8
+          Top = 13
+          Width = 58
+          Height = 21
+          Hint = '0..360'
+          Color = clSilver
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 5
+          Decimals = 2
+          MaxValue = 360.000000000000000000
+          Digits = 6
+          NumericType = ntFixed
+        end
+        object reverseCheckBox: TCheckBox
+          Left = 123
+          Top = 96
+          Width = 65
+          Height = 20
+          Caption = 'Reverse'
+          TabOrder = 6
+        end
+        object TargetFloatEdit: TFloatEdit
+          Left = 8
+          Top = 36
+          Width = 58
+          Height = 21
+          Hint = '0..360'
+          Color = clSkyBlue
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 7
+          Decimals = 2
+          MaxValue = 360.000000000000000000
+          Digits = 6
+          NumericType = ntFixed
+        end
+        object RButton1: TButton
+          Left = 8
+          Top = 59
+          Width = 35
+          Height = 16
+          Caption = '0'#186
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 8
+          OnMouseDown = RButton1MouseDown
+        end
+        object RButton2: TButton
+          Tag = 45
+          Left = 8
+          Top = 78
+          Width = 35
+          Height = 16
+          Caption = '45'#186
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 9
+          OnMouseDown = RButton1MouseDown
+        end
+        object RButton3: TButton
+          Tag = 90
+          Left = 43
+          Top = 59
+          Width = 35
+          Height = 16
+          Caption = '90'#186
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 10
+          OnMouseDown = RButton1MouseDown
+        end
+        object RButton4: TButton
+          Tag = 135
+          Left = 43
+          Top = 78
+          Width = 35
+          Height = 16
+          Caption = '135'#186
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 11
+          OnMouseDown = RButton1MouseDown
+        end
+        object RButton5: TButton
+          Tag = 180
+          Left = 78
+          Top = 59
+          Width = 35
+          Height = 16
+          Caption = '180'#186
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 12
+          OnMouseDown = RButton1MouseDown
+        end
+        object RButton6: TButton
+          Tag = 225
+          Left = 78
+          Top = 78
+          Width = 35
+          Height = 16
+          Caption = '225'#186
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 13
+          OnMouseDown = RButton1MouseDown
+        end
+        object RButton7: TButton
+          Tag = 270
+          Left = 113
+          Top = 59
+          Width = 35
+          Height = 16
+          Caption = '270'#186
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 14
+          OnMouseDown = RButton1MouseDown
+        end
+        object RButton8: TButton
+          Tag = 315
+          Left = 113
+          Top = 78
+          Width = 35
+          Height = 16
+          Caption = '315'#186
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 15
+          OnMouseDown = RButton1MouseDown
+        end
+      end
+      object GroupBoxFocus: TGroupBox
+        Left = -2
+        Top = 2
+        Width = 144
+        Height = 87
+        Caption = 'Focuser'
+        TabOrder = 1
+        object LabelFocusCount: TLabel
+          Tag = 1
+          Left = 58
+          Top = 14
+          Width = 61
+          Height = 19
+          Alignment = taRightJustify
+          AutoSize = False
+          Caption = '0'
+          Color = clBlack
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clAqua
+          Font.Height = -12
+          Font.Name = 'Arial'
+          Font.Style = [fsBold]
+          ParentColor = False
+          ParentFont = False
+          Transparent = False
+          StyleElements = []
+          OnDblClick = LabelFocusCountDblClick
+        end
+        object ButtonIn: TButton
+          Tag = 1
+          Left = 6
+          Top = 13
+          Width = 25
+          Height = 20
+          Caption = 'In'
+          TabOrder = 0
+          OnMouseDown = ButtonInMouseDown
+          OnMouseUp = ButtonInMouseUp
+        end
+        object ButtonOut: TButton
+          Left = 33
+          Top = 13
+          Width = 25
+          Height = 20
+          Caption = 'Out'
+          TabOrder = 1
+          OnMouseDown = ButtonInMouseDown
+          OnMouseUp = ButtonInMouseUp
+        end
+        object ButtonM1: TButton
+          Left = 7
+          Top = 38
+          Width = 25
+          Height = 20
+          Caption = 'M1'
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 2
+          OnClick = ButtonM1Click
+          OnContextPopup = ButtonM1ContextPopup
+        end
+        object ButtonM2: TButton
+          Tag = 1
+          Left = 34
+          Top = 38
+          Width = 25
+          Height = 20
+          Caption = 'M2'
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 3
+          OnClick = ButtonM1Click
+          OnContextPopup = ButtonM1ContextPopup
+        end
+        object ButtonM3: TButton
+          Tag = 2
+          Left = 61
+          Top = 38
+          Width = 25
+          Height = 20
+          Caption = 'M3'
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 4
+          OnClick = ButtonM1Click
+          OnContextPopup = ButtonM1ContextPopup
+        end
+        object ButtonM4: TButton
+          Tag = 3
+          Left = 88
+          Top = 38
+          Width = 25
+          Height = 20
+          Caption = 'M4'
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 5
+          OnClick = ButtonM1Click
+          OnContextPopup = ButtonM1ContextPopup
+        end
+        object CheckBoxJoyf: TCheckBox
+          Left = 8
+          Top = 64
+          Width = 47
+          Height = 17
+          Caption = 'Foc'
+          TabOrder = 6
+        end
+        object CheckBox2: TCheckBox
+          Left = 46
+          Top = 64
+          Width = 28
+          Height = 17
+          Caption = 'FF'
+          TabOrder = 7
+        end
+        object Checkaltfocus: TCheckBox
+          Left = 80
+          Top = 64
+          Width = 64
+          Height = 17
+          Caption = 'Focus0'
+          TabOrder = 8
+          OnClick = CheckaltfocusClick
+        end
+      end
+      object GroupBoxfilter: TGroupBox
+        Left = 3
+        Top = 95
+        Width = 147
+        Height = 83
+        Caption = 'Filter'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 2
+        object Label16: TLabel
+          Left = 112
+          Top = 22
+          Width = 45
+          Height = 14
+          AutoSize = False
+          Caption = 'Off'
+          Color = clWhite
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          ParentColor = False
+          ParentFont = False
+        end
+        object WButton1: TButton
+          Tag = 1
+          Left = 2
+          Top = 13
+          Width = 33
+          Height = 20
+          Caption = 'Lumi'
+          TabOrder = 0
+        end
+        object WButton2: TButton
+          Tag = 2
+          Left = 37
+          Top = 13
+          Width = 33
+          Height = 20
+          Caption = 'Red'
+          TabOrder = 1
+        end
+        object WButton3: TButton
+          Tag = 3
+          Left = 73
+          Top = 13
+          Width = 33
+          Height = 20
+          Caption = 'Green'
+          TabOrder = 2
+        end
+        object WButton4: TButton
+          Tag = 4
+          Left = 2
+          Top = 35
+          Width = 33
+          Height = 20
+          Caption = 'Blue'
+          TabOrder = 3
+        end
+        object WButton5: TButton
+          Tag = 5
+          Left = 37
+          Top = 35
+          Width = 33
+          Height = 20
+          Caption = 'IR'
+          TabOrder = 4
+        end
+        object WButton6: TButton
+          Tag = 6
+          Left = 73
+          Top = 35
+          Width = 33
+          Height = 20
+          Caption = 'IRc'
+          TabOrder = 5
+        end
+        object WButton7: TButton
+          Tag = 7
+          Left = 2
+          Top = 57
+          Width = 33
+          Height = 20
+          Caption = 'Ha'
+          TabOrder = 6
+        end
+        object WButton8: TButton
+          Tag = 8
+          Left = 37
+          Top = 57
+          Width = 33
+          Height = 20
+          Caption = 'P'
+          TabOrder = 7
+        end
+        object WButton9: TButton
+          Tag = 9
+          Left = 73
+          Top = 57
+          Width = 33
+          Height = 20
+          Caption = 'OIII'
+          TabOrder = 8
+        end
+      end
     end
   end
   object GroupBox8: TGroupBox
     Left = 0
-    Top = 215
+    Top = 203
     Width = 120
     Height = 94
     Caption = 'Ar/Dec'

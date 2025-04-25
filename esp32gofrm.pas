@@ -9,7 +9,7 @@ uses
   EnhEdits, CPortCtl, adpInstanceControl, System.Win.ScktComp, serial,
   Joystickex, JvComponentBase, JvHidControllerClass, HidUsage, Vcl.ComCtrls,
   System.Bluetooth, bluetools, tcptools, serialtools, lxutils, Vcl.NumberBox,
-  globalvar;
+  globalvar, Vcl.Samples.Spin;
 
 type
   TEsp32frm = class(TForm)
@@ -74,16 +74,6 @@ type
     LabelDec1: TLabel;
     GroupBox8: TGroupBox;
     labelAR: TLabel;
-    GroupBoxFocus: TGroupBox;
-    LabelFocusCount: TLabel;
-    ButtonIn: TButton;
-    ButtonOut: TButton;
-    ButtonM1: TButton;
-    ButtonM2: TButton;
-    ButtonM3: TButton;
-    ButtonM4: TButton;
-    CheckBoxJoyf: TCheckBox;
-    CheckBox2: TCheckBox;
     GroupBox5: TGroupBox;
     ButtonSync: TButton;
     Buttonstar1: TButton;
@@ -128,19 +118,11 @@ type
     StaticText6: TStaticText;
     NumberBoxlong: TNumberBox;
     NumberBoxlat: TNumberBox;
-    NumberBoxFmax: TNumberBox;
-    NBxVolt: TNumberBox;
-    NumberBoxFlow: TNumberBox;
-    NumberBoxfsp: TNumberBox;
     StaticText8: TStaticText;
     Memo1: TMemo;
     save: TButton;
     Button4: TButton;
     Label6: TLabel;
-    StaticText9: TStaticText;
-    StaticText10: TStaticText;
-    StaticText11: TStaticText;
-    CheckBoxDCFocus: TCheckBox;
     TMC: TTabSheet;
     NumberBoxraSt: TNumberBox;
     NumberBoxDecSt: TNumberBox;
@@ -173,6 +155,69 @@ type
     Label13: TLabel;
     Label14: TLabel;
     Label15: TLabel;
+    TrackBar1: TTrackBar;
+    Aux: TTabSheet;
+    Panel1: TPanel;
+    StaticText16: TStaticText;
+    StaticText17: TStaticText;
+    StaticText12: TStaticText;
+    NumberBoxFM: TNumberBox;
+    NumberBoxAM: TNumberBox;
+    StaticText13: TStaticText;
+    NumberBoxFS: TNumberBox;
+    NumberBoxAs: TNumberBox;
+    NumberBoxFF: TNumberBox;
+    NumberBoxAF: TNumberBox;
+    NumberBoxFpwm: TNumberBox;
+    NumberBoxApwm: TNumberBox;
+    StaticText15: TStaticText;
+    StaticText14: TStaticText;
+    ButtonAuxSave: TButton;
+    ButtonAuxRead: TButton;
+    CheckBoxDCF: TCheckBox;
+    GroupRotator: TGroupBox;
+    SpinButton3: TSpinButton;
+    CCButton: TButton;
+    CCWButton: TButton;
+    SyncButton3: TButton;
+    MoveButton3: TButton;
+    CounterFloatEdit: TFloatEdit;
+    reverseCheckBox: TCheckBox;
+    TargetFloatEdit: TFloatEdit;
+    RButton1: TButton;
+    RButton2: TButton;
+    RButton3: TButton;
+    RButton4: TButton;
+    RButton5: TButton;
+    RButton6: TButton;
+    RButton7: TButton;
+    RButton8: TButton;
+    StaticText9: TStaticText;
+    StaticText10: TStaticText;
+    StaticText11: TStaticText;
+    StaticText19: TStaticText;
+    GroupBoxFocus: TGroupBox;
+    LabelFocusCount: TLabel;
+    ButtonIn: TButton;
+    ButtonOut: TButton;
+    ButtonM1: TButton;
+    ButtonM2: TButton;
+    ButtonM3: TButton;
+    ButtonM4: TButton;
+    CheckBoxJoyf: TCheckBox;
+    CheckBox2: TCheckBox;
+    Checkaltfocus: TCheckBox;
+    GroupBoxfilter: TGroupBox;
+    Label16: TLabel;
+    WButton1: TButton;
+    WButton2: TButton;
+    WButton3: TButton;
+    WButton4: TButton;
+    WButton5: TButton;
+    WButton6: TButton;
+    WButton7: TButton;
+    WButton8: TButton;
+    WButton9: TButton;
 
     procedure FormCreate(Sender: TObject);
     procedure Button_NMouseDown(Sender: TObject; Button: TMouseButton;
@@ -240,6 +285,17 @@ type
       var Handled: Boolean);
     procedure Button5Click(Sender: TObject);
     procedure Button6Click(Sender: TObject);
+    procedure TrackBar1Change(Sender: TObject);
+    procedure CheckaltfocusClick(Sender: TObject);
+    procedure ButtonAuxSaveClick(Sender: TObject);
+    procedure ButtonAuxReadClick(Sender: TObject);
+    procedure RButton1MouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure CCButtonMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure CCButtonMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure SyncButton3Click(Sender: TObject);
 
   private
     { Private declarations }
@@ -248,7 +304,7 @@ type
   end;
 
 Const
-  config_lines = 29;
+  config_lines = 24;
 
 var
   Esp32frm: TEsp32frm;
@@ -421,7 +477,10 @@ begin
       // '', [rfReplaceAll]);
       // cstring := stringreplace(cstring,#13,
       // '', [rfReplaceAll]);
+      cstring := stringreplace(cstring, '.',
+        '' + FormatSettings.DecimalSeparator, [rfReplaceAll]);
       lines.Text := cstring;
+      Memo1.lines.add(cstring);
 
     end
     else
@@ -466,22 +525,17 @@ begin
       NumberBoxlong.Text := lines[11];
       NumberBoxlat.Text := lines[12];
       NumberBoxgmtoff.Text := lines[13];
-      NumberBoxFmax.Text := lines[14];
-      NumberBoxFlow.Text := lines[15];
-      NumberBoxfsp.Text := lines[16];
-      NumberBoxrampaz.Text := lines[17];
-      NumberBoxrampalt.Text := lines[18];
-      NumberBoxbackpaz.Text := lines[19];
-      NumberBoxbackpalt.Text := lines[20];
-      ComboBoxEqmode.ItemIndex := lines[21].tointeger;
-      ComboBoxtrack.ItemIndex := strtoint(lines[22]);
-      CheckBoxflip.Checked := lines[23] = '1';
-      CheckBoxinvaz.Checked := lines[24] = '1';
-      CheckBoxinvalt.Checked := lines[25] = '1';
-      NBxVolt.Text := lines[26];
-      CheckBoxbackaz.Checked := lines[27] = '1';
-      CheckBoxbackalt.Checked := lines[28] = '1';
-      CheckBoxDCFocus.Checked := lines[29] = '1';
+      NumberBoxrampaz.Text := lines[14];
+      NumberBoxrampalt.Text := lines[15];
+      NumberBoxbackpaz.Text := lines[16];
+      NumberBoxbackpalt.Text := lines[17];
+      ComboBoxEqmode.ItemIndex := lines[18].tointeger;
+      ComboBoxtrack.ItemIndex := strtoint(lines[19]);
+      CheckBoxflip.Checked := lines[20] = '1';
+      CheckBoxinvaz.Checked := lines[21] = '1';
+      CheckBoxinvalt.Checked := lines[22] = '1';
+      CheckBoxbackaz.Checked := lines[23] = '1';
+      CheckBoxbackalt.Checked := lines[24] = '1';
       str := NumberBoxspgaz.Text;
       guide_ra := str.ToDouble * (15.0 / 3600.0);
       str := NumberBoxspgalt.Text;
@@ -634,6 +688,126 @@ begin
     end;
     lines.Destroy
   end;
+end;
+
+procedure TEsp32frm.ButtonAuxReadClick(Sender: TObject);
+var
+  cstring, str: string;
+  lines: Tstringlist;
+  cLines: Integer;
+begin
+  try
+    lines := Tstringlist.Create();
+  finally
+
+  end;
+  cLines := 0;
+  Memo1.lines.Clear;
+  if (ClientSocket1.Connected) or (ComPortBT_USB.Connected) or (checkBtSock)
+  then
+
+  begin
+    // Memo1.lines.Clear;
+    Timer1.Enabled := false;
+    send(':cF#');
+
+    if imode = 2 then
+    begin
+      recv(cstring, 100);
+      // cstring := stringreplace(cstring,#10,
+      // '', [rfReplaceAll]);
+      // cstring := stringreplace(cstring,#13,
+      // '', [rfReplaceAll]);
+      lines.Text := cstring;
+
+    end
+    else
+      repeat
+
+        case imode of
+          1:
+            begin
+              readvln(cstring, #10);
+              cstring := stringreplace(cstring, #10, '', [rfReplaceAll])
+            end;
+          0:
+            begin
+              readvln(cstring, #10);
+              cstring := stringreplace(cstring, #10, '', [rfReplaceAll]);
+              cstring := stringreplace(cstring, #13, '', [rfReplaceAll]);
+            end;
+        end;
+
+        cstring := stringreplace(cstring, '.',
+          '' + FormatSettings.DecimalSeparator, [rfReplaceAll]);
+        lines.add(cstring);
+        Memo1.lines.add(cstring)
+      until (inbuff = 0);
+
+    Label1.caption := inttostr(lines.Count) + lines[0];
+    Timer1.Enabled := true;
+    if lines.Count >= 7 then
+    begin
+      NumberBoxFM.Text := lines[0];
+      NumberBoxFS.Text := lines[1];
+      NumberBoxFF.Text := lines[2];
+      NumberBoxFpwm.Text := lines[3];
+
+      NumberBoxAM.Text := lines[4];
+      NumberBoxAs.Text := lines[5];
+      NumberBoxAF.Text := lines[6];
+      NumberBoxApwm.Text := lines[7];
+      CheckBoxDCF.Checked := lines[8] = '1';
+      aux_max := strtoint(NumberBoxAM.Text);
+    end;
+    lines.Destroy
+  end;
+end;
+
+procedure TEsp32frm.ButtonAuxSaveClick(Sender: TObject);
+var
+  s: string;
+  I: Integer;
+  lines: Tstringlist;
+  bytes: Tbytes;
+begin
+  try
+    lines := Tstringlist.Create();
+  finally
+
+  end;
+  if (ClientSocket1.Connected) or (ComPortBT_USB.Connected) or (checkBtSock)
+  then
+  begin
+
+    lines.add(NumberBoxFM.Text);
+    lines.add(NumberBoxFS.Text);
+    lines.add(NumberBoxFF.Text);
+    lines.add(NumberBoxFpwm.Text);
+    lines.add(NumberBoxAM.Text);
+    lines.add(NumberBoxAs.Text);
+    lines.add(NumberBoxAF.Text);
+    lines.add(NumberBoxApwm.Text);
+    lines.add(CheckBoxDCF.Checked.tointeger.ToString);
+
+    // Label17.Text := inttostr(lines.Count);
+    Memo1.lines.Clear;
+    if true then
+    begin
+      s := ':cf';
+      for I := 0 to 8 do
+        s := s + lines[I] + #13#10;
+
+      s := s + '#';
+      s := stringreplace(s, FormatSettings.DecimalSeparator, '.',
+        [rfReplaceAll]);
+      Memo1.lines.add(s);
+      send(s);
+    end;
+  end;
+
+  lines.Destroy;
+
 end;
 
 procedure TEsp32frm.ButtonbtconnectClick(Sender: TObject);
@@ -826,6 +1000,52 @@ begin
 
 end;
 
+procedure TEsp32frm.CCButtonMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  if aux_active = 1 then
+
+    case TButton(Sender).tag of
+      0:
+        if CheckBox2.Checked then
+          send(':F++#')
+        else
+          send(':F+#');
+      1:
+        if CheckBox2.Checked then
+          send(':F--#')
+        else
+          send(':F-#');
+    end;
+
+end;
+
+procedure TEsp32frm.CCButtonMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  if aux_active = 1 then
+    send(':FQ#');
+end;
+
+procedure TEsp32frm.CheckaltfocusClick(Sender: TObject);
+begin
+  if Checkaltfocus.Checked and fullconnect then
+  begin
+    send(':Fs1#');
+    Checkaltfocus.caption := 'Focus1';
+    aux_active := 1;
+    grouprotator.Visible:=true;
+  end
+  else
+  begin
+    send(':Fs0#');
+    Checkaltfocus.caption := 'Focus0';
+    aux_active := 0;
+     grouprotator.Visible:=false;
+  end;
+
+end;
+
 procedure TEsp32frm.ChkflipClick(Sender: TObject);
 begin
   setautoflip(Chkflip.Checked);
@@ -889,6 +1109,8 @@ begin
     if get_flip() then
       Chkflip.Checked := true;
     Button4Click(self);
+    Button6Click(self);
+    ButtonAuxReadClick(self);
     // showmessage('okread');
     Timer1.Enabled := true;
   end;
@@ -1127,6 +1349,21 @@ begin
     result := '0' + result;
 end;
 
+procedure TEsp32frm.RButton1MouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+var
+  counter: Integer;
+begin
+  if aux_active = 1 then
+  begin
+    if TButton(Sender).tag = 1000 then
+      counter := round((TargetFloatEdit.Value / 360.0) * aux_max)
+    else
+      counter := round((TButton(Sender).tag / 360.0) * aux_max);
+    send(':FA-' + Format('%.5d', [counter]) + '#');
+  end;
+end;
+
 procedure TEsp32frm.ReadJoysticks(HidDev: TJvHidDevice; ReportID: Byte;
   const Data: Pointer; Size: Word);
 var
@@ -1211,7 +1448,7 @@ end;
 
 procedure TEsp32frm.Timer1Timer(Sender: TObject);
 var
-  str, coors, strsideral,strangle: string;
+  str, coors, strsideral, strangle: string;
   // focus, Count: Integer;
   Count: Integer;
   png: Cardinal;
@@ -1235,6 +1472,9 @@ begin
     // labelAR.caption := inttostr(count);
 
     LabelFocusCount.caption := Format('%0.5d', [focus]);
+    if aux_active = 1 then
+      CounterFloatEdit.Value := 360.0 / aux_max * focus;
+
     if CheckAlt.Checked then
     begin
       // az := get_az();
@@ -1255,9 +1495,10 @@ begin
         Label5.caption := 'BT';
     end;
 
-  //  Label5.caption := Label5.caption + ' ' + inttostr(gettickCount() - png)   ;
-    Label5.caption := Label5.caption + ' ' +Format('%0.3d', [ gettickCount() - png])+'ms';
-    // +  ' ' + inttostr(coors.Length); // (inbuff());
+    // Label5.caption := Label5.caption + ' ' + inttostr(gettickCount() - png)   ;
+    Label5.caption := Label5.caption + ' ' +
+      Format('%0.3d', [gettickCount() - png]) + ' ' + inttostr(coors.Length);
+    // (inbuff());
     if inbuff > 0 then
       clearbuff(true, false);
     Label5.Font.Color := Cllime;
@@ -1285,14 +1526,22 @@ begin
   datetimetostring(strsideral, 'hh:nn:ss', Local_Sideral_Time(UTCnow(),
     -FloatEditLong.Value) / 24.0);
 
-     datetimetostring(strangle, 'hh:nn:ss',calc_lha(rA));
+  datetimetostring(strangle, 'hh:nn:ss', calc_lha(ra));
   Labelmsg.caption := 'Local:' + timetostr(UTCnow() + (gmtoffset / 24.0)) +
     #13#10 + 'GMT: ' + timetostr(UTCnow()) + #13#10 + 'Sid:' + strsideral;
-  label2.Caption:=floattostr(calc_lha(rA))+' '+floattostr(ra);
+  Label2.caption := floattostr(calc_lha(ra)) + ' ' + floattostr(ra);
   if (Joystickex1.ButtonSt = 16) then
     CheckBox1.Checked := true;
   if (Joystickex1.ButtonSt = 32) then
     CheckBox1.Checked := false;
+end;
+
+procedure TEsp32frm.TrackBar1Change(Sender: TObject);
+
+begin
+  AlphaBlend := (TrackBar1.position > 0);
+  AlphaBlendValue := (255 - TrackBar1.position * 20);
+  // self.ScaleBy(trackbar3.Position*100+10,100);
 end;
 
 procedure TEsp32frm.ReadSettings;
@@ -1355,9 +1604,9 @@ begin
     lines.add(NumberBoxlong.Text);
     lines.add(NumberBoxlat.Text);
     lines.add(NumberBoxgmtoff.Text);
-    lines.add(NumberBoxFmax.Text);
-    lines.add(NumberBoxFlow.Text);
-    lines.add(NumberBoxfsp.Text);
+    { lines.add(NumberBoxFmax.Text);
+      lines.add(NumberBoxFlow.Text);
+      lines.add(NumberBoxfsp.Text); }
     lines.add(NumberBoxrampaz.Text);
     lines.add(NumberBoxrampalt.Text);
     lines.add(NumberBoxbackpaz.Text);
@@ -1367,10 +1616,10 @@ begin
     lines.add(CheckBoxflip.Checked.tointeger.ToString);
     lines.add(CheckBoxinvaz.Checked.tointeger.ToString);
     lines.add(CheckBoxinvalt.Checked.tointeger.ToString);
-    lines.add(NBxVolt.Text);
+    { lines.add(NBxVolt.Text); }
     lines.add(CheckBoxbackaz.Checked.tointeger.ToString);
     lines.add(CheckBoxbackalt.Checked.tointeger.ToString);
-    lines.add(CheckBoxDCFocus.Checked.tointeger.ToString);
+    { lines.add(CheckBoxDCFocus.Checked.tointeger.ToString); }
     // Label17.Text := inttostr(lines.Count);
     Memo1.lines.Clear;
     if lines.Count > config_lines then
@@ -1388,6 +1637,18 @@ begin
   end;
 
   lines.Destroy;
+end;
+
+procedure TEsp32frm.SyncButton3Click(Sender: TObject);
+var
+  counter: Integer;
+begin
+  //send(':FLS1+00000#');
+  if aux_active = 1 then
+  begin
+    counter := round((TargetFloatEdit.Value / 360.0) * aux_max);
+    send(':FLS1+' + Format('%.5d', [counter]) + '#');
+  end;
 end;
 
 procedure TEsp32frm.WriteSettings;

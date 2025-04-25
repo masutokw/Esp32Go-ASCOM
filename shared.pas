@@ -26,7 +26,9 @@ var
   Sport: THandle;
   connected,parked: boolean;
   alt, ra, dec, az, longi, lat,guide_ra,guide_de,ra_target,dec_target,elevation_site: Double;
-  track,focus: Integer;
+
+  declination_rate:double;
+  track,focus,aux_max,aux_active: Integer;
   send: function(values: String): Integer;
   recv: function(var value: string; count: Integer): Integer;
   readvln: function(var value: string; delimiter: string): Integer;
@@ -559,7 +561,8 @@ end;
 
 procedure Pulse_Guide(StrCommand: string);
 begin
-  send(StrCommand);
+ // send(':RG#'+StrCommand);
+ send(StrCommand);
 end;
 
 procedure Command_Blind(const Command: WideString; Raw: WordBool);
