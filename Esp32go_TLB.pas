@@ -12,7 +12,7 @@ unit Esp32go_TLB;
 // ************************************************************************ //
 
 // $Rev: 98336 $
-// File generated on 02/04/2025 15:54:53 from Type Library described below.
+// File generated on 08/05/2025 19:52:51 from Type Library described below.
 
 // ************************************************************************  //
 // Type Lib: C:\Users\masut\Documents\Embarcadero\Studio\Projects\Esp32Go-ASCOM\esp32go (1)
@@ -59,6 +59,10 @@ const
   IID_ITrackingRates: TGUID = '{AF07ABEC-343F-41BA-836E-AC9AF57CBFBA}';
   CLASS_TrackingRates: TGUID = '{26702E69-B4B7-41EC-9D05-3A194A07F8A2}';
   CLASS_AxisRates: TGUID = '{8824AD94-D729-48EE-A61B-9547AA4D6F43}';
+  IID_IRotator: TGUID = '{F74A1CDB-B5EB-4BFF-878C-58488C5DCBC9}';
+  CLASS_Rotator: TGUID = '{E77D7F6E-0CC9-4935-B670-64D199A34053}';
+  IID_IFilterWheel: TGUID = '{F67F4430-3191-4631-AB79-83A346917D4B}';
+  CLASS_FilterWheel: TGUID = '{20F749ED-2B90-4375-BE68-149F12760871}';
 
 // *********************************************************************//
 // Declaration of Enumerations defined in Type Library
@@ -129,6 +133,10 @@ type
   IAxisRatesDisp = dispinterface;
   ITrackingRates = interface;
   ITrackingRatesDisp = dispinterface;
+  IRotator = interface;
+  IRotatorDisp = dispinterface;
+  IFilterWheel = interface;
+  IFilterWheelDisp = dispinterface;
 
 // *********************************************************************//
 // Declaration of CoClasses defined in Type Library
@@ -139,12 +147,8 @@ type
   Focuser = IFocuser;
   TrackingRates = ITrackingRates;
   AxisRates = IAxisRates;
-
-
-// *********************************************************************//
-// Declaration of structures, unions and aliases.
-// *********************************************************************//
-  PPUserType1 = ^IEnumVARIANT; {*}
+  Rotator = IRotator;
+  FilterWheel = IFilterWheel;
 
 
 // *********************************************************************//
@@ -226,7 +230,7 @@ type
     procedure AxisRates(Axis: TelescopeAxes); safecall;
     function CanMoveAxis(Axis: TelescopeAxes): WordBool; safecall;
     procedure CommandBlind(const Command: WideString; Raw: WordBool); safecall;
-    procedure CommandBool(const Command: WideString; Raw: Integer); safecall;
+    procedure CommandBool(const Command: WideString; Raw: WordBool); safecall;
     procedure CommandString(const Command: WideString; Raw: WordBool); safecall;
     function DestinationSideOfPier(RightAscension: Double; Declination: Double): PierSide; stdcall;
     procedure FindHome; safecall;
@@ -364,7 +368,7 @@ type
     procedure AxisRates(Axis: TelescopeAxes); dispid 54;
     function CanMoveAxis(Axis: TelescopeAxes): WordBool; dispid 55;
     procedure CommandBlind(const Command: WideString; Raw: WordBool); dispid 56;
-    procedure CommandBool(const Command: WideString; Raw: Integer); dispid 57;
+    procedure CommandBool(const Command: WideString; Raw: WordBool); dispid 57;
     procedure CommandString(const Command: WideString; Raw: WordBool); dispid 58;
     function DestinationSideOfPier(RightAscension: Double; Declination: Double): PierSide; dispid 59;
     procedure FindHome; dispid 60;
@@ -545,6 +549,146 @@ type
   end;
 
 // *********************************************************************//
+// Interface: IRotator
+// Flags:     (4416) Dual OleAutomation Dispatchable
+// GUID:      {F74A1CDB-B5EB-4BFF-878C-58488C5DCBC9}
+// *********************************************************************//
+  IRotator = interface(IDispatch)
+    ['{F74A1CDB-B5EB-4BFF-878C-58488C5DCBC9}']
+    function Get_CanReverse: WordBool; safecall;
+    function Get_Connected: WordBool; safecall;
+    procedure Set_Connected(Value: WordBool); safecall;
+    function Get_IsMoving: WordBool; safecall;
+    procedure Set_IsMoving(Value: WordBool); safecall;
+    function Get_Position: Single; safecall;
+    procedure Set_Position(Value: Single); safecall;
+    function Get_Reverse: WordBool; safecall;
+    procedure Set_Reverse(Value: WordBool); safecall;
+    function Get_StepSize: Single; safecall;
+    function Get_TargetPosition: Single; safecall;
+    procedure Halt; safecall;
+    procedure Move(Position: Single); safecall;
+    procedure MoveAbsolute(POsition: Single); safecall;
+    procedure SetupDialog; safecall;
+    function Get_DriverInfo: WideString; safecall;
+    function Get_InterfaceVersion: Shortint; safecall;
+    function Get_DriverVersion: WideString; safecall;
+    procedure CommandBlind(const Command: WideString; Raw: WordBool); safecall;
+    function Get_Description: WideString; safecall;
+    function Get_Name: WideString; safecall;
+    procedure MoveMechanical(Position: Single); safecall;
+    function Get_MechanicalPosition: Single; safecall;
+    function Get_SupportedActions: OleVariant; safecall;
+    procedure Sync(Position: Single); safecall;
+    property CanReverse: WordBool read Get_CanReverse;
+    property Connected: WordBool read Get_Connected write Set_Connected;
+    property IsMoving: WordBool read Get_IsMoving write Set_IsMoving;
+    property Position: Single read Get_Position write Set_Position;
+    property Reverse: WordBool read Get_Reverse write Set_Reverse;
+    property StepSize: Single read Get_StepSize;
+    property TargetPosition: Single read Get_TargetPosition;
+    property DriverInfo: WideString read Get_DriverInfo;
+    property InterfaceVersion: Shortint read Get_InterfaceVersion;
+    property DriverVersion: WideString read Get_DriverVersion;
+    property Description: WideString read Get_Description;
+    property Name: WideString read Get_Name;
+    property MechanicalPosition: Single read Get_MechanicalPosition;
+    property SupportedActions: OleVariant read Get_SupportedActions;
+  end;
+
+// *********************************************************************//
+// DispIntf:  IRotatorDisp
+// Flags:     (4416) Dual OleAutomation Dispatchable
+// GUID:      {F74A1CDB-B5EB-4BFF-878C-58488C5DCBC9}
+// *********************************************************************//
+  IRotatorDisp = dispinterface
+    ['{F74A1CDB-B5EB-4BFF-878C-58488C5DCBC9}']
+    property CanReverse: WordBool readonly dispid 201;
+    property Connected: WordBool dispid 202;
+    property IsMoving: WordBool dispid 203;
+    property Position: Single dispid 204;
+    property Reverse: WordBool dispid 205;
+    property StepSize: Single readonly dispid 206;
+    property TargetPosition: Single readonly dispid 207;
+    procedure Halt; dispid 208;
+    procedure Move(Position: Single); dispid 209;
+    procedure MoveAbsolute(POsition: Single); dispid 210;
+    procedure SetupDialog; dispid 211;
+    property DriverInfo: WideString readonly dispid 212;
+    property InterfaceVersion: Shortint readonly dispid 213;
+    property DriverVersion: WideString readonly dispid 214;
+    procedure CommandBlind(const Command: WideString; Raw: WordBool); dispid 215;
+    property Description: WideString readonly dispid 216;
+    property Name: WideString readonly dispid 217;
+    procedure MoveMechanical(Position: Single); dispid 218;
+    property MechanicalPosition: Single readonly dispid 219;
+    property SupportedActions: OleVariant readonly dispid 220;
+    procedure Sync(Position: Single); dispid 221;
+  end;
+
+// *********************************************************************//
+// Interface: IFilterWheel
+// Flags:     (4416) Dual OleAutomation Dispatchable
+// GUID:      {F67F4430-3191-4631-AB79-83A346917D4B}
+// *********************************************************************//
+  IFilterWheel = interface(IDispatch)
+    ['{F67F4430-3191-4631-AB79-83A346917D4B}']
+    function Get_Connected: WordBool; safecall;
+    procedure Set_Connected(Value: WordBool); safecall;
+    function Get_FocusOffsets: PSafeArray; safecall;
+    function Get_Position: HResult; safecall;
+    procedure Set_Position(Value: HResult); safecall;
+    function Get_Names: PSafeArray; safecall;
+    procedure SetupDialog; safecall;
+    function Get_SupportedActions: OleVariant; safecall;
+    function Get_DriverInfo: WideString; safecall;
+    function Get_DriverVersion: WideString; safecall;
+    function Get_InterfaceVersion: Shortint; safecall;
+    function Get_Name: WideString; safecall;
+    function Get_Description: WideString; safecall;
+    procedure Action(const ActionName: WideString; const ActionParams: WideString); safecall;
+    procedure CommandBlind(const Command: WideString; raw: WordBool); safecall;
+    procedure CommandBool(const command: WideString; raw: WordBool); safecall;
+    procedure CommandString(const command: WideString; RAW: WordBool); safecall;
+    procedure Dispose; safecall;
+    property Connected: WordBool read Get_Connected write Set_Connected;
+    property FocusOffsets: PSafeArray read Get_FocusOffsets;
+    property Position: HResult read Get_Position write Set_Position;
+    property Names: PSafeArray read Get_Names;
+    property SupportedActions: OleVariant read Get_SupportedActions;
+    property DriverInfo: WideString read Get_DriverInfo;
+    property DriverVersion: WideString read Get_DriverVersion;
+    property InterfaceVersion: Shortint read Get_InterfaceVersion;
+    property Name: WideString read Get_Name;
+    property Description: WideString read Get_Description;
+  end;
+
+// *********************************************************************//
+// DispIntf:  IFilterWheelDisp
+// Flags:     (4416) Dual OleAutomation Dispatchable
+// GUID:      {F67F4430-3191-4631-AB79-83A346917D4B}
+// *********************************************************************//
+  IFilterWheelDisp = dispinterface
+    ['{F67F4430-3191-4631-AB79-83A346917D4B}']
+    property Connected: WordBool dispid 201;
+    property FocusOffsets: {NOT_OLEAUTO(PSafeArray)}OleVariant readonly dispid 202;
+    property Position: HResult dispid 203;
+    property Names: {NOT_OLEAUTO(PSafeArray)}OleVariant readonly dispid 204;
+    procedure SetupDialog; dispid 205;
+    property SupportedActions: OleVariant readonly dispid 206;
+    property DriverInfo: WideString readonly dispid 207;
+    property DriverVersion: WideString readonly dispid 208;
+    property InterfaceVersion: Shortint readonly dispid 209;
+    property Name: WideString readonly dispid 210;
+    property Description: WideString readonly dispid 211;
+    procedure Action(const ActionName: WideString; const ActionParams: WideString); dispid 212;
+    procedure CommandBlind(const Command: WideString; raw: WordBool); dispid 213;
+    procedure CommandBool(const command: WideString; raw: WordBool); dispid 214;
+    procedure CommandString(const command: WideString; RAW: WordBool); dispid 215;
+    procedure Dispose; dispid 216;
+  end;
+
+// *********************************************************************//
 // The Class CoTelescope provides a Create and CreateRemote method to
 // create instances of the default interface ITelescope exposed by
 // the CoClass Telescope. The functions are intended to be used by
@@ -604,6 +748,30 @@ type
     class function CreateRemote(const MachineName: string): IAxisRates;
   end;
 
+// *********************************************************************//
+// The Class CoRotator provides a Create and CreateRemote method to
+// create instances of the default interface IRotator exposed by
+// the CoClass Rotator. The functions are intended to be used by
+// clients wishing to automate the CoClass objects exposed by the
+// server of this typelibrary.
+// *********************************************************************//
+  CoRotator = class
+    class function Create: IRotator;
+    class function CreateRemote(const MachineName: string): IRotator;
+  end;
+
+// *********************************************************************//
+// The Class CoFilterWheel provides a Create and CreateRemote method to
+// create instances of the default interface IFilterWheel exposed by
+// the CoClass FilterWheel. The functions are intended to be used by
+// clients wishing to automate the CoClass objects exposed by the
+// server of this typelibrary.
+// *********************************************************************//
+  CoFilterWheel = class
+    class function Create: IFilterWheel;
+    class function CreateRemote(const MachineName: string): IFilterWheel;
+  end;
+
 implementation
 
 uses System.Win.ComObj;
@@ -656,6 +824,26 @@ end;
 class function CoAxisRates.CreateRemote(const MachineName: string): IAxisRates;
 begin
   Result := CreateRemoteComObject(MachineName, CLASS_AxisRates) as IAxisRates;
+end;
+
+class function CoRotator.Create: IRotator;
+begin
+  Result := CreateComObject(CLASS_Rotator) as IRotator;
+end;
+
+class function CoRotator.CreateRemote(const MachineName: string): IRotator;
+begin
+  Result := CreateRemoteComObject(MachineName, CLASS_Rotator) as IRotator;
+end;
+
+class function CoFilterWheel.Create: IFilterWheel;
+begin
+  Result := CreateComObject(CLASS_FilterWheel) as IFilterWheel;
+end;
+
+class function CoFilterWheel.CreateRemote(const MachineName: string): IFilterWheel;
+begin
+  Result := CreateRemoteComObject(MachineName, CLASS_FilterWheel) as IFilterWheel;
 end;
 
 end.

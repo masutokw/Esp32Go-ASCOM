@@ -321,8 +321,6 @@ type
     procedure Button1fContextPopup(Sender: TObject; MousePos: TPoint;
       var Handled: Boolean);
 
-
-
   private
     { Private declarations }
   public
@@ -449,18 +447,19 @@ begin
 end;
 
 procedure TEsp32frm.Button1fClick(Sender: TObject);
-var stpos:string;
+var
+  stpos: string;
 begin
-   stpos := Format('%0.5d#', [focuspos2[TButton(Sender).tag]]);
+  stpos := Format('%0.5d#', [focuspos2[TButton(Sender).tag]]);
   send(':XA-' + stpos);
 end;
 
 procedure TEsp32frm.Button1fContextPopup(Sender: TObject; MousePos: TPoint;
   var Handled: Boolean);
 begin
-     showmessage('Setting changed');
+  showmessage('Setting changed');
   focuspos2[TButton(Sender).tag] := counterLongEdit2.Value;
-  TButton(Sender).Hint := inttostr(counterLongEdit2.value);
+  TButton(Sender).Hint := inttostr(counterLongEdit2.Value);
 end;
 
 procedure TEsp32frm.Button2Click(Sender: TObject);
@@ -805,8 +804,8 @@ begin
       GroupRotator.Visible := aux_device = 1;
       GroupBoxfilter.Visible := aux_device = 2;
       GroupBoxfocus2.Visible := aux_device = 0;
-      groupboxfilter.left:= GroupRotator.left;
-      groupboxfilter.top:= GroupRotator.top;
+      GroupBoxfilter.left := GroupRotator.left;
+      GroupBoxfilter.top := GroupRotator.top;
     end;
     lines.Destroy
   end;
@@ -842,7 +841,6 @@ begin
     GroupBoxfocus2.Visible := aux_device = 0;
     GroupRotator.Visible := aux_device = 1;
     GroupBoxfilter.Visible := aux_device = 2;
-
 
     // Label17.Text := inttostr(lines.Count);
     Memo1.lines.Clear;
@@ -930,8 +928,6 @@ procedure TEsp32frm.ButtonHomeClick(Sender: TObject);
 begin
   send(':pH#');
 end;
-
-
 
 procedure TEsp32frm.ButtonInMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
@@ -1060,19 +1056,18 @@ procedure TEsp32frm.CCButtonMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
 
-
-    case TButton(Sender).tag of
-      0:
-        if CheckBox2.Checked then
-          send(':X++#')
-        else
-          send(':X+#');
-      1:
-        if CheckBox2.Checked then
-          send(':X--#')
-        else
-          send(':X-#');
-    end;
+  case TButton(Sender).tag of
+    0:
+      if CheckBox2.Checked then
+        send(':X++#')
+      else
+        send(':X+#');
+    1:
+      if CheckBox2.Checked then
+        send(':X--#')
+      else
+        send(':X-#');
+  end;
 
 end;
 
@@ -1080,8 +1075,8 @@ procedure TEsp32frm.CCButtonMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
 
-    send(':XQ#');
-      CounterFloatEdit.Value := 360.0 / aux_max * get_focusaux();
+  send(':XQ#');
+  CounterFloatEdit.Value := 360.0 / aux_max * get_focuspos('X');
 end;
 
 procedure TEsp32frm.CheckaltfocusClick(Sender: TObject);
@@ -1095,7 +1090,7 @@ begin
   end
   else
   begin
-   send(':Fs0#');
+    send(':Fs0#');
     Checkaltfocus.caption := 'Focus0';
     aux_active := 0;
     GroupRotator.Visible := true;
@@ -1118,7 +1113,7 @@ begin
   Joystickex1.EnableJoyStick;
   s_inipath := ExtractFilePath(Application.EXEName);
   inifile_name := 'esp32gocnf.ini';
-  SetWindowPos(Handle, HWND_TOPMOST, Left, Top, Width, Height, 0);
+  SetWindowPos(Handle, HWND_TOPMOST, left, top, Width, Height, 0);
   ReadSettings;
   imode := RadioGroupcom.ItemIndex;
   set_interface_mode(imode);
@@ -1435,12 +1430,11 @@ var
   counter: Integer;
 begin
 
-
-    if TButton(Sender).tag = 1000 then
-      counter := round((TargetFloatEdit.Value / 360.0) * aux_max)
-    else
-      counter := round((TButton(Sender).tag / 360.0) * aux_max);
-    send(':XA-' + Format('%.5d', [counter]) + '#');
+  if TButton(Sender).tag = 1000 then
+    counter := round((TargetFloatEdit.Value / 360.0) * aux_max)
+  else
+    counter := round((TButton(Sender).tag / 360.0) * aux_max);
+  send(':XA-' + Format('%.5d', [counter]) + '#');
 
 end;
 
@@ -1526,8 +1520,6 @@ begin
   send(':FLS1+00000#');
 end;
 
-
-
 procedure TEsp32frm.Timer1Timer(Sender: TObject);
 var
   str, coors, strsideral, strangle: string;
@@ -1554,223 +1546,219 @@ begin
     // labelAR.caption := inttostr(count);
 
     LabelFocusCount.caption := Format('%0.5d', [focus]);
-   // if aux_active = 1 then
-   //if aux_device=1 then CounterFloatEdit.Value := 360.0 / aux_max * get_focusaux();
-   case aux_device of
-   0: counterLongEdit2.value:= get_focusaux();
-   1: CounterFloatEdit.Value := 360.0 / aux_max * get_focusaux();
-   2:
-   end;
-
-    if CheckAlt.Checked then
-    begin
-      // az := get_az();
-      // alt := get_alt();
-
-      LabelAzimuth.caption := DoubletoLXdec(az, 0);
-
-      LabelAltitude.caption := DoubletoLXdec(alt, 0);
-    end;
-
-    case imode of
-
-      0:
-        Label5.caption := 'USB';
+    // if aux_active = 1 then
+    // if aux_device=1 then CounterFloatEdit.Value := 360.0 / aux_max * get_focusaux();
+    case aux_device of
+      0:begin
+        aux_counter := get_focuspos('X');counterLongEdit2.Value :=aux_counter;
+        end;
       1:
-        Label5.caption := 'TCP';
+        begin
+          aux_counter := get_focuspos('X');
+          CounterFloatEdit.Value := (360.0 / aux_max) * aux_counter;
+        end;
       2:
-        Label5.caption := 'BT';
-    end;
+      end;
 
-    // Label5.caption := Label5.caption + ' ' + inttostr(gettickCount() - png)   ;
-    Label5.caption := Label5.caption + ' ' +
-      Format('%0.3d', [gettickCount() - png]) + ' ' + inttostr(coors.Length);
-    // (inbuff());
-    if inbuff > 0 then
-      clearbuff(true, false);
-    Label5.Font.Color := Cllime;
-    if piersid then
-    begin
-      Label3.caption := 'West';
+      if CheckAlt.Checked then
+      begin
+        // az := get_az();
+        // alt := get_alt();
+
+        LabelAzimuth.caption := DoubletoLXdec(az, 0);
+
+        LabelAltitude.caption := DoubletoLXdec(alt, 0);
+      end;
+
+      case imode of
+
+        0:
+          Label5.caption := 'USB';
+        1:
+          Label5.caption := 'TCP';
+        2:
+          Label5.caption := 'BT';
+      end;
+
+      // Label5.caption := Label5.caption + ' ' + inttostr(gettickCount() - png)   ;
+      Label5.caption := Label5.caption + ' ' +
+        Format('%0.3d', [gettickCount() - png]) + ' ' + inttostr(coors.Length);
+      // (inbuff());
+      if inbuff > 0 then clearbuff(true, false);
+      Label5.Font.Color := Cllime;
+      if piersid then begin Label3.caption := 'West';
       LabelAR1.Font.Color := Clred;
       LabelDec1.Font.Color := Clred;
-    end
-    else
-    begin
-      Label3.caption := 'East';
+      end else begin Label3.caption := 'East';
       LabelAR1.Font.Color := Cllime;
       LabelDec1.Font.Color := Cllime;
-    end;
-  end
+      end;
+      end
 
-  else
-  begin
-    Label5.Font.Color := Clred;
+      else begin Label5.Font.Color := Clred;
 
-    Label5.caption := 'DisConnected';
-  end;
+      Label5.caption := 'DisConnected';
+      end;
 
-  datetimetostring(strsideral, 'hh:nn:ss', Local_Sideral_Time(UTCnow(),
-    -FloatEditLong.Value) / 24.0);
+      datetimetostring(strsideral, 'hh:nn:ss', Local_Sideral_Time(UTCnow(),
+        -FloatEditLong.Value) / 24.0);
 
-  datetimetostring(strangle, 'hh:nn:ss', calc_lha(ra));
-  Labelmsg.caption := 'Local:' + timetostr(UTCnow() + (gmtoffset / 24.0)) +
-    #13#10 + 'GMT: ' + timetostr(UTCnow()) + #13#10 + 'Sid:' + strsideral;
-  Label2.caption := floattostr(calc_lha(ra)) + ' ' + floattostr(ra);
-  if (Joystickex1.ButtonSt = 16) then
-    CheckBox1.Checked := true;
-  if (Joystickex1.ButtonSt = 32) then
-    CheckBox1.Checked := false;
-end;
+      datetimetostring(strangle, 'hh:nn:ss', calc_lha(ra));
+      Labelmsg.caption := 'Local:' + timetostr(UTCnow() + (gmtoffset / 24.0)) +
+        #13#10 + 'GMT: ' + timetostr(UTCnow()) + #13#10 + 'Sid:' + strsideral;
+      Label2.caption := floattostr(calc_lha(ra)) + ' ' + floattostr(ra);
+      if (Joystickex1.ButtonSt = 16) then CheckBox1.Checked := true;
+      if (Joystickex1.ButtonSt = 32) then CheckBox1.Checked := false;
+      end;
 
-procedure TEsp32frm.TrackBar1Change(Sender: TObject);
+      procedure TEsp32frm.TrackBar1Change(Sender: TObject);
 
-begin
-  AlphaBlend := (TrackBar1.position > 0);
-  AlphaBlendValue := (255 - TrackBar1.position * 20);
-  // self.ScaleBy(trackbar3.Position*100+10,100);
-end;
+      begin AlphaBlend := (TrackBar1.position > 0);
+      AlphaBlendValue := (255 - TrackBar1.position * 20);
+      // self.ScaleBy(trackbar3.Position*100+10,100);
+      end;
 
-procedure TEsp32frm.ReadSettings;
-var
-  inifile: TiniFile;
-  I: Integer;
-begin
-  inifile := TiniFile.Create(s_inipath + inifile_name);
-  with inifile do
-  begin
-    ComComboBox1.Text := ReadString('Serial_Port', 'Port', 'com14');
-    ComComboBox2.Text := ReadString('Serial_Port', 'BaudRate', '57600');
-    EditAddr.Text := ReadString('Host', 'Address', '192.168.1.1');
-    LongEditPort.Value := ReadInteger('Host', 'Port', 10001);
-    RadioGroupcom.ItemIndex := ReadInteger('Interface', 'TCP', 0);
-    FloatEditLat.Value := readfloat('GEO', 'lat', 36.7);
-    FloatEditLong.Value := readfloat('GEO', 'long', -4.12);
-    LongEditgmt.Value := ReadInteger('GEO', 'offset', 1);
-    cbxpaired.Text := ReadString('Bluetooth', 'device', 'esp32go');
-    gmtoffset := LongEditgmt.Value;
-    longi := FloatEditLong.Value;
-    lat := FloatEditLat.Value;
-    for I := 0 to 3 do
-      focuspos[I] := ReadInteger('Focus', 'focuspos' + inttostr(I),
-        (I + 1) * 1000);
-    ButtonM1.Hint := Format('%0.5d', [focuspos[0]]);
-    ButtonM2.Hint := Format('%0.5d', [focuspos[1]]);
-    ButtonM3.Hint := Format('%0.5d', [focuspos[2]]);
-    ButtonM4.Hint := Format('%0.5d', [focuspos[3]]);
+      procedure TEsp32frm.ReadSettings;
+      var inifile:
+        TiniFile;
+      I:
+        Integer;
+      begin
+        inifile := TiniFile.Create(s_inipath + inifile_name);
+        with inifile do
+        begin
+          ComComboBox1.Text := ReadString('Serial_Port', 'Port', 'com14');
+          ComComboBox2.Text := ReadString('Serial_Port', 'BaudRate', '57600');
+          EditAddr.Text := ReadString('Host', 'Address', '192.168.1.1');
+          LongEditPort.Value := ReadInteger('Host', 'Port', 10001);
+          RadioGroupcom.ItemIndex := ReadInteger('Interface', 'TCP', 0);
+          FloatEditLat.Value := readfloat('GEO', 'lat', 36.7);
+          FloatEditLong.Value := readfloat('GEO', 'long', -4.12);
+          LongEditgmt.Value := ReadInteger('GEO', 'offset', 1);
+          cbxpaired.Text := ReadString('Bluetooth', 'device', 'esp32go');
+          gmtoffset := LongEditgmt.Value;
+          longi := FloatEditLong.Value;
+          lat := FloatEditLat.Value;
+          for I := 0 to 3 do
+            focuspos[I] := ReadInteger('Focus', 'focuspos' + inttostr(I),
+              (I + 1) * 1000);
+          ButtonM1.Hint := Format('%0.5d', [focuspos[0]]);
+          ButtonM2.Hint := Format('%0.5d', [focuspos[1]]);
+          ButtonM3.Hint := Format('%0.5d', [focuspos[2]]);
+          ButtonM4.Hint := Format('%0.5d', [focuspos[3]]);
 
-     for I := 0 to 6 do
-      focuspos[I] := ReadInteger('Focus2', 'focuspos' + inttostr(I),
-        (I + 1) * 1000);
+          for I := 0 to 6 do
+            focuspos[I] := ReadInteger('Focus2', 'focuspos' + inttostr(I),
+              (I + 1) * 1000);
 
-    Button1F.Hint := Format('%0.5d', [focuspos2[0]]);
-    Button2F.Hint := Format('%0.5d', [focuspos2[1]]);
-    Button3F.Hint := Format('%0.5d', [focuspos2[2]]);
-    Button4F.Hint := Format('%0.5d', [focuspos2[3]]);
-    Button5F.Hint := Format('%0.5d', [focuspos2[4]]);
-    Button6F.Hint := Format('%0.5d', [focuspos2[5]]);
+          Button1f.Hint := Format('%0.5d', [focuspos2[0]]);
+          Button2f.Hint := Format('%0.5d', [focuspos2[1]]);
+          Button3f.Hint := Format('%0.5d', [focuspos2[2]]);
+          Button4f.Hint := Format('%0.5d', [focuspos2[3]]);
+          Button5f.Hint := Format('%0.5d', [focuspos2[4]]);
+          Button6f.Hint := Format('%0.5d', [focuspos2[5]]);
 
-  end;
-end;
+        end;
+      end;
 
-procedure TEsp32frm.saveClick(Sender: TObject);
-var
-  s: string;
-  I: Integer;
-  lines: Tstringlist;
-  bytes: Tbytes;
-begin
-  try
-    lines := Tstringlist.Create();
-  finally
+      procedure TEsp32frm.saveClick(Sender: TObject);
+      var
+        s: string;
+        I: Integer;
+        lines: Tstringlist;
+        bytes: Tbytes;
+      begin
+        try
+          lines := Tstringlist.Create();
+        finally
 
-  end;
-  if (ClientSocket1.Connected) or (ComPortBT_USB.Connected) or (checkBtSock)
-  then
-  begin
+        end;
+        if (ClientSocket1.Connected) or (ComPortBT_USB.Connected) or
+          (checkBtSock) then
+        begin
 
-    lines.add(NumberBoxcountaz.Text);
-    lines.add(NumberBoxcountalt.Text);
-    lines.add(NumberBoxspgaz.Text);
-    lines.add(NumberBoxspcaz.Text);
-    lines.add(NumberBoxspfaz.Text);
-    lines.add(NumberBoxspsaz.Text);
-    lines.add(NumberBoxspgalt.Text);
-    lines.add(NumberBoxspcalt.Text);
-    lines.add(NumberBoxspfalt.Text);
-    lines.add(NumberBoxspsalt.Text);
-    lines.add(NumberBoxpresc.Text);
-    lines.add(NumberBoxlong.Text);
-    lines.add(NumberBoxlat.Text);
-    lines.add(NumberBoxgmtoff.Text);
-    { lines.add(NumberBoxFmax.Text);
-      lines.add(NumberBoxFlow.Text);
-      lines.add(NumberBoxfsp.Text); }
-    lines.add(NumberBoxrampaz.Text);
-    lines.add(NumberBoxrampalt.Text);
-    lines.add(NumberBoxbackpaz.Text);
-    lines.add(NumberBoxbackpalt.Text);
-    lines.add(inttostr(ComboBoxEqmode.ItemIndex));
-    lines.add(inttostr(ComboBoxtrack.ItemIndex));
-    lines.add(CheckBoxflip.Checked.tointeger.ToString);
-    lines.add(CheckBoxinvaz.Checked.tointeger.ToString);
-    lines.add(CheckBoxinvalt.Checked.tointeger.ToString);
-    { lines.add(NBxVolt.Text); }
-    lines.add(CheckBoxbackaz.Checked.tointeger.ToString);
-    lines.add(CheckBoxbackalt.Checked.tointeger.ToString);
-    { lines.add(CheckBoxDCFocus.Checked.tointeger.ToString); }
-    // Label17.Text := inttostr(lines.Count);
-    Memo1.lines.Clear;
-    if lines.Count > config_lines then
-    begin
-      s := ':cs';
-      for I := 0 to config_lines do
-        s := s + lines[I] + #13#10;
+          lines.add(NumberBoxcountaz.Text);
+          lines.add(NumberBoxcountalt.Text);
+          lines.add(NumberBoxspgaz.Text);
+          lines.add(NumberBoxspcaz.Text);
+          lines.add(NumberBoxspfaz.Text);
+          lines.add(NumberBoxspsaz.Text);
+          lines.add(NumberBoxspgalt.Text);
+          lines.add(NumberBoxspcalt.Text);
+          lines.add(NumberBoxspfalt.Text);
+          lines.add(NumberBoxspsalt.Text);
+          lines.add(NumberBoxpresc.Text);
+          lines.add(NumberBoxlong.Text);
+          lines.add(NumberBoxlat.Text);
+          lines.add(NumberBoxgmtoff.Text);
+          { lines.add(NumberBoxFmax.Text);
+            lines.add(NumberBoxFlow.Text);
+            lines.add(NumberBoxfsp.Text); }
+          lines.add(NumberBoxrampaz.Text);
+          lines.add(NumberBoxrampalt.Text);
+          lines.add(NumberBoxbackpaz.Text);
+          lines.add(NumberBoxbackpalt.Text);
+          lines.add(inttostr(ComboBoxEqmode.ItemIndex));
+          lines.add(inttostr(ComboBoxtrack.ItemIndex));
+          lines.add(CheckBoxflip.Checked.tointeger.ToString);
+          lines.add(CheckBoxinvaz.Checked.tointeger.ToString);
+          lines.add(CheckBoxinvalt.Checked.tointeger.ToString);
+          { lines.add(NBxVolt.Text); }
+          lines.add(CheckBoxbackaz.Checked.tointeger.ToString);
+          lines.add(CheckBoxbackalt.Checked.tointeger.ToString);
+          { lines.add(CheckBoxDCFocus.Checked.tointeger.ToString); }
+          // Label17.Text := inttostr(lines.Count);
+          Memo1.lines.Clear;
+          if lines.Count > config_lines then
+          begin
+            s := ':cs';
+            for I := 0 to config_lines do
+              s := s + lines[I] + #13#10;
 
-      s := s + '#';
-      s := stringreplace(s, FormatSettings.DecimalSeparator, '.',
-        [rfReplaceAll]);
-      Memo1.lines.add(s);
-      send(s);
-    end;
-  end;
+            s := s + '#';
+            s := stringreplace(s, FormatSettings.DecimalSeparator, '.',
+              [rfReplaceAll]);
+            Memo1.lines.add(s);
+            send(s);
+          end;
+        end;
 
-  lines.Destroy;
-end;
+        lines.Destroy;
+      end;
 
-procedure TEsp32frm.SyncButton3Click(Sender: TObject);
-var
-  counter: Integer;
-begin
-  // send(':FLS1+00000#');
-    counter := round((TargetFloatEdit.Value / 360.0) * aux_max);
-    send(':XLS1+' + Format('%.5d', [counter]) + '#');
+      procedure TEsp32frm.SyncButton3Click(Sender: TObject);
+      var
+        counter: Integer;
+      begin
+        // send(':FLS1+00000#');
+        counter := round((TargetFloatEdit.Value / 360.0) * aux_max);
+        send(':XLS1+' + Format('%.5d', [counter]) + '#');
 
-end;
+      end;
 
-procedure TEsp32frm.WriteSettings;
-var
-  inifile: TiniFile;
-  I: Integer;
-begin
-  inifile := TiniFile.Create(s_inipath + inifile_name);
-  with inifile do
-  begin
-    writeString('Serial_Port', 'Port', ComComboBox1.Text);
-    writeString('Serial_Port', 'BaudRate', ComComboBox2.Text);
-    writeString('Host', 'Address', EditAddr.Text);
-    writeInteger('Host', 'Port', LongEditPort.Value);
-    writeInteger('Interface', 'TCP', RadioGroupcom.ItemIndex);
-    writefloat('GEO', 'lat', FloatEditLat.Value);
-    writefloat('GEO', 'long', FloatEditLong.Value);
-    writefloat('GEO', 'offset', LongEditgmt.Value);
-    writeString('Bluetooth', 'device', cbxpaired.Text);
-    for I := 0 to 3 do
-      writeInteger('Focus', 'focuspos' + inttostr(I), focuspos[I]);
-        for I := 0 to 5 do
-      writeInteger('Focus2', 'focuspos' + inttostr(I), focuspos2[I]);
+      procedure TEsp32frm.WriteSettings;
+      var
+        inifile: TiniFile;
+        I: Integer;
+      begin
+        inifile := TiniFile.Create(s_inipath + inifile_name);
+        with inifile do
+        begin
+          writeString('Serial_Port', 'Port', ComComboBox1.Text);
+          writeString('Serial_Port', 'BaudRate', ComComboBox2.Text);
+          writeString('Host', 'Address', EditAddr.Text);
+          writeInteger('Host', 'Port', LongEditPort.Value);
+          writeInteger('Interface', 'TCP', RadioGroupcom.ItemIndex);
+          writefloat('GEO', 'lat', FloatEditLat.Value);
+          writefloat('GEO', 'long', FloatEditLong.Value);
+          writefloat('GEO', 'offset', LongEditgmt.Value);
+          writeString('Bluetooth', 'device', cbxpaired.Text);
+          for I := 0 to 3 do
+            writeInteger('Focus', 'focuspos' + inttostr(I), focuspos[I]);
+          for I := 0 to 5 do
+            writeInteger('Focus2', 'focuspos' + inttostr(I), focuspos2[I]);
 
-  end;
-end;
+        end;
+      end;
 
 end.

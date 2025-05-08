@@ -6,7 +6,7 @@
 // However, when applying changes via the Editor this file will be regenerated
 // and comments or formatting changes will be lost.
 // ************************************************************************ //
-// File generated on 02/04/2025 15:54:53 (- $Rev: 12980 $, 196697906).
+// File generated on 08/05/2025 19:52:51 (- $Rev: 12980 $, 819902562).
 
 [
   uuid(1E06C881-9ACE-461A-AE17-0A0981B24AB1),
@@ -29,6 +29,10 @@ library Esp32go
   interface ITrackingRates;
   coclass TrackingRates;
   coclass AxisRates;
+  coclass Rotator;
+  interface IRotator;
+  interface IFilterWheel;
+  coclass FilterWheel;
 
 
   [
@@ -99,11 +103,6 @@ library Esp32go
     guideEast = 2,
     guideWest = 3
   };
-
-  [
-    custom(8B342977-45CB-4A01-A8F2-E47B61F3539E, 0)
-  ]
-  typedef IEnumVARIANT** PPUserType1;
 
   [
     uuid(80150348-03DD-4346-A55B-D5876884A313),
@@ -259,7 +258,7 @@ library Esp32go
     [id(0x00000038)]
     HRESULT _stdcall CommandBlind([in] BSTR Command, [in, optional, defaultvalue(False)] VARIANT_BOOL Raw);
     [id(0x00000039)]
-    HRESULT _stdcall CommandBool([in] BSTR Command, [in] long Raw);
+    HRESULT _stdcall CommandBool([in] BSTR Command, [in, optional, defaultvalue(False)] VARIANT_BOOL Raw);
     [id(0x0000003A)]
     HRESULT _stdcall CommandString([in] BSTR Command, [in, defaultvalue(False)] VARIANT_BOOL Raw);
     [id(0x0000003B)]
@@ -413,6 +412,112 @@ library Esp32go
   };
 
   [
+    uuid(F74A1CDB-B5EB-4BFF-878C-58488C5DCBC9),
+    version(1.0),
+    dual,
+    oleautomation
+  ]
+  interface IRotator: IDispatch
+  {
+    [propget, id(0x000000C9)]
+    HRESULT _stdcall CanReverse([out, retval] VARIANT_BOOL* Value);
+    [propget, id(0x000000CA)]
+    HRESULT _stdcall Connected([out, retval] VARIANT_BOOL* Value);
+    [propput, id(0x000000CA)]
+    HRESULT _stdcall Connected([in] VARIANT_BOOL Value);
+    [propget, id(0x000000CB)]
+    HRESULT _stdcall IsMoving([out, retval] VARIANT_BOOL* Value);
+    [propput, id(0x000000CB)]
+    HRESULT _stdcall IsMoving([in] VARIANT_BOOL Value);
+    [propget, id(0x000000CC)]
+    HRESULT _stdcall Position([out, retval] float* Value);
+    [propput, id(0x000000CC)]
+    HRESULT _stdcall Position([in] float Value);
+    [propget, id(0x000000CD)]
+    HRESULT _stdcall Reverse([out, retval] VARIANT_BOOL* Value);
+    [propput, id(0x000000CD)]
+    HRESULT _stdcall Reverse([in] VARIANT_BOOL Value);
+    [propget, id(0x000000CE)]
+    HRESULT _stdcall StepSize([out, retval] float* Value);
+    [propget, id(0x000000CF)]
+    HRESULT _stdcall TargetPosition([out, retval] float* Value);
+    [id(0x000000D0)]
+    HRESULT _stdcall Halt(void);
+    [id(0x000000D1)]
+    HRESULT _stdcall Move([in] float Position);
+    [id(0x000000D2)]
+    HRESULT _stdcall MoveAbsolute([in] float POsition);
+    [id(0x000000D3)]
+    HRESULT _stdcall SetupDialog(void);
+    [propget, id(0x000000D4)]
+    HRESULT _stdcall DriverInfo([out, retval] BSTR* Value);
+    [propget, id(0x000000D5)]
+    HRESULT _stdcall InterfaceVersion([out, retval] byte* Value);
+    [propget, id(0x000000D6)]
+    HRESULT _stdcall DriverVersion([out, retval] BSTR* Value);
+    [id(0x000000D7)]
+    HRESULT _stdcall CommandBlind([in] BSTR Command, [in] VARIANT_BOOL Raw);
+    [propget, id(0x000000D8)]
+    HRESULT _stdcall Description([out, retval] BSTR* Value);
+    [propget, id(0x000000D9)]
+    HRESULT _stdcall Name([out, retval] BSTR* Value);
+    [id(0x000000DA)]
+    HRESULT _stdcall MoveMechanical([in] float Position);
+    [propget, id(0x000000DB)]
+    HRESULT _stdcall MechanicalPosition([out, retval] float* Value);
+    [propget, id(0x000000DC)]
+    HRESULT _stdcall SupportedActions([out, retval] VARIANT* Value);
+    [id(0x000000DD)]
+    HRESULT _stdcall Sync([in] float Position);
+  };
+
+  [
+    uuid(F67F4430-3191-4631-AB79-83A346917D4B),
+    version(1.0),
+    dual,
+    oleautomation
+  ]
+  interface IFilterWheel: IDispatch
+  {
+    [propget, id(0x000000C9)]
+    HRESULT _stdcall Connected([out, retval] VARIANT_BOOL* Value);
+    [propput, id(0x000000C9)]
+    HRESULT _stdcall Connected([in] VARIANT_BOOL Value);
+    [propget, id(0x000000CA)]
+    HRESULT _stdcall FocusOffsets([out, retval] SAFEARRAY(long) * value);
+    [propget, id(0x000000CB)]
+    HRESULT _stdcall Position([out, retval] HRESULT* Value);
+    [propput, id(0x000000CB)]
+    HRESULT _stdcall Position([in] HRESULT Value);
+    [propget, id(0x000000CC)]
+    HRESULT _stdcall Names([out, retval] SAFEARRAY(BSTR) * Value);
+    [id(0x000000CD)]
+    HRESULT _stdcall SetupDialog(void);
+    [propget, id(0x000000CE)]
+    HRESULT _stdcall SupportedActions([out, retval] VARIANT* Value);
+    [propget, id(0x000000CF)]
+    HRESULT _stdcall DriverInfo([out, retval] BSTR* Value);
+    [propget, id(0x000000D0)]
+    HRESULT _stdcall DriverVersion([out, retval] BSTR* Value);
+    [propget, id(0x000000D1)]
+    HRESULT _stdcall InterfaceVersion([out, retval] byte* Value);
+    [propget, id(0x000000D2)]
+    HRESULT _stdcall Name([out, retval] BSTR* Value);
+    [propget, id(0x000000D3)]
+    HRESULT _stdcall Description([out, retval] BSTR* Value);
+    [id(0x000000D4)]
+    HRESULT _stdcall Action([in] BSTR ActionName, [in] BSTR ActionParams);
+    [id(0x000000D5)]
+    HRESULT _stdcall CommandBlind([in] BSTR Command, [in, optional, defaultvalue(False)] VARIANT_BOOL raw);
+    [id(0x000000D6)]
+    HRESULT _stdcall CommandBool([in] BSTR command, [in, optional, defaultvalue(False)] VARIANT_BOOL raw);
+    [id(0x000000D7)]
+    HRESULT _stdcall CommandString([in] BSTR command, [in, optional, defaultvalue(False)] VARIANT_BOOL RAW);
+    [id(0x000000D8)]
+    HRESULT _stdcall Dispose(void);
+  };
+
+  [
     uuid(E749BD8E-A0EE-4959-89EE-0AD503A88DFE),
     version(1.0),
     helpstring("Telescope Object")
@@ -456,6 +561,23 @@ library Esp32go
   coclass AxisRates
   {
     [default] interface IAxisRates;
+  };
+
+  [
+    uuid(E77D7F6E-0CC9-4935-B670-64D199A34053),
+    version(1.0)
+  ]
+  coclass Rotator
+  {
+    [default] interface IRotator;
+  };
+
+  [
+    uuid(20F749ED-2B90-4375-BE68-149F12760871)
+  ]
+  coclass FilterWheel
+  {
+    [default] interface IFilterWheel;
   };
 
 };

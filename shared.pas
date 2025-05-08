@@ -3,7 +3,7 @@
 interface
 
 uses Windows, SysUtils, Classes, Controls, Cport, dialogs, serial,
- DateUtils, bluetools, tcptools,serialtools,lxutils,globalvar;
+  DateUtils, bluetools, tcptools, serialtools, lxutils, globalvar;
 
 const
   ra_pack = 11;
@@ -12,40 +12,37 @@ const
   long_pack = 8;
   coor_pack = ra_pack + dec_pack;
 
-
   TIMEOUTBT = 60;
 
 var
 
-
-  //fullconnect,
+  // fullconnect,
   piersid: boolean;
   lastdec, lastar, lastaz, lastalt: Double;
   gmtoffset: Integer;
   imode: Integer;
   Sport: THandle;
-  connected,parked: boolean;
-  alt, ra, dec, az, longi, lat,guide_ra,guide_de,ra_target,dec_target,elevation_site: Double;
+  connected, parked: boolean;
+  alt, ra, dec, az, longi, lat, guide_ra, guide_de, ra_target, dec_target,
+    elevation_site: Double;
 
-  declination_rate:double;
-  track,focus,aux_max,aux_active,aux_device: Integer;
+  declination_rate: Double;
+  track, focus, aux_max, aux_active, aux_device, aux_target,
+    aux_counter: Integer;
   send: function(values: String): Integer;
   recv: function(var value: string; count: Integer): Integer;
   readvln: function(var value: string; delimiter: string): Integer;
   readchar: function(var c: char): Integer;
   inbuff: function: Integer;
   clearBuff: procedure(input, output: boolean);
-  focuspos:array[0..3] of cardinal  ;
-  focuspos2:array[0..5] of cardinal  ;
+  focuspos: array [0 .. 3] of cardinal;
+  focuspos2: array [0 .. 5] of cardinal;
 
 procedure set_interface_mode(mode: Integer);
 procedure initserial(port: string; baudrate: tbaudrate);
 procedure init_tcp(host: string; port: Integer);
+
 Function get_coords(var focus, count: Integer): string;
-
-Function get_focuspos(): Integer;
-Function get_focusmoving(): Integer;
-
 function Check_Connection(): boolean;
 procedure Set_Date(date_time: tdatetime);
 procedure Set_localtime(date_time: tdatetime);
@@ -63,7 +60,8 @@ procedure Command_Blind(const Command: WideString; Raw: WordBool);
 procedure SyncTo_Coord(RightAscension, Declination: Double); overload;
 procedure SyncTo_Coord(); overload;
 procedure Slew_ToCoor(RightAscension, Declination: Double); overload;
-procedure Slew_ToCoor();overload
+procedure Slew_ToCoor();
+overload
 procedure Set_longitude(lon: Extended);
 procedure Set_latitude(lat: Extended);
 procedure Set_offset(offset: Integer);
@@ -72,14 +70,18 @@ Function Get_track(): Integer;
 function Get_sideral(): Double;
 function Get_gmtoffset(): Integer;
 function UTCNow: tdatetime;
-function Local_Sideral_Time(localdatetime: tdatetime;longitude: Double): Double;
-procedure setautoflip(b:boolean);
-procedure setpierside(b:boolean);
-function get_pierside():boolean;
-function get_flip():boolean;
-function get_parked():boolean;
-function calc_lha(ra:double):double ;
-Function get_focusaux(): Integer;
+function Local_Sideral_Time(localdatetime: tdatetime;
+  longitude: Double): Double;
+procedure setautoflip(b: boolean);
+procedure setpierside(b: boolean);
+function get_pierside(): boolean;
+function get_flip(): boolean;
+function get_parked(): boolean;
+function calc_lha(ra: Double): Double;
+
+Function get_focuspos(device: char): Integer;
+Function get_focusmoving(device: char): Integer;
+
 implementation
 
 function UTCNow: tdatetime;
@@ -92,6 +94,8 @@ begin
   Result := UTCnowDateTime;
 end;
 
+// INTERFACE DEVICE Management
+// -------------------------------------------------------------------------
 procedure set_interface_mode(mode: Integer);
 begin
 
@@ -122,15 +126,15 @@ begin
         recv := readcvBT;
         readvln := readlnBT;
         readchar := readcharbt;
-        inbuff:= inputcountbt;
-         clearBuff :=clearbuffblue;
+        inbuff := inputcountbt;
+        clearBuff := clearbuffblue;
       end;
   end;
 end;
 
 procedure initserial(port: string; baudrate: tbaudrate);
 begin
-   ComPortBT_USB.port := port;
+  ComPortBT_USB.port := port;
   ComPortBT_USB.baudrate := baudrate;
   ComPortBT_USB.Events := [];
   ComPortBT_USB.Parity.Bits := prNone;
@@ -142,7 +146,7 @@ begin
   ComPortBT_USB.Timeouts.WriteTotalConstant := 100;
   ComPortBT_USB.TriggersOnRxChar := false;
 
-  ComPortBT_USB.SyncMethod := smWindowSync;//smNone;
+  ComPortBT_USB.SyncMethod := smWindowSync; // smNone;
 end;
 
 procedure init_tcp(host: string; port: Integer);
@@ -164,14 +168,12 @@ var
 begin
   s := 0;
 
-  if (ComPortBT_USB.connected) or checkBtSock or
-    (ClientSocket1.connected) then
+  if (ComPortBT_USB.connected) or checkBtSock or (ClientSocket1.connected) then
   begin
 
     send(':GD#');
     sleep(100);
     readvln(str, '#');
-
 
     Result := str.length > 1;
     // showmessage(str);
@@ -179,12 +181,15 @@ begin
   else
     Result := false;
 end;
+
+/// ----------------------------------------------------
+
 Function get_coords(var focus, count: Integer): string;
 
 var
   str, str1, coord_str: string;
 
-  n,tmp: Integer;
+  n, tmp: Integer;
   sl: TStringList;
   c: char;
 
@@ -193,69 +198,7 @@ begin
   sl.delimiter := '#';
   send(':Gx#');
 
-
- // send(':GR#:GD#:GZ#:GA#:Gk#:Fp#');
-  readvln(str, '#');
-  if str.length <13 then
-  begin
-    readvln(str1, '#');
-    str := str + str1;
-    readvln(str1, '#');
-    str := str + str1;
-    readvln(str1, '#');
-    str := str + str1;
-    readvln(str1, '#');
-    str := str + str1;
-   // readvln(str1, '#');
-   // str := str + str1;
-  end;
-  sl.DelimitedText := str;
-  if (sl.count > 4) and (str.Length>47) then
-  begin
-   ra := LX200Artoint(sl.Strings[0] + '#', true) / (3600.0 * 15.0);
-    dec := LX200Dectoint(sl.Strings[1] + '#', true) / (3600.0);
-    az := LX200AZtoint(sl.Strings[2] + '#', true) / (3600.0);
-    alt := LX200Dectoint(sl.Strings[3] + '#', true) / (3600.0);
-   // track := strtoint (sl.Strings[4]);
-   // focus := strtoint(sl.Strings[5]);
-
-    str1:=sl.Strings[4];
-    tmp:=strtointdef(Copy(sl.Strings[4], 1, 1),0);
-    track:=tmp and 1;
-    parked:=((tmp and 2)shr 1)=1;
-    piersid:=((tmp and 4)shr 2)=1;
-   focus := strtointdef(Copy(sl.Strings[4], 2,str1.length ),0);
-  end;
-  // readvln(str0, '#');
-
-  // str0:=str;
-  if str.length > 40 then
-  begin
-    coord_str := StringReplace(sl.text, '�', 'º', [rfReplaceAll]);
-    coord_str := StringReplace(sl.text, 'á', 'º', [rfReplaceAll]);
-  end
-  else
-    coord_str := str.length.ToString();
-
-  Result := coord_str;
-  sl.Free;
-end;
-
-{Function get_coords(var focus, count: Integer): string;
-
-var
-  str, str1, coord_str: string;
-
-  n: Integer;
-  sl: TStringList;
-  c: char;
-begin
-  sl := TStringList.Create();
-  sl.delimiter := '#';
-  send(':Ga#:Fp#');
-
-
- // send(':GR#:GD#:GZ#:GA#:Gk#:Fp#');
+  // send(':GR#:GD#:GZ#:GA#:Gk#:Fp#');
   readvln(str, '#');
   if str.length < 13 then
   begin
@@ -267,22 +210,25 @@ begin
     str := str + str1;
     readvln(str1, '#');
     str := str + str1;
-    readvln(str1, '#');
-    str := str + str1;
+    // readvln(str1, '#');
+    // str := str + str1;
   end;
   sl.DelimitedText := str;
-  if (sl.count > 4) and (str.Length>47) then
+  if (sl.count > 4) and (str.length > 47) then
   begin
-   ra := LX200Artoint(sl.Strings[0] + '#', true) / (3600.0 * 15.0);
+    ra := LX200Artoint(sl.Strings[0] + '#', true) / (3600.0 * 15.0);
     dec := LX200Dectoint(sl.Strings[1] + '#', true) / (3600.0);
     az := LX200AZtoint(sl.Strings[2] + '#', true) / (3600.0);
     alt := LX200Dectoint(sl.Strings[3] + '#', true) / (3600.0);
-    track := strtoint (sl.Strings[4]);
-    focus := strtoint(sl.Strings[5]);
+    // track := strtoint (sl.Strings[4]);
+    // focus := strtoint(sl.Strings[5]);
 
-  //  str1:=sl.Strings[4];
-   // track:=strtointdef(Copy(sl.Strings[4], 1, 1),0);
-   //focus := strtointdef(Copy(sl.Strings[4], 2,str1.length ),0);
+    str1 := sl.Strings[4];
+    tmp := strtointdef(Copy(sl.Strings[4], 1, 1), 0);
+    track := tmp and 1;
+    parked := ((tmp and 2) shr 1) = 1;
+    piersid := ((tmp and 4) shr 2) = 1;
+    focus := strtointdef(Copy(sl.Strings[4], 2, str1.length), 0);
   end;
   // readvln(str0, '#');
 
@@ -298,79 +244,9 @@ begin
   Result := coord_str;
   sl.Free;
 end;
-}
-Function get_focuspos(): Integer;
-var
-  temp, n: Integer;
-  str: string;
-begin
-  if fullconnect then
-  begin
-    n := 0;
 
-    send(':Fp#');
-      readvln(str, '#');
-   // showmessage(Str);
-    if str.Length >= 5 then
-    begin
-      str := StringReplace(str, '#', '', [rfReplaceAll]);
-      temp := StrToIntDef(str, 0);
-    end
-    else
-      temp := 0;
-    Result := temp;
-  end;
-//  Result := 18;
-end;
-Function get_focusaux(): Integer;
-var
-  temp, n: Integer;
-  str: string;
-begin
-  if fullconnect then
-  begin
-    n := 0;
 
-    send(':Xp#');
-      readvln(str, '#');
-   // showmessage(Str);
-    if str.Length >= 5 then
-    begin
-      str := StringReplace(str, '#', '', [rfReplaceAll]);
-      temp := StrToIntDef(str, 0);
-    end
-    else
-      temp := 0;
-    Result := temp;
-  end;
-//  Result := 18;
-end;
-
-Function get_focusmoving(): Integer;
-var
-  temp, n: Integer;
-  str: string;
-begin
-  n := 0;
-  if (inbuff) > 0 then
-    clearBuff(true, false);
-  send(':FB#');
-         readvln(str, '#');
-  // showmessage(Str);
-    if str.Length >0 then
-   begin
-    str := StringReplace(str, '#', '', [rfReplaceAll]);
-    temp := StrToIntDef(str, 0);
-
-    // LabelFocusCount.caption := StringReplace(str, '#', '',[rfReplaceAll]);
-    // LabelFocusCount.caption := Format('%0.5d', [n]);
-  end
-  else
-    temp := 0;
-  Result := temp;
-end;
-
-Function get_track(): Integer;
+Function Get_track(): Integer;
 var
   temp, n: Integer;
   c: char;
@@ -395,7 +271,6 @@ begin
     Result := 0;
 end;
 
-
 function Get_Dec(): Double;
 
 var
@@ -419,7 +294,7 @@ begin
   Result := lastdec;
 end;
 
-function get_sideral: Double;
+function Get_sideral: Double;
 var
   str: string;
   n, s: Integer;
@@ -509,7 +384,7 @@ var
   response: char;
 
 begin
-  dec_target:=value;
+  dec_target := value;
   send(':Sd' + DoubletoLXdec(value, 1));
 
   readchar(response);
@@ -521,8 +396,8 @@ var
   response: char;
 
 begin
-value:=abs(value);
-ra_target:=abs(value);
+  value := abs(value);
+  ra_target := abs(value);
   send(':Sr' + DoubleToLXAr(value, 1));
 
   readchar(response);
@@ -539,7 +414,7 @@ begin
 
 end;
 
-procedure Set_date(date_time: tdatetime);
+procedure Set_Date(date_time: tdatetime);
 var
   lxdate, response: string;
 
@@ -586,8 +461,8 @@ end;
 
 procedure Pulse_Guide(StrCommand: string);
 begin
- // send(':RG#'+StrCommand);
- send(StrCommand);
+  // send(':RG#'+StrCommand);
+  send(StrCommand);
 end;
 
 procedure Command_Blind(const Command: WideString; Raw: WordBool);
@@ -600,12 +475,11 @@ var
   str: string;
 begin
 
-
   Set_TargetDec(Declination);
   Set_TargetRA(RightAscension);
   send(':CM#');
-   readvln(str, '#');
-// clearbuff(true,true);
+  readvln(str, '#');
+  // clearbuff(true,true);
 end;
 
 procedure SyncTo_Coord();
@@ -623,8 +497,9 @@ begin
   Set_TargetDec(Declination);
   Set_TargetRA(RightAscension);
   send(':MS#');
-  if readchar(c)=0 then readchar(c) ;
-   //clearbuff(true,true);
+  if readchar(c) = 0 then
+    readchar(c);
+  // clearbuff(true,true);
 end;
 
 procedure Slew_ToCoor();
@@ -679,7 +554,7 @@ begin
 
 end;
 
-function get_alignmode(): char;
+function Get_Alignmode(): char;
 var
   str: string;
   c: char;
@@ -696,14 +571,13 @@ begin
 
 end;
 
-
-function get_gmtoffset(): Integer;
+function Get_gmtoffset(): Integer;
 var
   str: string;
 
   n, s: Integer;
 begin
-n:=0;
+  n := 0;
   if fullconnect then
   begin
     send(':GG#');
@@ -730,54 +604,62 @@ begin
     15.0; // result hours
 end;
 
-procedure setautoflip(b:boolean);
+procedure setautoflip(b: boolean);
 var
   c: char;
 begin
-c:='0';
-if b then c:='1' ;
+  c := '0';
+  if b then
+    c := '1';
 
-  send(':pa' +c+'#');
+  send(':pa' + c + '#');
 
 end;
-procedure setpierside(b:boolean);
+
+procedure setpierside(b: boolean);
 begin
-if b then
+  if b then
 
- send(':psw#')
- else
- send(':pse#');
-// sendstr(':pS#');
- // Label28.Text := readstr('#');
+    send(':psw#')
+  else
+    send(':pse#');
+  // sendstr(':pS#');
+  // Label28.Text := readstr('#');
 
- // sendstr(#6);
-  //Label28.Text := Label28.Text + readchar;
+  // sendstr(#6);
+  // Label28.Text := Label28.Text + readchar;
 
 end;
-function get_pierside():boolean;
-var str:string;
+
+function get_pierside(): boolean;
+var
+  str: string;
 begin
   send(':pS#');
- readvln(str,'#');
- piersid :=(Str='WEST#');
- result:=piersid;
+  readvln(str, '#');
+  piersid := (str = 'WEST#');
+  Result := piersid;
 
 end;
-function get_flip():boolean;
-var str:string;
+
+function get_flip(): boolean;
+var
+  str: string;
 begin
   send(':pF#');
- readvln(str,'#');
- result :=(Str='1#');
+  readvln(str, '#');
+  Result := (str = '1#');
 
 end;
-function get_parked():boolean;
-var str:string;
+
+function get_parked(): boolean;
+var
+  str: string;
 begin
-//  send(':PP#');
-// readvln(str,'#');
-// result :=(Str='1#');
-   result:=parked;
+  // send(':PP#');
+  // readvln(str,'#');
+  // result :=(Str='1#');
+  Result := parked;
 end;
 
 procedure sconnect;
@@ -794,18 +676,67 @@ begin
 
 end;
 
-function calc_lha(ra:double):double ;
-  var sid,tmp:double;
+function calc_lha(ra: Double): Double;
+var
+  sid, tmp: Double;
 begin
-  tmp:= Local_Sideral_Time(UTCnow(),-longi)-ra;
+  tmp := Local_Sideral_Time(UTCNow(), -longi) - ra;
 
-  //if (tmp < 0.0 )then tmp := tmp+24;
-  result:= tmp ;
+  // if (tmp < 0.0 )then tmp := tmp+24;
+  Result := tmp;
+end;
+
+// Main FOCUSER ----------------------------------------------------------
+Function get_focuspos(device: char): Integer;
+var
+  temp, n: Integer;
+  str: string;
+begin
+ temp:=0;
+  if fullconnect then
+  begin
+    n := 0;
+
+    send(':' + device + 'p#');
+    readvln(str, '#');
+    // showmessage(Str);
+    if str.length >= 5 then
+    begin
+      str := StringReplace(str, '#', '', [rfReplaceAll]);
+      temp := strtointdef(str, 0);
+    end
+    else
+      temp := 0;
+    Result := temp;
+  end;
+   Result := temp;
+end;
+
+Function get_focusmoving(device: char): Integer;
+var
+  temp, n: Integer;
+  str: string;
+begin
+  n := 0;
+  if (inbuff) > 0 then
+    clearBuff(true, false);
+    send(':' + device + 'B#');
+    readvln(str, '#');
+  // showmessage(Str);
+  if str.length > 0 then
+  begin
+    str := StringReplace(str, '#', '', [rfReplaceAll]);
+    temp := strtointdef(str, 0);
+
+  end
+  else
+    temp := 0;
+  Result := temp;
 end;
 
 initialization
 
-//ComPortBT_USB := TComPort.Create(nil);
+// ComPortBT_USB := TComPort.Create(nil);
 
 // sconnect;
 

@@ -13,7 +13,9 @@ uses
   tcptools in 'tcptools.pas',
   Serialtools in 'Serialtools.pas',
   LXUtils in 'LXUtils.pas',
-  globalvar in 'globalvar.pas';
+  globalvar in 'globalvar.pas',
+  Esp32goRi in 'Esp32goRi.pas',
+  FilterWheeli in 'FilterWheeli.pas';
 
 {$R *.TLB}
 

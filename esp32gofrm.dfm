@@ -2,7 +2,7 @@ object Esp32frm: TEsp32frm
   Left = 0
   Top = 0
   AutoSize = True
-  Caption = 'Esp32go 3.1'
+  Caption = 'Esp32go 3.2'
   ClientHeight = 297
   ClientWidth = 417
   Color = clBtnFace
@@ -1255,7 +1255,7 @@ object Esp32frm: TEsp32frm
     Top = 0
     Width = 297
     Height = 207
-    ActivePage = TMC
+    ActivePage = Aux
     TabOrder = 3
     Visible = False
     object TabSheet1: TTabSheet

@@ -51,7 +51,7 @@ var
 function TFocuser.Get_IsMoving: wordbool;
 begin
 // If fullconnect then
-   result:= (get_focusmoving()>0)   ;
+   result:= (get_focusmoving('F')>0)   ;
  //  else
 // result:=false;
 
@@ -75,7 +75,7 @@ end;
 function TFocuser.Get_Position: integer;
  var count:integer;
 begin
- result:=get_focuspos();
+ result:=get_focuspos('F');
 // result:=focus;
 end;
 

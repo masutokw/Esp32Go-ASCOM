@@ -122,6 +122,8 @@
         <DCCReference Include="Serialtools.pas"/>
         <DCCReference Include="LXUtils.pas"/>
         <DCCReference Include="globalvar.pas"/>
+        <DCCReference Include="Esp32goRi.pas"/>
+        <DCCReference Include="FilterWheeli.pas"/>
         <RidlCompile Include="esp32go.ridl"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>

@@ -102,7 +102,7 @@ type
     procedure AbortSlew; safecall;
     procedure AxisRates(Axis: TelescopeAxes); safecall;
     procedure CommandBlind(const Command: WideString; Raw: WordBool); safecall;
-    procedure CommandBool(const Command: WideString; Raw: Integer); safecall;
+    procedure CommandBool(const Command: WideString; Raw: WordBool); safecall;
     procedure CommandString(const Command: WideString; Raw: WordBool); safecall;
     function DestinationSideOfPier(RightAscension, Declination: Double)
       : PierSide;
@@ -531,7 +531,7 @@ begin
   command_blind(Command, Raw);
 end;
 
-procedure TTelescope.CommandBool(const Command: WideString; Raw: Integer);
+procedure TTelescope.CommandBool(const Command: WideString; Raw: WordBool);
 begin
 
 end;
