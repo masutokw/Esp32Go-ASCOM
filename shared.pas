@@ -28,7 +28,7 @@ var
   alt, ra, dec, az, longi, lat,guide_ra,guide_de,ra_target,dec_target,elevation_site: Double;
 
   declination_rate:double;
-  track,focus,aux_max,aux_active: Integer;
+  track,focus,aux_max,aux_active,aux_device: Integer;
   send: function(values: String): Integer;
   recv: function(var value: string; count: Integer): Integer;
   readvln: function(var value: string; delimiter: string): Integer;
@@ -36,6 +36,7 @@ var
   inbuff: function: Integer;
   clearBuff: procedure(input, output: boolean);
   focuspos:array[0..3] of cardinal  ;
+  focuspos2:array[0..5] of cardinal  ;
 
 procedure set_interface_mode(mode: Integer);
 procedure initserial(port: string; baudrate: tbaudrate);
@@ -78,6 +79,7 @@ function get_pierside():boolean;
 function get_flip():boolean;
 function get_parked():boolean;
 function calc_lha(ra:double):double ;
+Function get_focusaux(): Integer;
 implementation
 
 function UTCNow: tdatetime;
@@ -307,6 +309,29 @@ begin
     n := 0;
 
     send(':Fp#');
+      readvln(str, '#');
+   // showmessage(Str);
+    if str.Length >= 5 then
+    begin
+      str := StringReplace(str, '#', '', [rfReplaceAll]);
+      temp := StrToIntDef(str, 0);
+    end
+    else
+      temp := 0;
+    Result := temp;
+  end;
+//  Result := 18;
+end;
+Function get_focusaux(): Integer;
+var
+  temp, n: Integer;
+  str: string;
+begin
+  if fullconnect then
+  begin
+    n := 0;
+
+    send(':Xp#');
       readvln(str, '#');
    // showmessage(Str);
     if str.Length >= 5 then

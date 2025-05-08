@@ -2,7 +2,7 @@ object Esp32frm: TEsp32frm
   Left = 0
   Top = 0
   AutoSize = True
-  Caption = 'Esp32go 3.0'
+  Caption = 'Esp32go 3.1'
   ClientHeight = 297
   ClientWidth = 417
   Color = clBtnFace
@@ -1255,7 +1255,7 @@ object Esp32frm: TEsp32frm
     Top = 0
     Width = 297
     Height = 207
-    ActivePage = Aux
+    ActivePage = TMC
     TabOrder = 3
     Visible = False
     object TabSheet1: TTabSheet
@@ -2605,20 +2605,33 @@ object Esp32frm: TEsp32frm
         end
         object CheckBoxDCF: TCheckBox
           Left = 222
-          Top = 39
+          Top = 19
           Width = 64
           Height = 17
           Caption = 'DC Focus'
           TabOrder = 16
         end
+        object ComboAux: TComboBox
+          Left = 217
+          Top = 42
+          Width = 62
+          Height = 21
+          TabOrder = 17
+          Text = 'Focuser'
+          Items.Strings = (
+            'Focuser'
+            'Rotator'
+            'Wheel'
+            'Disable')
+        end
       end
     end
     object Aux: TTabSheet
-      Caption = 'drv'
+      Caption = 'Focus'
       ImageIndex = 5
       object GroupRotator: TGroupBox
-        Left = 142
-        Top = 0
+        Left = 146
+        Top = 2
         Width = 149
         Height = 98
         Caption = 'Rotator'
@@ -2865,7 +2878,7 @@ object Esp32frm: TEsp32frm
         end
       end
       object GroupBoxFocus: TGroupBox
-        Left = -2
+        Left = -4
         Top = 2
         Width = 144
         Height = 87
@@ -2916,7 +2929,7 @@ object Esp32frm: TEsp32frm
         object ButtonM1: TButton
           Left = 7
           Top = 38
-          Width = 25
+          Width = 23
           Height = 20
           Caption = 'M1'
           ParentShowHint = False
@@ -2927,9 +2940,9 @@ object Esp32frm: TEsp32frm
         end
         object ButtonM2: TButton
           Tag = 1
-          Left = 34
+          Left = 30
           Top = 38
-          Width = 25
+          Width = 23
           Height = 20
           Caption = 'M2'
           ParentShowHint = False
@@ -2940,9 +2953,9 @@ object Esp32frm: TEsp32frm
         end
         object ButtonM3: TButton
           Tag = 2
-          Left = 61
+          Left = 53
           Top = 38
-          Width = 25
+          Width = 23
           Height = 20
           Caption = 'M3'
           ParentShowHint = False
@@ -2953,9 +2966,9 @@ object Esp32frm: TEsp32frm
         end
         object ButtonM4: TButton
           Tag = 3
-          Left = 88
+          Left = 76
           Top = 38
-          Width = 25
+          Width = 23
           Height = 20
           Caption = 'M4'
           ParentShowHint = False
@@ -2989,10 +3002,36 @@ object Esp32frm: TEsp32frm
           TabOrder = 8
           OnClick = CheckaltfocusClick
         end
+        object ButtonM5: TButton
+          Tag = 3
+          Left = 97
+          Top = 38
+          Width = 23
+          Height = 20
+          Caption = 'M5'
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 9
+          OnClick = ButtonM1Click
+          OnContextPopup = ButtonM1ContextPopup
+        end
+        object ButtonM6: TButton
+          Tag = 3
+          Left = 118
+          Top = 38
+          Width = 23
+          Height = 20
+          Caption = 'M6'
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 10
+          OnClick = ButtonM1Click
+          OnContextPopup = ButtonM1ContextPopup
+        end
       end
       object GroupBoxfilter: TGroupBox
-        Left = 3
-        Top = 95
+        Left = 146
+        Top = 100
         Width = 147
         Height = 83
         Caption = 'Filter'
@@ -3005,7 +3044,7 @@ object Esp32frm: TEsp32frm
         TabOrder = 2
         object Label16: TLabel
           Left = 112
-          Top = 22
+          Top = 14
           Width = 45
           Height = 14
           AutoSize = False
@@ -3099,6 +3138,194 @@ object Esp32frm: TEsp32frm
           Height = 20
           Caption = 'OIII'
           TabOrder = 8
+        end
+      end
+      object GroupBoxfocus2: TGroupBox
+        Left = -4
+        Top = 89
+        Width = 148
+        Height = 89
+        Caption = 'Focuser 2'
+        DockSite = True
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 3
+        Visible = False
+        object counterLongEdit2: TLongEdit
+          Left = 4
+          Top = 11
+          Width = 50
+          Height = 21
+          Hint = '0..100000'
+          Color = clSilver
+          ParentShowHint = False
+          ReadOnly = True
+          ShowHint = True
+          TabOrder = 0
+          Value = 0
+          MaxValue = 100000
+        end
+        object SpinButton2: TSpinButton
+          Tag = 2
+          Left = 60
+          Top = 35
+          Width = 15
+          Height = 23
+          DownGlyph.Data = {
+            0E010000424D0E01000000000000360000002800000009000000060000000100
+            200000000000D800000000000000000000000000000000000000008080000080
+            8000008080000080800000808000008080000080800000808000008080000080
+            8000008080000080800000808000000000000080800000808000008080000080
+            8000008080000080800000808000000000000000000000000000008080000080
+            8000008080000080800000808000000000000000000000000000000000000000
+            0000008080000080800000808000000000000000000000000000000000000000
+            0000000000000000000000808000008080000080800000808000008080000080
+            800000808000008080000080800000808000}
+          FocusControl = counterLongEdit2
+          TabOrder = 1
+          UpGlyph.Data = {
+            0E010000424D0E01000000000000360000002800000009000000060000000100
+            200000000000D800000000000000000000000000000000000000008080000080
+            8000008080000080800000808000008080000080800000808000008080000080
+            8000000000000000000000000000000000000000000000000000000000000080
+            8000008080000080800000000000000000000000000000000000000000000080
+            8000008080000080800000808000008080000000000000000000000000000080
+            8000008080000080800000808000008080000080800000808000000000000080
+            8000008080000080800000808000008080000080800000808000008080000080
+            800000808000008080000080800000808000}
+        end
+        object InButton2: TButton
+          Left = 58
+          Top = 10
+          Width = 22
+          Height = 20
+          Caption = 'In'
+          TabOrder = 2
+          OnMouseDown = InButton2MouseDown
+          OnMouseUp = InButton2MouseUp
+        end
+        object outtButton2: TButton
+          Tag = 1
+          Left = 80
+          Top = 10
+          Width = 22
+          Height = 20
+          Caption = 'Out'
+          TabOrder = 3
+          OnMouseDown = InButton2MouseDown
+          OnMouseUp = InButton2MouseUp
+        end
+        object SyncButton2: TButton
+          Tag = 4
+          Left = 108
+          Top = 35
+          Width = 27
+          Height = 20
+          Caption = 'Sync'
+          TabOrder = 4
+        end
+        object MoveButton2: TButton
+          Tag = 3
+          Left = 78
+          Top = 35
+          Width = 27
+          Height = 20
+          Caption = 'Move'
+          TabOrder = 5
+        end
+        object targetLongEdit2: TLongEdit
+          Left = 4
+          Top = 36
+          Width = 50
+          Height = 21
+          Hint = '0..30000'
+          Color = clSkyBlue
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 6
+          Value = 0
+          MaxValue = 30000
+        end
+        object Button1f: TButton
+          Left = 6
+          Top = 63
+          Width = 23
+          Height = 20
+          Caption = 'F1'
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 7
+          OnClick = Button1fClick
+          OnContextPopup = Button1fContextPopup
+        end
+        object Button2f: TButton
+          Tag = 1
+          Left = 28
+          Top = 63
+          Width = 23
+          Height = 20
+          Caption = 'F2'
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 8
+          OnClick = Button1fClick
+          OnContextPopup = Button1fContextPopup
+        end
+        object Button3f: TButton
+          Tag = 2
+          Left = 51
+          Top = 63
+          Width = 23
+          Height = 20
+          Caption = 'F3'
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 9
+          OnClick = Button1fClick
+          OnContextPopup = Button1fContextPopup
+        end
+        object Button4f: TButton
+          Tag = 3
+          Left = 74
+          Top = 63
+          Width = 23
+          Height = 20
+          Caption = 'F4'
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 10
+          OnClick = Button1fClick
+          OnContextPopup = Button1fContextPopup
+        end
+        object Button5f: TButton
+          Tag = 4
+          Left = 97
+          Top = 63
+          Width = 23
+          Height = 20
+          Caption = 'F5'
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 11
+          OnClick = Button1fClick
+          OnContextPopup = Button1fContextPopup
+        end
+        object Button6f: TButton
+          Tag = 5
+          Left = 120
+          Top = 63
+          Width = 23
+          Height = 20
+          Caption = 'F6'
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 12
+          OnClick = Button1fClick
+          OnContextPopup = Button1fContextPopup
         end
       end
     end

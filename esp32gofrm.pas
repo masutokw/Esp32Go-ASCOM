@@ -218,6 +218,23 @@ type
     WButton7: TButton;
     WButton8: TButton;
     WButton9: TButton;
+    ComboAux: TComboBox;
+    GroupBoxfocus2: TGroupBox;
+    counterLongEdit2: TLongEdit;
+    SpinButton2: TSpinButton;
+    InButton2: TButton;
+    outtButton2: TButton;
+    SyncButton2: TButton;
+    MoveButton2: TButton;
+    targetLongEdit2: TLongEdit;
+    Button1f: TButton;
+    Button2f: TButton;
+    Button3f: TButton;
+    Button4f: TButton;
+    Button5f: TButton;
+    Button6f: TButton;
+    ButtonM5: TButton;
+    ButtonM6: TButton;
 
     procedure FormCreate(Sender: TObject);
     procedure Button_NMouseDown(Sender: TObject; Button: TMouseButton;
@@ -296,6 +313,15 @@ type
     procedure CCButtonMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure SyncButton3Click(Sender: TObject);
+    procedure InButton2MouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure InButton2MouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure Button1fClick(Sender: TObject);
+    procedure Button1fContextPopup(Sender: TObject; MousePos: TPoint;
+      var Handled: Boolean);
+
+
 
   private
     { Private declarations }
@@ -420,6 +446,21 @@ begin
     Label3.caption := 'West';
   LabelAR1.Font.Color := Clred;
   LabelDec1.Font.Color := Clred;
+end;
+
+procedure TEsp32frm.Button1fClick(Sender: TObject);
+var stpos:string;
+begin
+   stpos := Format('%0.5d#', [focuspos2[TButton(Sender).tag]]);
+  send(':XA-' + stpos);
+end;
+
+procedure TEsp32frm.Button1fContextPopup(Sender: TObject; MousePos: TPoint;
+  var Handled: Boolean);
+begin
+     showmessage('Setting changed');
+  focuspos2[TButton(Sender).tag] := counterLongEdit2.Value;
+  TButton(Sender).Hint := inttostr(counterLongEdit2.value);
 end;
 
 procedure TEsp32frm.Button2Click(Sender: TObject);
@@ -746,7 +787,7 @@ begin
 
     Label1.caption := inttostr(lines.Count) + lines[0];
     Timer1.Enabled := true;
-    if lines.Count >= 7 then
+    if lines.Count >= 8 then
     begin
       NumberBoxFM.Text := lines[0];
       NumberBoxFS.Text := lines[1];
@@ -758,7 +799,14 @@ begin
       NumberBoxAF.Text := lines[6];
       NumberBoxApwm.Text := lines[7];
       CheckBoxDCF.Checked := lines[8] = '1';
+      ComboAux.ItemIndex := lines[9].tointeger();
+      aux_device := lines[9].tointeger();
       aux_max := strtoint(NumberBoxAM.Text);
+      GroupRotator.Visible := aux_device = 1;
+      GroupBoxfilter.Visible := aux_device = 2;
+      GroupBoxfocus2.Visible := aux_device = 0;
+      groupboxfilter.left:= GroupRotator.left;
+      groupboxfilter.top:= GroupRotator.top;
     end;
     lines.Destroy
   end;
@@ -789,13 +837,19 @@ begin
     lines.add(NumberBoxAF.Text);
     lines.add(NumberBoxApwm.Text);
     lines.add(CheckBoxDCF.Checked.tointeger.ToString);
+    lines.add(ComboAux.ItemIndex.ToString());
+    aux_device := ComboAux.ItemIndex;
+    GroupBoxfocus2.Visible := aux_device = 0;
+    GroupRotator.Visible := aux_device = 1;
+    GroupBoxfilter.Visible := aux_device = 2;
+
 
     // Label17.Text := inttostr(lines.Count);
     Memo1.lines.Clear;
     if true then
     begin
       s := ':cf';
-      for I := 0 to 8 do
+      for I := 0 to 9 do
         s := s + lines[I] + #13#10;
 
       s := s + '#';
@@ -876,6 +930,8 @@ procedure TEsp32frm.ButtonHomeClick(Sender: TObject);
 begin
   send(':pH#');
 end;
+
+
 
 procedure TEsp32frm.ButtonInMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
@@ -1003,19 +1059,19 @@ end;
 procedure TEsp32frm.CCButtonMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  if aux_active = 1 then
+
 
     case TButton(Sender).tag of
       0:
         if CheckBox2.Checked then
-          send(':F++#')
+          send(':X++#')
         else
-          send(':F+#');
+          send(':X+#');
       1:
         if CheckBox2.Checked then
-          send(':F--#')
+          send(':X--#')
         else
-          send(':F-#');
+          send(':X-#');
     end;
 
 end;
@@ -1023,8 +1079,9 @@ end;
 procedure TEsp32frm.CCButtonMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  if aux_active = 1 then
-    send(':FQ#');
+
+    send(':XQ#');
+      CounterFloatEdit.Value := 360.0 / aux_max * get_focusaux();
 end;
 
 procedure TEsp32frm.CheckaltfocusClick(Sender: TObject);
@@ -1034,14 +1091,14 @@ begin
     send(':Fs1#');
     Checkaltfocus.caption := 'Focus1';
     aux_active := 1;
-    grouprotator.Visible:=true;
+    GroupRotator.Visible := true;
   end
   else
   begin
-    send(':Fs0#');
+   send(':Fs0#');
     Checkaltfocus.caption := 'Focus0';
     aux_active := 0;
-     grouprotator.Visible:=false;
+    GroupRotator.Visible := true;
   end;
 
 end;
@@ -1125,6 +1182,29 @@ begin
     ComPortBT_USB.Connected := false;
   FreeBtSock;
 
+end;
+
+procedure TEsp32frm.InButton2MouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  case TButton(Sender).tag of
+    0:
+      if CheckBox2.Checked then
+        send(':X++#')
+      else
+        send(':X+#');
+    1:
+      if CheckBox2.Checked then
+        send(':X--#')
+      else
+        send(':X-#');
+  end;
+end;
+
+procedure TEsp32frm.InButton2MouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  send(':XQ#');
 end;
 
 procedure TEsp32frm.Joystickex1Button1_Change(Sender: TObject; pressed: Boolean;
@@ -1354,14 +1434,14 @@ procedure TEsp32frm.RButton1MouseDown(Sender: TObject; Button: TMouseButton;
 var
   counter: Integer;
 begin
-  if aux_active = 1 then
-  begin
+
+
     if TButton(Sender).tag = 1000 then
       counter := round((TargetFloatEdit.Value / 360.0) * aux_max)
     else
       counter := round((TButton(Sender).tag / 360.0) * aux_max);
-    send(':FA-' + Format('%.5d', [counter]) + '#');
-  end;
+    send(':XA-' + Format('%.5d', [counter]) + '#');
+
 end;
 
 procedure TEsp32frm.ReadJoysticks(HidDev: TJvHidDevice; ReportID: Byte;
@@ -1446,6 +1526,8 @@ begin
   send(':FLS1+00000#');
 end;
 
+
+
 procedure TEsp32frm.Timer1Timer(Sender: TObject);
 var
   str, coors, strsideral, strangle: string;
@@ -1472,8 +1554,13 @@ begin
     // labelAR.caption := inttostr(count);
 
     LabelFocusCount.caption := Format('%0.5d', [focus]);
-    if aux_active = 1 then
-      CounterFloatEdit.Value := 360.0 / aux_max * focus;
+   // if aux_active = 1 then
+   //if aux_device=1 then CounterFloatEdit.Value := 360.0 / aux_max * get_focusaux();
+   case aux_device of
+   0: counterLongEdit2.value:= get_focusaux();
+   1: CounterFloatEdit.Value := 360.0 / aux_max * get_focusaux();
+   2:
+   end;
 
     if CheckAlt.Checked then
     begin
@@ -1571,6 +1658,18 @@ begin
     ButtonM2.Hint := Format('%0.5d', [focuspos[1]]);
     ButtonM3.Hint := Format('%0.5d', [focuspos[2]]);
     ButtonM4.Hint := Format('%0.5d', [focuspos[3]]);
+
+     for I := 0 to 6 do
+      focuspos[I] := ReadInteger('Focus2', 'focuspos' + inttostr(I),
+        (I + 1) * 1000);
+
+    Button1F.Hint := Format('%0.5d', [focuspos2[0]]);
+    Button2F.Hint := Format('%0.5d', [focuspos2[1]]);
+    Button3F.Hint := Format('%0.5d', [focuspos2[2]]);
+    Button4F.Hint := Format('%0.5d', [focuspos2[3]]);
+    Button5F.Hint := Format('%0.5d', [focuspos2[4]]);
+    Button6F.Hint := Format('%0.5d', [focuspos2[5]]);
+
   end;
 end;
 
@@ -1643,12 +1742,10 @@ procedure TEsp32frm.SyncButton3Click(Sender: TObject);
 var
   counter: Integer;
 begin
-  //send(':FLS1+00000#');
-  if aux_active = 1 then
-  begin
+  // send(':FLS1+00000#');
     counter := round((TargetFloatEdit.Value / 360.0) * aux_max);
-    send(':FLS1+' + Format('%.5d', [counter]) + '#');
-  end;
+    send(':XLS1+' + Format('%.5d', [counter]) + '#');
+
 end;
 
 procedure TEsp32frm.WriteSettings;
@@ -1670,6 +1767,8 @@ begin
     writeString('Bluetooth', 'device', cbxpaired.Text);
     for I := 0 to 3 do
       writeInteger('Focus', 'focuspos' + inttostr(I), focuspos[I]);
+        for I := 0 to 5 do
+      writeInteger('Focus2', 'focuspos' + inttostr(I), focuspos2[I]);
 
   end;
 end;
