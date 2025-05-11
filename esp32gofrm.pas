@@ -9,7 +9,7 @@ uses
   EnhEdits, CPortCtl, adpInstanceControl, System.Win.ScktComp, serial,
   Joystickex, JvComponentBase, JvHidControllerClass, HidUsage, Vcl.ComCtrls,
   System.Bluetooth, bluetools, tcptools, serialtools, lxutils, Vcl.NumberBox,
-  globalvar, Vcl.Samples.Spin;
+  globalvar, Vcl.Samples.Spin, Vcl.Grids;
 
 type
   TEsp32frm = class(TForm)
@@ -235,6 +235,11 @@ type
     Button6f: TButton;
     ButtonM5: TButton;
     ButtonM6: TButton;
+    TabWheel: TTabSheet;
+    Button7: TButton;
+    Button8: TButton;
+    NumberBoxslots: TNumberBox;
+    Label17: TLabel;
 
     procedure FormCreate(Sender: TObject);
     procedure Button_NMouseDown(Sender: TObject; Button: TMouseButton;
@@ -320,6 +325,8 @@ type
     procedure Button1fClick(Sender: TObject);
     procedure Button1fContextPopup(Sender: TObject; MousePos: TPoint;
       var Handled: Boolean);
+    procedure WButton1Click(Sender: TObject);
+    procedure Label16Click(Sender: TObject);
 
   private
     { Private declarations }
@@ -786,7 +793,7 @@ begin
 
     Label1.caption := inttostr(lines.Count) + lines[0];
     Timer1.Enabled := true;
-    if lines.Count >= 8 then
+    if lines.Count >= 9 then
     begin
       NumberBoxFM.Text := lines[0];
       NumberBoxFS.Text := lines[1];
@@ -799,13 +806,18 @@ begin
       NumberBoxApwm.Text := lines[7];
       CheckBoxDCF.Checked := lines[8] = '1';
       ComboAux.ItemIndex := lines[9].tointeger();
+      numberboxslots.Value:=lines[10].tointeger();
       aux_device := lines[9].tointeger();
+
       aux_max := strtoint(NumberBoxAM.Text);
       GroupRotator.Visible := aux_device = 1;
       GroupBoxfilter.Visible := aux_device = 2;
       GroupBoxfocus2.Visible := aux_device = 0;
+       GroupBoxfocus2.left := GroupRotator.left;
       GroupBoxfilter.left := GroupRotator.left;
       GroupBoxfilter.top := GroupRotator.top;
+      GroupBoxfocus2.top := GroupRotator.top;
+
     end;
     lines.Destroy
   end;
@@ -837,7 +849,9 @@ begin
     lines.add(NumberBoxApwm.Text);
     lines.add(CheckBoxDCF.Checked.tointeger.ToString);
     lines.add(ComboAux.ItemIndex.ToString());
+    lines.add(numberboxslots.value.ToString);
     aux_device := ComboAux.ItemIndex;
+
     GroupBoxfocus2.Visible := aux_device = 0;
     GroupRotator.Visible := aux_device = 1;
     GroupBoxfilter.Visible := aux_device = 2;
@@ -847,7 +861,7 @@ begin
     if true then
     begin
       s := ':cf';
-      for I := 0 to 9 do
+      for I := 0 to 10 do
         s := s + lines[I] + #13#10;
 
       s := s + '#';
@@ -1515,6 +1529,11 @@ begin
   lastgamedir := cur;
 end;
 
+procedure TEsp32frm.Label16Click(Sender: TObject);
+begin
+      send(':XLS1+00000#');
+end;
+
 procedure TEsp32frm.LabelFocusCountDblClick(Sender: TObject);
 begin
   send(':FLS1+00000#');
@@ -1557,7 +1576,12 @@ begin
           aux_counter := get_focuspos('X');
           CounterFloatEdit.Value := (360.0 / aux_max) * aux_counter;
         end;
-      2:
+      2:    begin
+          aux_counter := get_focuspos('X');
+          label16.caption:=  aux_counter.ToString
+
+      end;
+
       end;
 
       if CheckAlt.Checked then
@@ -1736,7 +1760,14 @@ begin
 
       end;
 
-      procedure TEsp32frm.WriteSettings;
+procedure TEsp32frm.WButton1Click(Sender: TObject);
+
+
+begin
+  send(':XI' +TButton(Sender).tag.ToString+'#');
+end;
+
+procedure TEsp32frm.WriteSettings;
       var
         inifile: TiniFile;
         I: Integer;

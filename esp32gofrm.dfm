@@ -2,9 +2,9 @@ object Esp32frm: TEsp32frm
   Left = 0
   Top = 0
   AutoSize = True
-  Caption = 'Esp32go 3.2'
+  Caption = 'Esp32go 3.3'
   ClientHeight = 297
-  ClientWidth = 417
+  ClientWidth = 425
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -1253,10 +1253,11 @@ object Esp32frm: TEsp32frm
   object PageControl1: TPageControl
     Left = 120
     Top = 0
-    Width = 297
+    Width = 305
     Height = 207
-    ActivePage = Aux
+    ActivePage = TMC
     TabOrder = 3
+    TabWidth = 43
     Visible = False
     object TabSheet1: TTabSheet
       Caption = 'Control'
@@ -1495,15 +1496,15 @@ object Esp32frm: TEsp32frm
     object Tabconfig: TTabSheet
       Caption = 'Settings'
       object Label2: TLabel
-        Left = 8
-        Top = 119
+        Left = 3
+        Top = 85
         Width = 31
         Height = 13
         Caption = 'Label2'
       end
       object Label6: TLabel
-        Left = 8
-        Top = 144
+        Left = 3
+        Top = 104
         Width = 31
         Height = 13
         Caption = 'Label6'
@@ -1605,8 +1606,8 @@ object Esp32frm: TEsp32frm
         end
       end
       object TrackBar1: TTrackBar
-        Left = 16
-        Top = 88
+        Left = 90
+        Top = 58
         Width = 161
         Height = 17
         TabOrder = 2
@@ -2461,10 +2462,17 @@ object Esp32frm: TEsp32frm
       end
       object Panel1: TPanel
         Left = 2
-        Top = 115
+        Top = 116
         Width = 287
         Height = 62
         TabOrder = 22
+        object Label17: TLabel
+          Left = 222
+          Top = 47
+          Width = 23
+          Height = 13
+          Caption = 'Slots'
+        end
         object StaticText16: TStaticText
           Left = 2
           Top = 22
@@ -2522,7 +2530,7 @@ object Esp32frm: TEsp32frm
           Height = 21
           Alignment = taRightJustify
           TabOrder = 6
-          Value = 15000.000000000000000000
+          Value = 30.000000000000000000
         end
         object NumberBoxAs: TNumberBox
           Left = 73
@@ -2531,7 +2539,7 @@ object Esp32frm: TEsp32frm
           Height = 21
           Alignment = taRightJustify
           TabOrder = 7
-          Value = 15000.000000000000000000
+          Value = 30.000000000000000000
         end
         object NumberBoxFF: TNumberBox
           Left = 108
@@ -2540,7 +2548,7 @@ object Esp32frm: TEsp32frm
           Height = 21
           Alignment = taRightJustify
           TabOrder = 8
-          Value = 3000.000000000000000000
+          Value = 1000.000000000000000000
         end
         object NumberBoxAF: TNumberBox
           Left = 108
@@ -2549,7 +2557,7 @@ object Esp32frm: TEsp32frm
           Height = 21
           Alignment = taRightJustify
           TabOrder = 9
-          Value = 3500.000000000000000000
+          Value = 1000.000000000000000000
         end
         object NumberBoxFpwm: TNumberBox
           Left = 143
@@ -2605,15 +2613,15 @@ object Esp32frm: TEsp32frm
         end
         object CheckBoxDCF: TCheckBox
           Left = 222
-          Top = 19
+          Top = 0
           Width = 64
           Height = 17
           Caption = 'DC Focus'
           TabOrder = 16
         end
         object ComboAux: TComboBox
-          Left = 217
-          Top = 42
+          Left = 224
+          Top = 19
           Width = 62
           Height = 21
           TabOrder = 17
@@ -2624,6 +2632,15 @@ object Esp32frm: TEsp32frm
             'Wheel'
             'Disable')
         end
+        object NumberBoxslots: TNumberBox
+          Left = 256
+          Top = 39
+          Width = 30
+          Height = 21
+          Alignment = taRightJustify
+          TabOrder = 18
+          Value = 150.000000000000000000
+        end
       end
     end
     object Aux: TTabSheet
@@ -2631,7 +2648,7 @@ object Esp32frm: TEsp32frm
       ImageIndex = 5
       object GroupRotator: TGroupBox
         Left = 146
-        Top = 2
+        Top = -2
         Width = 149
         Height = 98
         Caption = 'Rotator'
@@ -2878,10 +2895,10 @@ object Esp32frm: TEsp32frm
         end
       end
       object GroupBoxFocus: TGroupBox
-        Left = -4
-        Top = 2
+        Left = -1
+        Top = -2
         Width = 144
-        Height = 87
+        Height = 89
         Caption = 'Focuser'
         TabOrder = 1
         object LabelFocusCount: TLabel
@@ -3030,8 +3047,8 @@ object Esp32frm: TEsp32frm
         end
       end
       object GroupBoxfilter: TGroupBox
-        Left = 146
-        Top = 100
+        Left = 148
+        Top = 93
         Width = 147
         Height = 83
         Caption = 'Filter'
@@ -3057,92 +3074,122 @@ object Esp32frm: TEsp32frm
           Font.Style = []
           ParentColor = False
           ParentFont = False
+          OnClick = Label16Click
         end
         object WButton1: TButton
-          Tag = 1
           Left = 2
           Top = 13
           Width = 33
           Height = 20
           Caption = 'Lumi'
           TabOrder = 0
+          OnClick = WButton1Click
         end
         object WButton2: TButton
-          Tag = 2
+          Tag = 1
           Left = 37
           Top = 13
           Width = 33
           Height = 20
           Caption = 'Red'
           TabOrder = 1
+          OnClick = WButton1Click
         end
         object WButton3: TButton
-          Tag = 3
+          Tag = 2
           Left = 73
           Top = 13
           Width = 33
           Height = 20
           Caption = 'Green'
           TabOrder = 2
+          OnClick = WButton1Click
         end
         object WButton4: TButton
-          Tag = 4
+          Tag = 3
           Left = 2
           Top = 35
           Width = 33
           Height = 20
           Caption = 'Blue'
           TabOrder = 3
+          OnClick = WButton1Click
         end
         object WButton5: TButton
-          Tag = 5
+          Tag = 4
           Left = 37
           Top = 35
           Width = 33
           Height = 20
           Caption = 'IR'
           TabOrder = 4
+          OnClick = WButton1Click
         end
         object WButton6: TButton
-          Tag = 6
+          Tag = 5
           Left = 73
           Top = 35
           Width = 33
           Height = 20
           Caption = 'IRc'
           TabOrder = 5
+          OnClick = WButton1Click
         end
         object WButton7: TButton
-          Tag = 7
+          Tag = 6
           Left = 2
           Top = 57
           Width = 33
           Height = 20
           Caption = 'Ha'
           TabOrder = 6
+          OnClick = WButton1Click
         end
         object WButton8: TButton
-          Tag = 8
+          Tag = 7
           Left = 37
           Top = 57
           Width = 33
           Height = 20
           Caption = 'P'
           TabOrder = 7
+          OnClick = WButton1Click
         end
         object WButton9: TButton
-          Tag = 9
+          Tag = 8
           Left = 73
           Top = 57
           Width = 33
           Height = 20
           Caption = 'OIII'
           TabOrder = 8
+          OnClick = WButton1Click
+        end
+        object Button7: TButton
+          Left = 112
+          Top = 34
+          Width = 22
+          Height = 20
+          Caption = 'In'
+          TabOrder = 9
+          OnMouseDown = InButton2MouseDown
+          OnMouseUp = InButton2MouseUp
+        end
+        object Button8: TButton
+          Tag = 1
+          Left = 112
+          Top = 60
+          Width = 22
+          Height = 20
+          Caption = 'Out'
+          TabOrder = 10
+          OnMouseDown = InButton2MouseDown
+          OnMouseUp = InButton2MouseUp
         end
       end
       object GroupBoxfocus2: TGroupBox
-        Left = -4
-        Top = 89
+        Left = -1
+        Top = 90
         Width = 148
         Height = 89
         Caption = 'Focuser 2'
@@ -3328,6 +3375,10 @@ object Esp32frm: TEsp32frm
           OnContextPopup = Button1fContextPopup
         end
       end
+    end
+    object TabWheel: TTabSheet
+      Caption = 'Wheel'
+      ImageIndex = 6
     end
   end
   object GroupBox8: TGroupBox
