@@ -240,6 +240,28 @@ type
     Button8: TButton;
     NumberBoxslots: TNumberBox;
     Label17: TLabel;
+    GroupBoxFC: TGroupBox;
+    Edit1F: TEdit;
+    Edit2f: TEdit;
+    Edit3f: TEdit;
+    Edit4f: TEdit;
+    Edit5f: TEdit;
+    Edit6f: TEdit;
+    Edit7f: TEdit;
+    Edit8f: TEdit;
+    Edit0f: TEdit;
+    Edit0V: TEdit;
+    Edit1v: TEdit;
+    Edit2v: TEdit;
+    Edit3v: TEdit;
+    Edit4v: TEdit;
+    Edit5v: TEdit;
+    Edit6v: TEdit;
+    Edit7v: TEdit;
+    Edit8v: TEdit;
+    ButtonSaveFilt: TButton;
+    ButtonReadFilt: TButton;
+    Label18: TLabel;
 
     procedure FormCreate(Sender: TObject);
     procedure Button_NMouseDown(Sender: TObject; Button: TMouseButton;
@@ -327,6 +349,10 @@ type
       var Handled: Boolean);
     procedure WButton1Click(Sender: TObject);
     procedure Label16Click(Sender: TObject);
+    procedure ButtonReadFiltClick(Sender: TObject);
+    procedure ButtonSaveFiltClick(Sender: TObject);
+    procedure confload();
+    procedure FormShow(Sender: TObject);
 
   private
     { Private declarations }
@@ -357,6 +383,79 @@ begin
   WriteSettings;
 end;
 
+procedure TEsp32frm.ButtonSaveFiltClick(Sender: TObject);
+var
+  s: string;
+  I: Integer;
+  lines: Tstringlist;
+  bytes: Tbytes;
+begin
+  try
+    lines := Tstringlist.Create();
+  finally
+
+  end;
+  if (ClientSocket1.Connected) or (ComPortBT_USB.Connected) or (checkBtSock)
+  then
+  begin
+    lines.add(Edit0f.Text);
+    lines.add(Edit0V.Text);
+    lines.add('0');
+
+    lines.add(Edit1f.Text);
+    lines.add(Edit1V.Text);
+    lines.add('0');
+
+    lines.add(Edit2f.Text);
+    lines.add(Edit2V.Text);
+    lines.add('0');
+
+    lines.add(Edit3f.Text);
+    lines.add(Edit3V.Text);
+    lines.add('0');
+
+        lines.add(Edit4f.Text);
+    lines.add(Edit4V.Text);
+    lines.add('0');
+
+    lines.add(Edit5f.Text);
+    lines.add(Edit5V.Text);
+    lines.add('0');
+
+    lines.add(Edit6f.Text);
+    lines.add(Edit6V.Text);
+    lines.add('0');
+
+    lines.add(Edit7f.Text);
+    lines.add(Edit7V.Text);
+    lines.add('0');
+
+    lines.add(Edit8f.Text);
+    lines.add(Edit8V.Text);
+    lines.add('0');
+
+
+
+    // Label17.Text := inttostr(lines.Count);
+    Memo1.lines.Clear;
+    if true then
+    begin
+      s := ':cd';
+      for I := 0 to 26 do
+        s := s + lines[I] + #10;
+
+      s := s + '#'+ #10;
+      s := stringreplace(s, FormatSettings.DecimalSeparator, '.',
+        [rfReplaceAll]);
+      Memo1.lines.add(s);
+      send(s);
+    end;
+  end;
+
+  lines.Destroy;
+
+end;
+
 procedure TEsp32frm.Buttonstar1Click(Sender: TObject);
 begin
   send(':a1#');
@@ -365,6 +464,115 @@ end;
 procedure TEsp32frm.Buttonstar2Click(Sender: TObject);
 begin
   send(':a2#');
+end;
+
+procedure TEsp32frm.ButtonReadFiltClick(Sender: TObject);
+
+var
+  cstring, str: string;
+  lines: Tstringlist;
+  cLines: Integer;
+begin
+  try
+    lines := Tstringlist.Create();
+  finally
+
+  end;
+  cLines := 0;
+  Memo1.lines.Clear;
+  if (ClientSocket1.Connected) or (ComPortBT_USB.Connected) or (checkBtSock)
+  then
+
+  begin
+    // Memo1.lines.Clear;
+    Timer1.Enabled := false;
+    send(':cD#');
+
+    if imode = 2 then
+    begin
+      recv(cstring, 100);
+      // cstring := stringreplace(cstring,#10,
+      // '', [rfReplaceAll]);
+      // cstring := stringreplace(cstring,#13,
+      // '', [rfReplaceAll]);
+      lines.Text := cstring;
+
+    end
+    else
+      repeat
+
+        case imode of
+          1:
+            begin
+              readvln(cstring, #10);
+              cstring := stringreplace(cstring, #10, '', [rfReplaceAll])
+            end;
+          0:
+            begin
+              readvln(cstring, #10);
+              cstring := stringreplace(cstring, #10, '', [rfReplaceAll]);
+              cstring := stringreplace(cstring, #13, '', [rfReplaceAll]);
+            end;
+        end;
+
+        cstring := stringreplace(cstring, '.',
+          '' + FormatSettings.DecimalSeparator, [rfReplaceAll]);
+        lines.add(cstring);
+        Memo1.lines.add(cstring)
+      until (inbuff = 0);//or (cstring = '#');
+
+    Label1.caption := inttostr(lines.Count) + lines[0];
+    Timer1.Enabled := true;
+    if lines.Count >= 25 then
+    begin
+      Edit0f.Text := lines[0];
+      Edit0V.Text := lines[1];
+      wbutton1.caption:=Edit0f.Text;
+
+      Edit1F.Text := lines[3];
+      Edit1v.Text := lines[4];
+      wbutton2.caption:=Edit1f.Text;
+
+
+      Edit2f.Text := lines[6];
+      Edit2v.Text := lines[7];
+      wbutton3.caption:=Edit2f.Text;
+
+
+      Edit3f.Text := lines[9];
+      Edit3v.Text := lines[10];
+      wbutton4.caption:=Edit3f.Text;
+
+
+      Edit4f.Text := lines[12];
+      Edit4v.Text := lines[13];
+      wbutton5.caption:=Edit4f.Text;
+
+
+      Edit5f.Text := lines[15];
+      Edit5v.Text := lines[16];
+      wbutton6.caption:=Edit5f.Text;
+
+
+      Edit6f.Text := lines[18];
+      Edit6v.Text := lines[19];
+      wbutton7.caption:=Edit6f.Text;
+
+
+      Edit7f.Text := lines[21];
+      Edit7v.Text := lines[22];
+      wbutton8.caption:=Edit7f.Text;
+
+
+      Edit8f.Text := lines[24];
+      Edit8v.Text := lines[25];
+      wbutton9.caption:=Edit8f.Text;
+
+
+    end;
+    lines.Destroy
+  end;
+
 end;
 
 procedure TEsp32frm.ButtonReconClick(Sender: TObject);
@@ -398,7 +606,7 @@ begin
           ClientSocket1.disconnect;
 
         ClientSocket1.Host := EditAddr.Text;
-        ClientSocket1.Port := LongEditPort.Value;
+        ClientSocket1.Port := LongEditPort.value;
         ClientSocket1.connect;
 
         fullconnect := check_connection();
@@ -431,7 +639,8 @@ begin
       Label3.caption := 'East';
     if get_flip() then
       Chkflip.Checked := true;
-    Button4Click(self);
+    //Button4Click(self);
+    confload();
   end;
 end;
 
@@ -465,8 +674,8 @@ procedure TEsp32frm.Button1fContextPopup(Sender: TObject; MousePos: TPoint;
   var Handled: Boolean);
 begin
   showmessage('Setting changed');
-  focuspos2[TButton(Sender).tag] := counterLongEdit2.Value;
-  TButton(Sender).Hint := inttostr(counterLongEdit2.Value);
+  focuspos2[TButton(Sender).tag] := counterLongEdit2.value;
+  TButton(Sender).Hint := inttostr(counterLongEdit2.value);
 end;
 
 procedure TEsp32frm.Button2Click(Sender: TObject);
@@ -474,7 +683,7 @@ var
   ctime: TdateTime;
 begin
 
-  gmtoffset := LongEditgmt.Value;
+  gmtoffset := LongEditgmt.value;
   set_offset(gmtoffset);
   sleep(20);
   ctime := UTCnow() + (gmtoffset / 24.0);
@@ -488,10 +697,10 @@ end;
 
 procedure TEsp32frm.Button3Click(Sender: TObject);
 begin
-  set_offset(LongEditgmt.Value);
-  Set_latitude(FloatEditLat.Value);
+  set_offset(LongEditgmt.value);
+  Set_latitude(FloatEditLat.value);
   sleep(20);
-  set_longitude(FloatEditLong.Value);
+  set_longitude(FloatEditLong.value);
   sleep(20);
 
 end;
@@ -635,9 +844,9 @@ begin
     begin
       s := ':ct';
       for I := 0 to 19 do
-        s := s + lines[I] + #13#10;
+        s := s + lines[I] + #10;
 
-      s := s + '#';
+      s := s + '#'+ #10;
       s := stringreplace(s, FormatSettings.DecimalSeparator, '.',
         [rfReplaceAll]);
       Memo1.lines.add(s);
@@ -702,7 +911,7 @@ begin
           '' + FormatSettings.DecimalSeparator, [rfReplaceAll]);
         lines.add(cstring);
         Memo1.lines.add(cstring)
-      until (inbuff = 0);
+      until (inbuff = 0) or (cstring = '#');
 
     Label1.caption := inttostr(lines.Count) + lines[0];
     Timer1.Enabled := true;
@@ -789,7 +998,7 @@ begin
           '' + FormatSettings.DecimalSeparator, [rfReplaceAll]);
         lines.add(cstring);
         Memo1.lines.add(cstring)
-      until (inbuff = 0);
+      until (inbuff = 0) or (cstring = '#');
 
     Label1.caption := inttostr(lines.Count) + lines[0];
     Timer1.Enabled := true;
@@ -806,14 +1015,14 @@ begin
       NumberBoxApwm.Text := lines[7];
       CheckBoxDCF.Checked := lines[8] = '1';
       ComboAux.ItemIndex := lines[9].tointeger();
-      numberboxslots.Value:=lines[10].tointeger();
+      NumberBoxslots.value := lines[10].tointeger();
       aux_device := lines[9].tointeger();
 
       aux_max := strtoint(NumberBoxAM.Text);
       GroupRotator.Visible := aux_device = 1;
       GroupBoxfilter.Visible := aux_device = 2;
       GroupBoxfocus2.Visible := aux_device = 0;
-       GroupBoxfocus2.left := GroupRotator.left;
+      GroupBoxfocus2.left := GroupRotator.left;
       GroupBoxfilter.left := GroupRotator.left;
       GroupBoxfilter.top := GroupRotator.top;
       GroupBoxfocus2.top := GroupRotator.top;
@@ -849,7 +1058,7 @@ begin
     lines.add(NumberBoxApwm.Text);
     lines.add(CheckBoxDCF.Checked.tointeger.ToString);
     lines.add(ComboAux.ItemIndex.ToString());
-    lines.add(numberboxslots.value.ToString);
+    lines.add(NumberBoxslots.value.ToString);
     aux_device := ComboAux.ItemIndex;
 
     GroupBoxfocus2.Visible := aux_device = 0;
@@ -862,9 +1071,9 @@ begin
     begin
       s := ':cf';
       for I := 0 to 10 do
-        s := s + lines[I] + #13#10;
+        s := s + lines[I] + #10;
 
-      s := s + '#';
+      s := s + '#' +#10;
       s := stringreplace(s, FormatSettings.DecimalSeparator, '.',
         [rfReplaceAll]);
       Memo1.lines.add(s);
@@ -924,13 +1133,13 @@ procedure TEsp32frm.ButtongetgeoClick(Sender: TObject);
 var
   offset: Integer;
 begin
-  FloatEditLong.Value := get_long();
-  FloatEditLat.Value := get_lat();
-  longi := FloatEditLong.Value;
-  lat := FloatEditLat.Value;
+  FloatEditLong.value := get_long();
+  FloatEditLat.value := get_lat();
+  longi := FloatEditLong.value;
+  lat := FloatEditLat.value;
   offset := get_gmtoffset();
   if offset < 50 then
-    LongEditgmt.Value := offset;
+    LongEditgmt.value := offset;
 end;
 
 procedure TEsp32frm.ButtonHClick(Sender: TObject);
@@ -1090,7 +1299,7 @@ procedure TEsp32frm.CCButtonMouseUp(Sender: TObject; Button: TMouseButton;
 begin
 
   send(':XQ#');
-  CounterFloatEdit.Value := 360.0 / aux_max * get_focuspos('X');
+  CounterFloatEdit.value := 360.0 / aux_max * get_focuspos('X');
 end;
 
 procedure TEsp32frm.CheckaltfocusClick(Sender: TObject);
@@ -1133,7 +1342,7 @@ begin
   set_interface_mode(imode);
 
   initserial(ComComboBox1.Text, tbaudrate(ComComboBox2.ItemIndex));
-  init_tcp(EditAddr.Text, LongEditPort.Value);
+  init_tcp(EditAddr.Text, LongEditPort.value);
 
   ComComboBox1.ComPort := ComPortBT_USB;
   case imode of
@@ -1174,13 +1383,24 @@ begin
     end;
     if get_flip() then
       Chkflip.Checked := true;
+   // Button4Click(self);
+  //  Button6Click(self);
+  //  ButtonAuxReadClick(self);
+  //  ButtonReadFiltClick(self);
+    // showmessage('okread');
+    Timer1.Enabled := true;
+
+
+  end;
+
+end;
+
+procedure TEsp32frm.confload();
+begin
     Button4Click(self);
     Button6Click(self);
     ButtonAuxReadClick(self);
-    // showmessage('okread');
-    Timer1.Enabled := true;
-  end;
-
+    ButtonReadFiltClick(self);
 end;
 
 procedure TEsp32frm.FormDestroy(Sender: TObject);
@@ -1191,6 +1411,11 @@ begin
     ComPortBT_USB.Connected := false;
   FreeBtSock;
 
+end;
+
+procedure TEsp32frm.FormShow(Sender: TObject);
+begin
+ confload();
 end;
 
 procedure TEsp32frm.InButton2MouseDown(Sender: TObject; Button: TMouseButton;
@@ -1445,7 +1670,7 @@ var
 begin
 
   if TButton(Sender).tag = 1000 then
-    counter := round((TargetFloatEdit.Value / 360.0) * aux_max)
+    counter := round((TargetFloatEdit.value / 360.0) * aux_max)
   else
     counter := round((TButton(Sender).tag / 360.0) * aux_max);
   send(':XA-' + Format('%.5d', [counter]) + '#');
@@ -1531,7 +1756,7 @@ end;
 
 procedure TEsp32frm.Label16Click(Sender: TObject);
 begin
-      send(':XLS1+00000#');
+  send(':XLS1+00000#');
 end;
 
 procedure TEsp32frm.LabelFocusCountDblClick(Sender: TObject);
@@ -1568,228 +1793,240 @@ begin
     // if aux_active = 1 then
     // if aux_device=1 then CounterFloatEdit.Value := 360.0 / aux_max * get_focusaux();
     case aux_device of
-      0:begin
-        aux_counter := get_focuspos('X');counterLongEdit2.Value :=aux_counter;
+      0:
+        begin
+          aux_counter := get_focuspos('X');
+          counterLongEdit2.value := aux_counter;
         end;
       1:
         begin
           aux_counter := get_focuspos('X');
-          CounterFloatEdit.Value := (360.0 / aux_max) * aux_counter;
+          CounterFloatEdit.value := (360.0 / aux_max) * aux_counter;
         end;
-      2:    begin
+      2:
+        begin
           aux_counter := get_focuspos('X');
-          label16.caption:=  aux_counter.ToString
+          Label16.caption := aux_counter.ToString
 
-      end;
+        end;
 
-      end;
+    end;
 
-      if CheckAlt.Checked then
-      begin
-        // az := get_az();
-        // alt := get_alt();
+    if CheckAlt.Checked then
+    begin
+      // az := get_az();
+      // alt := get_alt();
 
-        LabelAzimuth.caption := DoubletoLXdec(az, 0);
+      LabelAzimuth.caption := DoubletoLXdec(az, 0);
 
-        LabelAltitude.caption := DoubletoLXdec(alt, 0);
-      end;
+      LabelAltitude.caption := DoubletoLXdec(alt, 0);
+    end;
 
-      case imode of
+    case imode of
 
-        0:
-          Label5.caption := 'USB';
-        1:
-          Label5.caption := 'TCP';
-        2:
-          Label5.caption := 'BT';
-      end;
+      0:
+        Label5.caption := 'USB';
+      1:
+        Label5.caption := 'TCP';
+      2:
+        Label5.caption := 'BT';
+    end;
 
-      // Label5.caption := Label5.caption + ' ' + inttostr(gettickCount() - png)   ;
-      Label5.caption := Label5.caption + ' ' +
-        Format('%0.3d', [gettickCount() - png]) + ' ' + inttostr(coors.Length);
-      // (inbuff());
-      if inbuff > 0 then clearbuff(true, false);
-      Label5.Font.Color := Cllime;
-      if piersid then begin Label3.caption := 'West';
+    // Label5.caption := Label5.caption + ' ' + inttostr(gettickCount() - png)   ;
+    Label5.caption := Label5.caption + ' ' +
+      Format('%0.3d', [gettickCount() - png]) + ' ' + inttostr(coors.Length);
+    // (inbuff());
+    if inbuff > 0 then
+      clearbuff(true, false);
+    Label5.Font.Color := Cllime;
+    if piersid then
+    begin
+      Label3.caption := 'West';
       LabelAR1.Font.Color := Clred;
       LabelDec1.Font.Color := Clred;
-      end else begin Label3.caption := 'East';
+    end
+    else
+    begin
+      Label3.caption := 'East';
       LabelAR1.Font.Color := Cllime;
       LabelDec1.Font.Color := Cllime;
-      end;
-      end
+    end;
+  end
 
-      else begin Label5.Font.Color := Clred;
+  else
+  begin
+    Label5.Font.Color := Clred;
 
-      Label5.caption := 'DisConnected';
-      end;
+    Label5.caption := 'DisConnected';
+  end;
 
-      datetimetostring(strsideral, 'hh:nn:ss', Local_Sideral_Time(UTCnow(),
-        -FloatEditLong.Value) / 24.0);
+  datetimetostring(strsideral, 'hh:nn:ss', Local_Sideral_Time(UTCnow(),
+    -FloatEditLong.value) / 24.0);
 
-      datetimetostring(strangle, 'hh:nn:ss', calc_lha(ra));
-      Labelmsg.caption := 'Local:' + timetostr(UTCnow() + (gmtoffset / 24.0)) +
-        #13#10 + 'GMT: ' + timetostr(UTCnow()) + #13#10 + 'Sid:' + strsideral;
-      Label2.caption := floattostr(calc_lha(ra)) + ' ' + floattostr(ra);
-      if (Joystickex1.ButtonSt = 16) then CheckBox1.Checked := true;
-      if (Joystickex1.ButtonSt = 32) then CheckBox1.Checked := false;
-      end;
+  datetimetostring(strangle, 'hh:nn:ss', calc_lha(ra));
+  Labelmsg.caption := 'Local:' + timetostr(UTCnow() + (gmtoffset / 24.0)) +
+    #13#10 + 'GMT: ' + timetostr(UTCnow()) + #13#10 + 'Sid:' + strsideral;
+  Label2.caption := floattostr(calc_lha(ra)) + ' ' + floattostr(ra);
+  if (Joystickex1.ButtonSt = 16) then
+    CheckBox1.Checked := true;
+  if (Joystickex1.ButtonSt = 32) then
+    CheckBox1.Checked := false;
+end;
 
-      procedure TEsp32frm.TrackBar1Change(Sender: TObject);
+procedure TEsp32frm.TrackBar1Change(Sender: TObject);
 
-      begin AlphaBlend := (TrackBar1.position > 0);
-      AlphaBlendValue := (255 - TrackBar1.position * 20);
-      // self.ScaleBy(trackbar3.Position*100+10,100);
-      end;
+begin
+  AlphaBlend := (TrackBar1.position > 0);
+  AlphaBlendValue := (255 - TrackBar1.position * 20);
+  // self.ScaleBy(trackbar3.Position*100+10,100);
+end;
 
-      procedure TEsp32frm.ReadSettings;
-      var inifile:
-        TiniFile;
-      I:
-        Integer;
-      begin
-        inifile := TiniFile.Create(s_inipath + inifile_name);
-        with inifile do
-        begin
-          ComComboBox1.Text := ReadString('Serial_Port', 'Port', 'com14');
-          ComComboBox2.Text := ReadString('Serial_Port', 'BaudRate', '57600');
-          EditAddr.Text := ReadString('Host', 'Address', '192.168.1.1');
-          LongEditPort.Value := ReadInteger('Host', 'Port', 10001);
-          RadioGroupcom.ItemIndex := ReadInteger('Interface', 'TCP', 0);
-          FloatEditLat.Value := readfloat('GEO', 'lat', 36.7);
-          FloatEditLong.Value := readfloat('GEO', 'long', -4.12);
-          LongEditgmt.Value := ReadInteger('GEO', 'offset', 1);
-          cbxpaired.Text := ReadString('Bluetooth', 'device', 'esp32go');
-          gmtoffset := LongEditgmt.Value;
-          longi := FloatEditLong.Value;
-          lat := FloatEditLat.Value;
-          for I := 0 to 3 do
-            focuspos[I] := ReadInteger('Focus', 'focuspos' + inttostr(I),
-              (I + 1) * 1000);
-          ButtonM1.Hint := Format('%0.5d', [focuspos[0]]);
-          ButtonM2.Hint := Format('%0.5d', [focuspos[1]]);
-          ButtonM3.Hint := Format('%0.5d', [focuspos[2]]);
-          ButtonM4.Hint := Format('%0.5d', [focuspos[3]]);
+procedure TEsp32frm.ReadSettings;
+var
+  inifile: TiniFile;
+  I: Integer;
+begin
+  inifile := TiniFile.Create(s_inipath + inifile_name);
+  with inifile do
+  begin
+    ComComboBox1.Text := ReadString('Serial_Port', 'Port', 'com14');
+    ComComboBox2.Text := ReadString('Serial_Port', 'BaudRate', '57600');
+    EditAddr.Text := ReadString('Host', 'Address', '192.168.1.1');
+    LongEditPort.value := ReadInteger('Host', 'Port', 10001);
+    RadioGroupcom.ItemIndex := ReadInteger('Interface', 'TCP', 0);
+    FloatEditLat.value := readfloat('GEO', 'lat', 36.7);
+    FloatEditLong.value := readfloat('GEO', 'long', -4.12);
+    LongEditgmt.value := ReadInteger('GEO', 'offset', 1);
+    cbxpaired.Text := ReadString('Bluetooth', 'device', 'esp32go');
+    gmtoffset := LongEditgmt.value;
+    longi := FloatEditLong.value;
+    lat := FloatEditLat.value;
+    for I := 0 to 3 do
+      focuspos[I] := ReadInteger('Focus', 'focuspos' + inttostr(I),
+        (I + 1) * 1000);
+    ButtonM1.Hint := Format('%0.5d', [focuspos[0]]);
+    ButtonM2.Hint := Format('%0.5d', [focuspos[1]]);
+    ButtonM3.Hint := Format('%0.5d', [focuspos[2]]);
+    ButtonM4.Hint := Format('%0.5d', [focuspos[3]]);
 
-          for I := 0 to 6 do
-            focuspos[I] := ReadInteger('Focus2', 'focuspos' + inttostr(I),
-              (I + 1) * 1000);
+    for I := 0 to 6 do
+      focuspos[I] := ReadInteger('Focus2', 'focuspos' + inttostr(I),
+        (I + 1) * 1000);
 
-          Button1f.Hint := Format('%0.5d', [focuspos2[0]]);
-          Button2f.Hint := Format('%0.5d', [focuspos2[1]]);
-          Button3f.Hint := Format('%0.5d', [focuspos2[2]]);
-          Button4f.Hint := Format('%0.5d', [focuspos2[3]]);
-          Button5f.Hint := Format('%0.5d', [focuspos2[4]]);
-          Button6f.Hint := Format('%0.5d', [focuspos2[5]]);
+    Button1f.Hint := Format('%0.5d', [focuspos2[0]]);
+    Button2f.Hint := Format('%0.5d', [focuspos2[1]]);
+    Button3f.Hint := Format('%0.5d', [focuspos2[2]]);
+    Button4f.Hint := Format('%0.5d', [focuspos2[3]]);
+    Button5f.Hint := Format('%0.5d', [focuspos2[4]]);
+    Button6f.Hint := Format('%0.5d', [focuspos2[5]]);
 
-        end;
-      end;
+  end;
+end;
 
-      procedure TEsp32frm.saveClick(Sender: TObject);
-      var
-        s: string;
-        I: Integer;
-        lines: Tstringlist;
-        bytes: Tbytes;
-      begin
-        try
-          lines := Tstringlist.Create();
-        finally
+procedure TEsp32frm.saveClick(Sender: TObject);
+var
+  s: string;
+  I: Integer;
+  lines: Tstringlist;
+  bytes: Tbytes;
+begin
+  try
+    lines := Tstringlist.Create();
+  finally
 
-        end;
-        if (ClientSocket1.Connected) or (ComPortBT_USB.Connected) or
-          (checkBtSock) then
-        begin
+  end;
+  if (ClientSocket1.Connected) or (ComPortBT_USB.Connected) or (checkBtSock)
+  then
+  begin
 
-          lines.add(NumberBoxcountaz.Text);
-          lines.add(NumberBoxcountalt.Text);
-          lines.add(NumberBoxspgaz.Text);
-          lines.add(NumberBoxspcaz.Text);
-          lines.add(NumberBoxspfaz.Text);
-          lines.add(NumberBoxspsaz.Text);
-          lines.add(NumberBoxspgalt.Text);
-          lines.add(NumberBoxspcalt.Text);
-          lines.add(NumberBoxspfalt.Text);
-          lines.add(NumberBoxspsalt.Text);
-          lines.add(NumberBoxpresc.Text);
-          lines.add(NumberBoxlong.Text);
-          lines.add(NumberBoxlat.Text);
-          lines.add(NumberBoxgmtoff.Text);
-          { lines.add(NumberBoxFmax.Text);
-            lines.add(NumberBoxFlow.Text);
-            lines.add(NumberBoxfsp.Text); }
-          lines.add(NumberBoxrampaz.Text);
-          lines.add(NumberBoxrampalt.Text);
-          lines.add(NumberBoxbackpaz.Text);
-          lines.add(NumberBoxbackpalt.Text);
-          lines.add(inttostr(ComboBoxEqmode.ItemIndex));
-          lines.add(inttostr(ComboBoxtrack.ItemIndex));
-          lines.add(CheckBoxflip.Checked.tointeger.ToString);
-          lines.add(CheckBoxinvaz.Checked.tointeger.ToString);
-          lines.add(CheckBoxinvalt.Checked.tointeger.ToString);
-          { lines.add(NBxVolt.Text); }
-          lines.add(CheckBoxbackaz.Checked.tointeger.ToString);
-          lines.add(CheckBoxbackalt.Checked.tointeger.ToString);
-          { lines.add(CheckBoxDCFocus.Checked.tointeger.ToString); }
-          // Label17.Text := inttostr(lines.Count);
-          Memo1.lines.Clear;
-          if lines.Count > config_lines then
-          begin
-            s := ':cs';
-            for I := 0 to config_lines do
-              s := s + lines[I] + #13#10;
+    lines.add(NumberBoxcountaz.Text);
+    lines.add(NumberBoxcountalt.Text);
+    lines.add(NumberBoxspgaz.Text);
+    lines.add(NumberBoxspcaz.Text);
+    lines.add(NumberBoxspfaz.Text);
+    lines.add(NumberBoxspsaz.Text);
+    lines.add(NumberBoxspgalt.Text);
+    lines.add(NumberBoxspcalt.Text);
+    lines.add(NumberBoxspfalt.Text);
+    lines.add(NumberBoxspsalt.Text);
+    lines.add(NumberBoxpresc.Text);
+    lines.add(NumberBoxlong.Text);
+    lines.add(NumberBoxlat.Text);
+    lines.add(NumberBoxgmtoff.Text);
+    { lines.add(NumberBoxFmax.Text);
+      lines.add(NumberBoxFlow.Text);
+      lines.add(NumberBoxfsp.Text); }
+    lines.add(NumberBoxrampaz.Text);
+    lines.add(NumberBoxrampalt.Text);
+    lines.add(NumberBoxbackpaz.Text);
+    lines.add(NumberBoxbackpalt.Text);
+    lines.add(inttostr(ComboBoxEqmode.ItemIndex));
+    lines.add(inttostr(ComboBoxtrack.ItemIndex));
+    lines.add(CheckBoxflip.Checked.tointeger.ToString);
+    lines.add(CheckBoxinvaz.Checked.tointeger.ToString);
+    lines.add(CheckBoxinvalt.Checked.tointeger.ToString);
+    { lines.add(NBxVolt.Text); }
+    lines.add(CheckBoxbackaz.Checked.tointeger.ToString);
+    lines.add(CheckBoxbackalt.Checked.tointeger.ToString);
+    { lines.add(CheckBoxDCFocus.Checked.tointeger.ToString); }
+    // Label17.Text := inttostr(lines.Count);
+    Memo1.lines.Clear;
+    if lines.Count > config_lines then
+    begin
+      s := ':cs';
+      for I := 0 to config_lines do
+        s := s + lines[I] + #10;
 
-            s := s + '#';
-            s := stringreplace(s, FormatSettings.DecimalSeparator, '.',
-              [rfReplaceAll]);
-            Memo1.lines.add(s);
-            send(s);
-          end;
-        end;
+      s := s + '#'+#10;
+      s := stringreplace(s, FormatSettings.DecimalSeparator, '.',
+        [rfReplaceAll]);
+      Memo1.lines.add(s);
+      send(s);
+    end;
+  end;
 
-        lines.Destroy;
-      end;
+  lines.Destroy;
+end;
 
-      procedure TEsp32frm.SyncButton3Click(Sender: TObject);
-      var
-        counter: Integer;
-      begin
-        // send(':FLS1+00000#');
-        counter := round((TargetFloatEdit.Value / 360.0) * aux_max);
-        send(':XLS1+' + Format('%.5d', [counter]) + '#');
+procedure TEsp32frm.SyncButton3Click(Sender: TObject);
+var
+  counter: Integer;
+begin
+  // send(':FLS1+00000#');
+  counter := round((TargetFloatEdit.value / 360.0) * aux_max);
+  send(':XLS1+' + Format('%.5d', [counter]) + '#');
 
-      end;
+end;
 
 procedure TEsp32frm.WButton1Click(Sender: TObject);
 
-
 begin
-  send(':XI' +TButton(Sender).tag.ToString+'#');
+  send(':XI' + TButton(Sender).tag.ToString + '#');
 end;
 
 procedure TEsp32frm.WriteSettings;
-      var
-        inifile: TiniFile;
-        I: Integer;
-      begin
-        inifile := TiniFile.Create(s_inipath + inifile_name);
-        with inifile do
-        begin
-          writeString('Serial_Port', 'Port', ComComboBox1.Text);
-          writeString('Serial_Port', 'BaudRate', ComComboBox2.Text);
-          writeString('Host', 'Address', EditAddr.Text);
-          writeInteger('Host', 'Port', LongEditPort.Value);
-          writeInteger('Interface', 'TCP', RadioGroupcom.ItemIndex);
-          writefloat('GEO', 'lat', FloatEditLat.Value);
-          writefloat('GEO', 'long', FloatEditLong.Value);
-          writefloat('GEO', 'offset', LongEditgmt.Value);
-          writeString('Bluetooth', 'device', cbxpaired.Text);
-          for I := 0 to 3 do
-            writeInteger('Focus', 'focuspos' + inttostr(I), focuspos[I]);
-          for I := 0 to 5 do
-            writeInteger('Focus2', 'focuspos' + inttostr(I), focuspos2[I]);
+var
+  inifile: TiniFile;
+  I: Integer;
+begin
+  inifile := TiniFile.Create(s_inipath + inifile_name);
+  with inifile do
+  begin
+    writeString('Serial_Port', 'Port', ComComboBox1.Text);
+    writeString('Serial_Port', 'BaudRate', ComComboBox2.Text);
+    writeString('Host', 'Address', EditAddr.Text);
+    writeInteger('Host', 'Port', LongEditPort.value);
+    writeInteger('Interface', 'TCP', RadioGroupcom.ItemIndex);
+    writefloat('GEO', 'lat', FloatEditLat.value);
+    writefloat('GEO', 'long', FloatEditLong.value);
+    writefloat('GEO', 'offset', LongEditgmt.value);
+    writeString('Bluetooth', 'device', cbxpaired.Text);
+    for I := 0 to 3 do
+      writeInteger('Focus', 'focuspos' + inttostr(I), focuspos[I]);
+    for I := 0 to 5 do
+      writeInteger('Focus2', 'focuspos' + inttostr(I), focuspos2[I]);
 
-        end;
-      end;
+  end;
+end;
 
 end.

@@ -2,7 +2,7 @@ object Esp32frm: TEsp32frm
   Left = 0
   Top = 0
   AutoSize = True
-  Caption = 'Esp32go 3.3'
+  Caption = 'Esp32go 3.4'
   ClientHeight = 297
   ClientWidth = 425
   Color = clBtnFace
@@ -1046,6 +1046,7 @@ object Esp32frm: TEsp32frm
   Position = poOwnerFormCenter
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnShow = FormShow
   TextHeight = 13
   object GroupBox1: TGroupBox
     Left = 0
@@ -1255,7 +1256,7 @@ object Esp32frm: TEsp32frm
     Top = 0
     Width = 305
     Height = 207
-    ActivePage = TMC
+    ActivePage = cb
     TabOrder = 3
     TabWidth = 43
     Visible = False
@@ -3379,6 +3380,202 @@ object Esp32frm: TEsp32frm
     object TabWheel: TTabSheet
       Caption = 'Wheel'
       ImageIndex = 6
+      object GroupBoxFC: TGroupBox
+        Left = 0
+        Top = 0
+        Width = 297
+        Height = 179
+        Align = alClient
+        Caption = 'Filters'
+        TabOrder = 0
+        object Label18: TLabel
+          Left = 8
+          Top = 10
+          Width = 18
+          Height = 13
+          Caption = 'Slot'
+        end
+        object Edit1F: TEdit
+          Left = 8
+          Top = 52
+          Width = 49
+          Height = 21
+          TabOrder = 0
+          Text = '-'
+        end
+        object Edit2f: TEdit
+          Left = 8
+          Top = 76
+          Width = 49
+          Height = 21
+          TabOrder = 1
+          Text = '-'
+        end
+        object Edit3f: TEdit
+          Left = 8
+          Top = 100
+          Width = 49
+          Height = 21
+          TabOrder = 2
+          Text = '-'
+        end
+        object Edit4f: TEdit
+          Left = 8
+          Top = 124
+          Width = 49
+          Height = 21
+          TabOrder = 3
+          Text = '-'
+        end
+        object Edit5f: TEdit
+          Left = 144
+          Top = 29
+          Width = 49
+          Height = 21
+          TabOrder = 4
+          Text = '-'
+        end
+        object Edit6f: TEdit
+          Left = 144
+          Top = 53
+          Width = 49
+          Height = 21
+          TabOrder = 5
+          Text = '-'
+        end
+        object Edit7f: TEdit
+          Left = 144
+          Top = 77
+          Width = 49
+          Height = 21
+          TabOrder = 6
+          Text = '-'
+        end
+        object Edit8f: TEdit
+          Left = 144
+          Top = 101
+          Width = 49
+          Height = 21
+          TabOrder = 7
+          Text = '-'
+        end
+        object Edit0f: TEdit
+          Left = 8
+          Top = 29
+          Width = 49
+          Height = 21
+          TabOrder = 8
+          Text = '-'
+        end
+        object Edit0V: TEdit
+          Left = 71
+          Top = 29
+          Width = 40
+          Height = 21
+          Alignment = taRightJustify
+          NumbersOnly = True
+          TabOrder = 9
+          Text = '0'
+        end
+        object Edit1v: TEdit
+          Left = 71
+          Top = 53
+          Width = 40
+          Height = 21
+          Alignment = taRightJustify
+          NumbersOnly = True
+          TabOrder = 10
+          Text = '0'
+        end
+        object Edit2v: TEdit
+          Left = 71
+          Top = 77
+          Width = 40
+          Height = 21
+          Alignment = taRightJustify
+          NumbersOnly = True
+          TabOrder = 11
+          Text = '0'
+        end
+        object Edit3v: TEdit
+          Left = 71
+          Top = 101
+          Width = 40
+          Height = 21
+          Alignment = taRightJustify
+          NumbersOnly = True
+          TabOrder = 12
+          Text = '0'
+        end
+        object Edit4v: TEdit
+          Left = 71
+          Top = 123
+          Width = 40
+          Height = 21
+          Alignment = taRightJustify
+          NumbersOnly = True
+          TabOrder = 13
+          Text = '0'
+        end
+        object Edit5v: TEdit
+          Left = 199
+          Top = 29
+          Width = 40
+          Height = 21
+          Alignment = taRightJustify
+          NumbersOnly = True
+          TabOrder = 14
+          Text = '0'
+        end
+        object Edit6v: TEdit
+          Left = 199
+          Top = 53
+          Width = 40
+          Height = 21
+          Alignment = taRightJustify
+          NumbersOnly = True
+          TabOrder = 15
+          Text = '0'
+        end
+        object Edit7v: TEdit
+          Left = 199
+          Top = 77
+          Width = 40
+          Height = 21
+          Alignment = taRightJustify
+          NumbersOnly = True
+          TabOrder = 16
+          Text = '0'
+        end
+        object Edit8v: TEdit
+          Left = 199
+          Top = 101
+          Width = 40
+          Height = 21
+          Alignment = taRightJustify
+          NumbersOnly = True
+          TabOrder = 17
+          Text = '0'
+        end
+        object ButtonSaveFilt: TButton
+          Left = 253
+          Top = 132
+          Width = 41
+          Height = 21
+          Caption = 'Save'
+          TabOrder = 18
+          OnClick = ButtonSaveFiltClick
+        end
+        object ButtonReadFilt: TButton
+          Left = 253
+          Top = 153
+          Width = 41
+          Height = 21
+          Caption = 'Read'
+          TabOrder = 19
+          OnClick = ButtonReadFiltClick
+        end
+      end
     end
   end
   object GroupBox8: TGroupBox
