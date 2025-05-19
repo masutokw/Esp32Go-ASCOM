@@ -3,7 +3,7 @@
 interface
 
 uses Windows, SysUtils, Classes, Controls, Cport, dialogs, serial,
-  DateUtils, bluetools, tcptools, serialtools, lxutils, globalvar;
+  DateUtils, bluetools, tcptools, serialtools, lxutils, globalvar,variants,activex;
 
 const
   ra_pack = 11;
@@ -37,6 +37,17 @@ var
   clearBuff: procedure(input, output: boolean);
   focuspos: array [0 .. 3] of cardinal;
   focuspos2: array [0 .. 5] of cardinal;
+
+  ///wheel variables ---------------------------------------
+    slotc: smallint;
+    slot: array[0..8]of integer;
+      slot_off: array[0..8]of integer=(0,0,0,0,0,0,0,0,0);
+     // Bounds: array[0..0] of TSafeArrayBound;
+      Bounds:SafeArrayBound;
+      SafeArray,SafeArrayNames: PSafeArray;
+      v:variant;
+      Slotnames: array[0..8]of string= ('Lum','Red','Green','Blue','IR','IRc','Ha','P','OIII');
+   //----------------------------------------------------
 
 procedure set_interface_mode(mode: Integer);
 procedure initserial(port: string; baudrate: tbaudrate);
@@ -81,6 +92,8 @@ function calc_lha(ra: Double): Double;
 
 Function get_focuspos(device: char): Integer;
 Function get_focusmoving(device: char): Integer;
+procedure goto_slot(index: integer);
+procedure filter_init();
 
 implementation
 
@@ -734,6 +747,41 @@ begin
   Result := temp;
 end;
 
+
+//------
+
+procedure filter_init();
+var i:integer;
+s:string;
+begin
+  i := 0;
+
+    bounds.lLbound := 0;
+    bounds.cElements := 9;
+    slotc:=0;
+   SafeArray := SafeArrayCreate(VT_I4, 1, @bounds);
+   v := VarArrayCreate ([0, 8], varOleStr);
+
+   For i := 0 to 8  do
+   begin
+   safeArrayputElement(SafeArray, i,slot_off[i] );
+    v[i]:=slotnames[i]   ;
+
+    end;
+
+    SafeArrayNames := PSafeArray(TVarData(v).VArray);
+
+   //  SafeArrayUnlock(SafeArray);
+  // SafeArrayUnlock(SafeArrayNames);
+  end;
+
+
+  procedure goto_slot(index: integer);
+begin
+
+   send(':XI' + index.ToString + '#');
+   slotc := index;
+end;
 initialization
 
 // ComPortBT_USB := TComPort.Create(nil);

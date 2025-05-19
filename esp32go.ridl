@@ -6,7 +6,7 @@
 // However, when applying changes via the Editor this file will be regenerated
 // and comments or formatting changes will be lost.
 // ************************************************************************ //
-// File generated on 08/05/2025 19:52:51 (- $Rev: 12980 $, 819902562).
+// File generated on 19/05/2025 17:19:14 (- $Rev: 12980 $, 330255656).
 
 [
   uuid(1E06C881-9ACE-461A-AE17-0A0981B24AB1),
@@ -474,6 +474,7 @@ library Esp32go
   [
     uuid(F67F4430-3191-4631-AB79-83A346917D4B),
     version(1.0),
+    helpstring("ASCOM Filter Wheel 1.0 Driver Interface"),
     dual,
     oleautomation
   ]
@@ -485,10 +486,6 @@ library Esp32go
     HRESULT _stdcall Connected([in] VARIANT_BOOL Value);
     [propget, id(0x000000CA)]
     HRESULT _stdcall FocusOffsets([out, retval] SAFEARRAY(long) * value);
-    [propget, id(0x000000CB)]
-    HRESULT _stdcall Position([out, retval] HRESULT* Value);
-    [propput, id(0x000000CB)]
-    HRESULT _stdcall Position([in] HRESULT Value);
     [propget, id(0x000000CC)]
     HRESULT _stdcall Names([out, retval] SAFEARRAY(BSTR) * Value);
     [id(0x000000CD)]
@@ -515,6 +512,10 @@ library Esp32go
     HRESULT _stdcall CommandString([in] BSTR command, [in, optional, defaultvalue(False)] VARIANT_BOOL RAW);
     [id(0x000000D8)]
     HRESULT _stdcall Dispose(void);
+    [propget, id(0x000000CB)]
+    HRESULT _stdcall Position([out, retval] short* Value);
+    [propput, id(0x000000CB)]
+    HRESULT _stdcall Position([in] short Value);
   };
 
   [

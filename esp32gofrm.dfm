@@ -1256,7 +1256,7 @@ object Esp32frm: TEsp32frm
     Top = 0
     Width = 305
     Height = 207
-    ActivePage = cb
+    ActivePage = TabWheel
     TabOrder = 3
     TabWidth = 43
     Visible = False

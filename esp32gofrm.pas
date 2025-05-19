@@ -527,45 +527,54 @@ begin
     begin
       Edit0f.Text := lines[0];
       Edit0V.Text := lines[1];
+      slotnames[0] :=Edit0f.Text;
       wbutton1.caption:=Edit0f.Text;
 
       Edit1F.Text := lines[3];
       Edit1v.Text := lines[4];
+       slotnames[1] :=Edit1f.Text;
       wbutton2.caption:=Edit1f.Text;
 
 
       Edit2f.Text := lines[6];
       Edit2v.Text := lines[7];
+       slotnames[2] :=Edit2f.Text;
       wbutton3.caption:=Edit2f.Text;
 
 
       Edit3f.Text := lines[9];
       Edit3v.Text := lines[10];
+      slotnames[3] :=Edit3f.Text;
       wbutton4.caption:=Edit3f.Text;
 
 
       Edit4f.Text := lines[12];
       Edit4v.Text := lines[13];
+      slotnames[4] :=Edit4f.Text;
       wbutton5.caption:=Edit4f.Text;
 
 
       Edit5f.Text := lines[15];
       Edit5v.Text := lines[16];
+      slotnames[5] :=Edit5f.Text;
       wbutton6.caption:=Edit5f.Text;
 
 
       Edit6f.Text := lines[18];
       Edit6v.Text := lines[19];
+      slotnames[6] :=Edit6f.Text;
       wbutton7.caption:=Edit6f.Text;
 
 
       Edit7f.Text := lines[21];
       Edit7v.Text := lines[22];
+      slotnames[7] :=Edit7f.Text;
       wbutton8.caption:=Edit7f.Text;
 
 
       Edit8f.Text := lines[24];
       Edit8v.Text := lines[25];
+      slotnames[8] :=Edit8f.Text;
       wbutton9.caption:=Edit8f.Text;
 
 
@@ -1389,7 +1398,7 @@ begin
   //  ButtonReadFiltClick(self);
     // showmessage('okread');
     Timer1.Enabled := true;
-
+      filter_init();
 
   end;
 

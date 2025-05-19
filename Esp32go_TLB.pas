@@ -12,7 +12,7 @@ unit Esp32go_TLB;
 // ************************************************************************ //
 
 // $Rev: 98336 $
-// File generated on 08/05/2025 19:52:51 from Type Library described below.
+// File generated on 19/05/2025 16:54:46 from Type Library described below.
 
 // ************************************************************************  //
 // Type Lib: C:\Users\masut\Documents\Embarcadero\Studio\Projects\Esp32Go-ASCOM\esp32go (1)
@@ -636,8 +636,6 @@ type
     function Get_Connected: WordBool; safecall;
     procedure Set_Connected(Value: WordBool); safecall;
     function Get_FocusOffsets: PSafeArray; safecall;
-    function Get_Position: HResult; safecall;
-    procedure Set_Position(Value: HResult); safecall;
     function Get_Names: PSafeArray; safecall;
     procedure SetupDialog; safecall;
     function Get_SupportedActions: OleVariant; safecall;
@@ -651,9 +649,10 @@ type
     procedure CommandBool(const command: WideString; raw: WordBool); safecall;
     procedure CommandString(const command: WideString; RAW: WordBool); safecall;
     procedure Dispose; safecall;
+    function Get_Position: Smallint; safecall;
+    procedure Set_Position(Value: Smallint); safecall;
     property Connected: WordBool read Get_Connected write Set_Connected;
     property FocusOffsets: PSafeArray read Get_FocusOffsets;
-    property Position: HResult read Get_Position write Set_Position;
     property Names: PSafeArray read Get_Names;
     property SupportedActions: OleVariant read Get_SupportedActions;
     property DriverInfo: WideString read Get_DriverInfo;
@@ -661,6 +660,7 @@ type
     property InterfaceVersion: Shortint read Get_InterfaceVersion;
     property Name: WideString read Get_Name;
     property Description: WideString read Get_Description;
+    property Position: Smallint read Get_Position write Set_Position;
   end;
 
 // *********************************************************************//
@@ -672,7 +672,6 @@ type
     ['{F67F4430-3191-4631-AB79-83A346917D4B}']
     property Connected: WordBool dispid 201;
     property FocusOffsets: {NOT_OLEAUTO(PSafeArray)}OleVariant readonly dispid 202;
-    property Position: HResult dispid 203;
     property Names: {NOT_OLEAUTO(PSafeArray)}OleVariant readonly dispid 204;
     procedure SetupDialog; dispid 205;
     property SupportedActions: OleVariant readonly dispid 206;
@@ -686,6 +685,7 @@ type
     procedure CommandBool(const command: WideString; raw: WordBool); dispid 214;
     procedure CommandString(const command: WideString; RAW: WordBool); dispid 215;
     procedure Dispose; dispid 216;
+    property Position: Smallint dispid 203;
   end;
 
 // *********************************************************************//

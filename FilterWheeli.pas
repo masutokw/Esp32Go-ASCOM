@@ -3,7 +3,7 @@ unit FilterWheeli;
 interface
 
 uses
-  ComObj, ActiveX, Esp32go_TLB, StdVcl;
+  ComObj, ActiveX, Esp32go_TLB, StdVcl,shared;
 
 const
   DRIVER_NAME = 'Esp32go';
@@ -15,8 +15,8 @@ type
     function Get_Connected: WordBool; safecall;
     procedure Set_Connected(Value: WordBool); safecall;
     function Get_FocusOffsets: PSafeArray; safecall;
-    function Get_Position: HResult; safecall;
-    procedure Set_Position(Value: HResult); safecall;
+    function Get_Position: Smallint; safecall;
+    procedure Set_Position(Value: Smallint); safecall;
     function Get_Names: PSafeArray; safecall;
     procedure SetupDialog; safecall;
     function Get_SupportedActions: OleVariant; safecall;
@@ -45,7 +45,10 @@ uses ComServ, sysutils, Dialogs, Controls, ShellAPI;
 
 function TFilterWheel.Get_Connected: WordBool;
 begin
-  Get_Connected := true
+  //sleep(500);
+
+  Get_Connected := true;
+
 end;
 
 Procedure TFilterWheel.Set_Connected(Value: WordBool);
@@ -54,13 +57,14 @@ end;
 
 function TFilterWheel.Get_FocusOffsets: PSafeArray;
 begin
-  // SafeArrayunlock(filterw.SafeArray);
-  // result:=filterw.SafeArray
+SafeArrayunlock(SafeArray);
+  result:=SafeArray;
+
 end;
 
-function TFilterWheel.Get_Position: HResult;
+function TFilterWheel.Get_Position: Smallint;
 begin
-  // result:=filterw.slotc;
+   result:=slotc;
 end;
 
 function TFilterWheel.Get_SupportedActions: OleVariant;
@@ -78,18 +82,22 @@ begin
   Result := dotNetArrayList;
 end;
 
-procedure TFilterWheel.Set_Position(Value: HResult);
+procedure TFilterWheel.Set_Position(Value: Smallint);
 begin
-  // if (pval <= 8)and(pval>=0 )  then  filterw.goto_slot(pval)
-  // else raise  EOLEexception.Create('Invalid Value 1',$80040404,'none','0',0);
+   if (value <= 8)and(value>=0 )  then  goto_slot(value)
+  else raise  EOLEexception.Create('Invalid Value 1',$80040404,'none','0',0);
 
 end;
 
 function TFilterWheel.Get_Names: PSafeArray;
 begin
-  // SafeArrayUnlock(filterw.SafeArrayNames);
-  // result:=filterw.SafeArrayNames;
 
+ // unlock();
+   SafeArrayUnlock(SafeArrayNames);
+     result:= SafeArrayNames;
+   //  showmessage('names '+v[2])  ;
+ // result:= PSafeArray(TVarData(v).VArray)  ;
+ //  SafeArrayunlock(result);
 end;
 
 procedure TFilterWheel.SetupDialog;
@@ -98,12 +106,12 @@ end;
 
 function TFilterWheel.Get_DriverInfo: widestring;
 begin
-  Result := 'Esp32go FilterWheel'
+  Result := 'Esp32Go FilterWheel'
 end;
 
 function TFilterWheel.Get_DriverVersion: widestring;
 begin
-  Result := 'Esp32go FW  V2'
+  Result := '2.3'
 end;
 
 function TFilterWheel.Get_InterfaceVersion: ShortInt;
@@ -113,12 +121,12 @@ end;
 
 function TFilterWheel.Get_Description: widestring;
 begin
-  Result := 'Esp32go filter driver'
+  Result := 'Esp32Go filter driver'
 end;
 
 function TFilterWheel.Get_Name: widestring;
 begin
-  Result := 'Esp32go Filter Wheel'
+  Result := 'Esp32Go Filter Wheel'
 end;
 
 { -------------------------------------------------------------- }
@@ -131,8 +139,8 @@ var
 
 begin
 
-  ProfileObject := CreateOLEObject('ASCOM.Utilities.Profile');
-  //ProfileObject := CreateOleObject('DriverHelper.Profile');
+ // ProfileObject := CreateOLEObject('ASCOM.Utilities.Profile');
+  ProfileObject := CreateOleObject('DriverHelper.Profile');
   ProfileObject.DeviceType := 'FilterWheel';
   if (not ProfileObject.IsRegistered(DRIVER_ID)) then
   begin
@@ -166,6 +174,10 @@ end;
 
 procedure TFilterWheel.Dispose;
 begin
+{SafeArrayDestroy(SafeArray);
+  SafeArray:=nil;
+SafeArrayDestroy( SafeArrayNames);
+ SafeArrayNames:=nil;   }
 
 end;
 
