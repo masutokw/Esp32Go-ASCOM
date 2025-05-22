@@ -39,14 +39,14 @@ var
   focuspos2: array [0 .. 5] of cardinal;
 
   ///wheel variables ---------------------------------------
-    slotc: smallint;
+   slotc: smallint;
     slot: array[0..8]of integer;
       slot_off: array[0..8]of integer=(0,0,0,0,0,0,0,0,0);
      // Bounds: array[0..0] of TSafeArrayBound;
       Bounds:SafeArrayBound;
       SafeArray,SafeArrayNames: PSafeArray;
       v:variant;
-      Slotnames: array[0..8]of string= ('Lum','Red','Green','Blue','IR','IRc','Ha','P','OIII');
+      Slotnames: array[0..8]of string= ('Clear','Red','Green','Blue','IR','IRc','Hal','P','OIII');
    //----------------------------------------------------
 
 procedure set_interface_mode(mode: Integer);
@@ -89,11 +89,14 @@ function get_pierside(): boolean;
 function get_flip(): boolean;
 function get_parked(): boolean;
 function calc_lha(ra: Double): Double;
+function get_Slew(): boolean;
 
 Function get_focuspos(device: char): Integer;
 Function get_focusmoving(device: char): Integer;
 procedure goto_slot(index: integer);
 procedure filter_init();
+procedure unlock();
+procedure freesafe();
 
 implementation
 
@@ -664,6 +667,15 @@ begin
   Result := (str = '1#');
 
 end;
+function get_Slew(): boolean;
+var
+  str: string;
+begin
+  send(':D#');
+  readvln(str, '#');
+  Result := (str = '|#');
+
+end;
 
 function get_parked(): boolean;
 var
@@ -754,33 +766,61 @@ procedure filter_init();
 var i:integer;
 s:string;
 begin
+if  not (Assigned(SafeArray)) then
+ begin
+        // showmessage('filterinit');
   i := 0;
 
     bounds.lLbound := 0;
     bounds.cElements := 9;
     slotc:=0;
-   SafeArray := SafeArrayCreate(VT_I4, 1, @bounds);
-   v := VarArrayCreate ([0, 8], varOleStr);
+    SafeArray := SafeArrayCreate(VT_I4, 1, @bounds);
+    v := VarArrayCreate ([0, 8],varOleStr);
 
    For i := 0 to 8  do
    begin
-   safeArrayputElement(SafeArray, i,slot_off[i] );
+    safeArrayputElement(SafeArray, i,slot_off[i] );
     v[i]:=slotnames[i]   ;
 
     end;
 
     SafeArrayNames := PSafeArray(TVarData(v).VArray);
-
-   //  SafeArrayUnlock(SafeArray);
-  // SafeArrayUnlock(SafeArrayNames);
+  // SafeArraylock(SafeArray);
+  // SafeArraylock(SafeArrayNames);
   end;
-
+  end;
 
   procedure goto_slot(index: integer);
 begin
 
    send(':XI' + index.ToString + '#');
    slotc := index;
+end;
+
+procedure freesafe();
+begin
+  // Al finalizar el uso de SafeArray y Variant array
+   //showmessage('freesafe');
+if Assigned(SafeArray) then
+begin
+  SafeArrayDestroy(SafeArray);
+  SafeArray := nil;
+
+end;
+if not VarIsEmpty(v) then
+begin
+    //showmessage('freenames');
+  VarClear(v); // Libera su memoria
+   SafeArrayNames:=nil;
+end;
+
+end;
+
+procedure unlock();
+begin
+   SafeArrayunlock(SafeArray);
+   SafeArrayUnlock(SafeArrayNames);
+
 end;
 initialization
 

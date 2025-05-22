@@ -15,16 +15,25 @@ uses
   LXUtils in 'LXUtils.pas',
   globalvar in 'globalvar.pas',
   Esp32goRi in 'Esp32goRi.pas',
-  FilterWheeli in 'FilterWheeli.pas';
+  FilterWheeli in 'FilterWheeli.pas',
+    ComServ,
+  ComObj,
+  windows;
 
 {$R *.TLB}
 
 {$R *.res}
 
 begin
+
+
+     //ShowMessage('Self-Registering: ASCOM ' + DRIVER_ID);
+
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   TStyleManager.TrySetStyle('Cobalt XEMedia');
   Application.CreateForm(TEsp32frm, Esp32frm);
   Application.Run;
+
+
 end.

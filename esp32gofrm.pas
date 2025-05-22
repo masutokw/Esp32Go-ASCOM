@@ -121,7 +121,7 @@ type
     StaticText8: TStaticText;
     Memo1: TMemo;
     save: TButton;
-    Button4: TButton;
+    Buttonreadconfig: TButton;
     Label6: TLabel;
     TMC: TTabSheet;
     NumberBoxraSt: TNumberBox;
@@ -137,7 +137,7 @@ type
     NumberBoxf2Sp: TNumberBox;
     Label7: TLabel;
     Button5: TButton;
-    Button6: TButton;
+    ButtonreadTMC: TButton;
     Label8: TLabel;
     Label9: TLabel;
     Label10: TLabel;
@@ -262,6 +262,7 @@ type
     ButtonSaveFilt: TButton;
     ButtonReadFilt: TButton;
     Label18: TLabel;
+    Label19: TLabel;
 
     procedure FormCreate(Sender: TObject);
     procedure Button_NMouseDown(Sender: TObject; Button: TMouseButton;
@@ -324,11 +325,11 @@ type
     procedure btnwClick(Sender: TObject);
     procedure btnEClick(Sender: TObject);
     procedure saveClick(Sender: TObject);
-    procedure Button4Click(Sender: TObject);
+    procedure ButtonreadconfigClick(Sender: TObject);
     procedure ButtonM1ContextPopup(Sender: TObject; MousePos: TPoint;
       var Handled: Boolean);
     procedure Button5Click(Sender: TObject);
-    procedure Button6Click(Sender: TObject);
+    procedure ButtonreadTMCClick(Sender: TObject);
     procedure TrackBar1Change(Sender: TObject);
     procedure CheckaltfocusClick(Sender: TObject);
     procedure ButtonAuxSaveClick(Sender: TObject);
@@ -353,6 +354,11 @@ type
     procedure ButtonSaveFiltClick(Sender: TObject);
     procedure confload();
     procedure FormShow(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    function readfilterWheel(): Boolean;
+    function readmountConfig(): Boolean;
+    function readFocusConfig(): Boolean;
+    function readTMConfig(): Boolean;
 
   private
     { Private declarations }
@@ -402,39 +408,37 @@ begin
     lines.add(Edit0V.Text);
     lines.add('0');
 
-    lines.add(Edit1f.Text);
-    lines.add(Edit1V.Text);
+    lines.add(Edit1F.Text);
+    lines.add(Edit1v.Text);
     lines.add('0');
 
     lines.add(Edit2f.Text);
-    lines.add(Edit2V.Text);
+    lines.add(Edit2v.Text);
     lines.add('0');
 
     lines.add(Edit3f.Text);
-    lines.add(Edit3V.Text);
+    lines.add(Edit3v.Text);
     lines.add('0');
 
-        lines.add(Edit4f.Text);
-    lines.add(Edit4V.Text);
+    lines.add(Edit4f.Text);
+    lines.add(Edit4v.Text);
     lines.add('0');
 
     lines.add(Edit5f.Text);
-    lines.add(Edit5V.Text);
+    lines.add(Edit5v.Text);
     lines.add('0');
 
     lines.add(Edit6f.Text);
-    lines.add(Edit6V.Text);
+    lines.add(Edit6v.Text);
     lines.add('0');
 
     lines.add(Edit7f.Text);
-    lines.add(Edit7V.Text);
+    lines.add(Edit7v.Text);
     lines.add('0');
 
     lines.add(Edit8f.Text);
-    lines.add(Edit8V.Text);
+    lines.add(Edit8v.Text);
     lines.add('0');
-
-
 
     // Label17.Text := inttostr(lines.Count);
     Memo1.lines.Clear;
@@ -444,7 +448,7 @@ begin
       for I := 0 to 26 do
         s := s + lines[I] + #10;
 
-      s := s + '#'+ #10;
+      s := s + '#' + #10;
       s := stringreplace(s, FormatSettings.DecimalSeparator, '.',
         [rfReplaceAll]);
       Memo1.lines.add(s);
@@ -467,119 +471,12 @@ begin
 end;
 
 procedure TEsp32frm.ButtonReadFiltClick(Sender: TObject);
-
-var
-  cstring, str: string;
-  lines: Tstringlist;
-  cLines: Integer;
 begin
-  try
-    lines := Tstringlist.Create();
-  finally
 
-  end;
-  cLines := 0;
-  Memo1.lines.Clear;
-  if (ClientSocket1.Connected) or (ComPortBT_USB.Connected) or (checkBtSock)
-  then
-
+  if not readfilterWheel() then
   begin
-    // Memo1.lines.Clear;
-    Timer1.Enabled := false;
-    send(':cD#');
-
-    if imode = 2 then
-    begin
-      recv(cstring, 100);
-      // cstring := stringreplace(cstring,#10,
-      // '', [rfReplaceAll]);
-      // cstring := stringreplace(cstring,#13,
-      // '', [rfReplaceAll]);
-      lines.Text := cstring;
-
-    end
-    else
-      repeat
-
-        case imode of
-          1:
-            begin
-              readvln(cstring, #10);
-              cstring := stringreplace(cstring, #10, '', [rfReplaceAll])
-            end;
-          0:
-            begin
-              readvln(cstring, #10);
-              cstring := stringreplace(cstring, #10, '', [rfReplaceAll]);
-              cstring := stringreplace(cstring, #13, '', [rfReplaceAll]);
-            end;
-        end;
-
-        cstring := stringreplace(cstring, '.',
-          '' + FormatSettings.DecimalSeparator, [rfReplaceAll]);
-        lines.add(cstring);
-        Memo1.lines.add(cstring)
-      until (inbuff = 0);//or (cstring = '#');
-
-    Label1.caption := inttostr(lines.Count) + lines[0];
-    Timer1.Enabled := true;
-    if lines.Count >= 25 then
-    begin
-      Edit0f.Text := lines[0];
-      Edit0V.Text := lines[1];
-      slotnames[0] :=Edit0f.Text;
-      wbutton1.caption:=Edit0f.Text;
-
-      Edit1F.Text := lines[3];
-      Edit1v.Text := lines[4];
-       slotnames[1] :=Edit1f.Text;
-      wbutton2.caption:=Edit1f.Text;
-
-
-      Edit2f.Text := lines[6];
-      Edit2v.Text := lines[7];
-       slotnames[2] :=Edit2f.Text;
-      wbutton3.caption:=Edit2f.Text;
-
-
-      Edit3f.Text := lines[9];
-      Edit3v.Text := lines[10];
-      slotnames[3] :=Edit3f.Text;
-      wbutton4.caption:=Edit3f.Text;
-
-
-      Edit4f.Text := lines[12];
-      Edit4v.Text := lines[13];
-      slotnames[4] :=Edit4f.Text;
-      wbutton5.caption:=Edit4f.Text;
-
-
-      Edit5f.Text := lines[15];
-      Edit5v.Text := lines[16];
-      slotnames[5] :=Edit5f.Text;
-      wbutton6.caption:=Edit5f.Text;
-
-
-      Edit6f.Text := lines[18];
-      Edit6v.Text := lines[19];
-      slotnames[6] :=Edit6f.Text;
-      wbutton7.caption:=Edit6f.Text;
-
-
-      Edit7f.Text := lines[21];
-      Edit7v.Text := lines[22];
-      slotnames[7] :=Edit7f.Text;
-      wbutton8.caption:=Edit7f.Text;
-
-
-      Edit8f.Text := lines[24];
-      Edit8v.Text := lines[25];
-      slotnames[8] :=Edit8f.Text;
-      wbutton9.caption:=Edit8f.Text;
-
-
-    end;
-    lines.Destroy
+    showmessage('filter not load');
+    readfilterWheel();
   end;
 
 end;
@@ -648,7 +545,7 @@ begin
       Label3.caption := 'East';
     if get_flip() then
       Chkflip.Checked := true;
-    //Button4Click(self);
+    // Button4Click(self);
     confload();
   end;
 end;
@@ -714,100 +611,11 @@ begin
 
 end;
 
-procedure TEsp32frm.Button4Click(Sender: TObject);
-var
-  cstring, str: string;
-  lines: Tstringlist;
-  cLines: Integer;
+procedure TEsp32frm.ButtonreadconfigClick(Sender: TObject);
 begin
-  try
-    lines := Tstringlist.Create();
-  finally
+  if not readmountConfig() then
 
-  end;
-  cLines := 0;
-  Memo1.lines.Clear;
-  if (ClientSocket1.Connected) or (ComPortBT_USB.Connected) or (checkBtSock)
-  then
-
-  begin
-    // Memo1.lines.Clear;
-    Timer1.Enabled := false;
-    send(':cA#');
-
-    if imode = 2 then
-    begin
-      recv(cstring, 100);
-      // cstring := stringreplace(cstring,#10,
-      // '', [rfReplaceAll]);
-      // cstring := stringreplace(cstring,#13,
-      // '', [rfReplaceAll]);
-      cstring := stringreplace(cstring, '.',
-        '' + FormatSettings.DecimalSeparator, [rfReplaceAll]);
-      lines.Text := cstring;
-      Memo1.lines.add(cstring);
-
-    end
-    else
-      repeat
-
-        case imode of
-          1:
-            begin
-              readvln(cstring, #13#10);
-              cstring := stringreplace(cstring, #13#10, '', [rfReplaceAll])
-            end;
-          0:
-            begin
-              readvln(cstring, #10);
-              cstring := stringreplace(cstring, #10, '', [rfReplaceAll]);
-              cstring := stringreplace(cstring, #13, '', [rfReplaceAll]);
-            end;
-        end;
-
-        cstring := stringreplace(cstring, '.',
-          '' + FormatSettings.DecimalSeparator, [rfReplaceAll]);
-        lines.add(cstring);
-        Memo1.lines.add(cstring)
-      until (inbuff = 0);
-
-    Label1.caption := inttostr(lines.Count) + lines[0];
-    Timer1.Enabled := true;
-    if lines.Count >= config_lines then
-    begin
-
-      NumberBoxcountaz.Text := lines[0];
-      NumberBoxcountalt.Text := lines[1];
-      NumberBoxspgaz.Text := lines[2];
-      NumberBoxspcaz.Text := lines[3];
-      NumberBoxspfaz.Text := lines[4];
-      NumberBoxspsaz.Text := lines[5];
-      NumberBoxspgalt.Text := lines[6];
-      NumberBoxspcalt.Text := lines[7];
-      NumberBoxspfalt.Text := lines[8];
-      NumberBoxspsalt.Text := lines[9];
-      NumberBoxpresc.Text := lines[10];
-      NumberBoxlong.Text := lines[11];
-      NumberBoxlat.Text := lines[12];
-      NumberBoxgmtoff.Text := lines[13];
-      NumberBoxrampaz.Text := lines[14];
-      NumberBoxrampalt.Text := lines[15];
-      NumberBoxbackpaz.Text := lines[16];
-      NumberBoxbackpalt.Text := lines[17];
-      ComboBoxEqmode.ItemIndex := lines[18].tointeger;
-      ComboBoxtrack.ItemIndex := strtoint(lines[19]);
-      CheckBoxflip.Checked := lines[20] = '1';
-      CheckBoxinvaz.Checked := lines[21] = '1';
-      CheckBoxinvalt.Checked := lines[22] = '1';
-      CheckBoxbackaz.Checked := lines[23] = '1';
-      CheckBoxbackalt.Checked := lines[24] = '1';
-      str := NumberBoxspgaz.Text;
-      guide_ra := str.ToDouble * (15.0 / 3600.0);
-      str := NumberBoxspgalt.Text;
-      guide_de := str.ToDouble * (15.0 / 3600.0);
-    end;
-    lines.Destroy
-  end;
+    readmountConfig();
 end;
 
 procedure TEsp32frm.Button5Click(Sender: TObject);
@@ -855,7 +663,7 @@ begin
       for I := 0 to 19 do
         s := s + lines[I] + #10;
 
-      s := s + '#'+ #10;
+      s := s + '#' + #10;
       s := stringreplace(s, FormatSettings.DecimalSeparator, '.',
         [rfReplaceAll]);
       Memo1.lines.add(s);
@@ -867,8 +675,16 @@ begin
 
 end;
 
-procedure TEsp32frm.Button6Click(Sender: TObject);
+procedure TEsp32frm.ButtonreadTMCClick(Sender: TObject);
+begin
+ if not readTMConfig() then begin
+ showmessage('Error reading tmc config');
+   readTMConfig();
+ end;
 
+end;
+
+function TEsp32frm.readTMConfig(): Boolean;
 var
   cstring, str: string;
   lines: Tstringlist;
@@ -891,12 +707,14 @@ begin
 
     if imode = 2 then
     begin
-      recv(cstring, 100);
+      recv(cstring, 200);
       // cstring := stringreplace(cstring,#10,
       // '', [rfReplaceAll]);
       // cstring := stringreplace(cstring,#13,
       // '', [rfReplaceAll]);
       lines.Text := cstring;
+      Memo1.lines.text:=cstring;
+
 
     end
     else
@@ -912,7 +730,7 @@ begin
             begin
               readvln(cstring, #10);
               cstring := stringreplace(cstring, #10, '', [rfReplaceAll]);
-              cstring := stringreplace(cstring, #13, '', [rfReplaceAll]);
+              // cstring := stringreplace(cstring, #13, '', [rfReplaceAll]);
             end;
         end;
 
@@ -921,10 +739,10 @@ begin
         lines.add(cstring);
         Memo1.lines.add(cstring)
       until (inbuff = 0) or (cstring = '#');
-
+       result:=(cstring = '#');
     Label1.caption := inttostr(lines.Count) + lines[0];
     Timer1.Enabled := true;
-    if lines.Count >= 20 then
+    if (lines.Count >= 20) and (cstring = '#') then
     begin
       NumberBoxraSt.Text := lines[0];
       NumberBoxRACur.Text := lines[1];
@@ -956,89 +774,13 @@ begin
 end;
 
 procedure TEsp32frm.ButtonAuxReadClick(Sender: TObject);
-var
-  cstring, str: string;
-  lines: Tstringlist;
-  cLines: Integer;
 begin
-  try
-    lines := Tstringlist.Create();
-  finally
-
-  end;
-  cLines := 0;
-  Memo1.lines.Clear;
-  if (ClientSocket1.Connected) or (ComPortBT_USB.Connected) or (checkBtSock)
-  then
-
+  if not readFocusConfig() then
   begin
-    // Memo1.lines.Clear;
-    Timer1.Enabled := false;
-    send(':cF#');
-
-    if imode = 2 then
-    begin
-      recv(cstring, 100);
-      // cstring := stringreplace(cstring,#10,
-      // '', [rfReplaceAll]);
-      // cstring := stringreplace(cstring,#13,
-      // '', [rfReplaceAll]);
-      lines.Text := cstring;
-
-    end
-    else
-      repeat
-
-        case imode of
-          1:
-            begin
-              readvln(cstring, #10);
-              cstring := stringreplace(cstring, #10, '', [rfReplaceAll])
-            end;
-          0:
-            begin
-              readvln(cstring, #10);
-              cstring := stringreplace(cstring, #10, '', [rfReplaceAll]);
-              cstring := stringreplace(cstring, #13, '', [rfReplaceAll]);
-            end;
-        end;
-
-        cstring := stringreplace(cstring, '.',
-          '' + FormatSettings.DecimalSeparator, [rfReplaceAll]);
-        lines.add(cstring);
-        Memo1.lines.add(cstring)
-      until (inbuff = 0) or (cstring = '#');
-
-    Label1.caption := inttostr(lines.Count) + lines[0];
-    Timer1.Enabled := true;
-    if lines.Count >= 9 then
-    begin
-      NumberBoxFM.Text := lines[0];
-      NumberBoxFS.Text := lines[1];
-      NumberBoxFF.Text := lines[2];
-      NumberBoxFpwm.Text := lines[3];
-
-      NumberBoxAM.Text := lines[4];
-      NumberBoxAs.Text := lines[5];
-      NumberBoxAF.Text := lines[6];
-      NumberBoxApwm.Text := lines[7];
-      CheckBoxDCF.Checked := lines[8] = '1';
-      ComboAux.ItemIndex := lines[9].tointeger();
-      NumberBoxslots.value := lines[10].tointeger();
-      aux_device := lines[9].tointeger();
-
-      aux_max := strtoint(NumberBoxAM.Text);
-      GroupRotator.Visible := aux_device = 1;
-      GroupBoxfilter.Visible := aux_device = 2;
-      GroupBoxfocus2.Visible := aux_device = 0;
-      GroupBoxfocus2.left := GroupRotator.left;
-      GroupBoxfilter.left := GroupRotator.left;
-      GroupBoxfilter.top := GroupRotator.top;
-      GroupBoxfocus2.top := GroupRotator.top;
-
-    end;
-    lines.Destroy
+    showmessage('focus config not read');;
+    readFocusConfig();
   end;
+
 end;
 
 procedure TEsp32frm.ButtonAuxSaveClick(Sender: TObject);
@@ -1082,7 +824,7 @@ begin
       for I := 0 to 10 do
         s := s + lines[I] + #10;
 
-      s := s + '#' +#10;
+      s := s + '#' + #10;
       s := stringreplace(s, FormatSettings.DecimalSeparator, '.',
         [rfReplaceAll]);
       Memo1.lines.add(s);
@@ -1278,7 +1020,7 @@ end;
 procedure TEsp32frm.CheckBox1Click(Sender: TObject);
 begin
   if CheckBox1.Checked then
-    send(':Qw#')
+    send(':Qw#:Mt#')
   else
     send(':Mh#');
 
@@ -1336,6 +1078,13 @@ begin
 
 end;
 
+procedure TEsp32frm.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  // unlock();
+  // showmessage('exit');
+  // freesafe();
+end;
+
 procedure TEsp32frm.FormCreate(Sender: TObject);
 var
   n: Integer;
@@ -1375,7 +1124,7 @@ begin
     if fullconnect then
     begin
       // showmessage('fullconnect');
-      Timer1.Enabled := true;
+      // Timer1.Enabled := true;
 
     end;
   end;
@@ -1392,24 +1141,25 @@ begin
     end;
     if get_flip() then
       Chkflip.Checked := true;
-   // Button4Click(self);
-  //  Button6Click(self);
-  //  ButtonAuxReadClick(self);
-  //  ButtonReadFiltClick(self);
+    // Button4Click(self);
+    // Button6Click(self);
+    // ButtonAuxReadClick(self);
+    // ButtonReadFiltClick(self);
     // showmessage('okread');
-    Timer1.Enabled := true;
-      filter_init();
-
+    // Timer1.Enabled := true;
+    // filter_init();
+    // confload();
   end;
 
 end;
 
 procedure TEsp32frm.confload();
 begin
-    Button4Click(self);
-    Button6Click(self);
-    ButtonAuxReadClick(self);
-    ButtonReadFiltClick(self);
+  ButtonreadConfigClick(self);
+  //ButtonreadTMCClick(self);
+ ButtonAuxReadClick(self);
+  ButtonReadFiltClick(self);
+
 end;
 
 procedure TEsp32frm.FormDestroy(Sender: TObject);
@@ -1419,12 +1169,19 @@ begin
   if ComPortBT_USB.Connected then
     ComPortBT_USB.Connected := false;
   FreeBtSock;
-
+  // unlock();
+  // showmessage('exit');
+  // freesafe();
 end;
 
 procedure TEsp32frm.FormShow(Sender: TObject);
 begin
- confload();
+  if fullconnect then
+  begin
+    // clearBuff(true,false);
+    confload();
+    Timer1.Enabled := true;
+  end;
 end;
 
 procedure TEsp32frm.InButton2MouseDown(Sender: TObject; Button: TMouseButton;
@@ -1525,15 +1282,15 @@ end;
 procedure TEsp32frm.Joystickex1Button5_Change(Sender: TObject; pressed: Boolean;
   XPos, YPos: Integer);
 begin
-  CheckBox1.Checked := true;
+  CheckBox1.Checked := false;
   send(':Mh');
 end;
 
 procedure TEsp32frm.Joystickex1Button6_Change(Sender: TObject; pressed: Boolean;
   XPos, YPos: Integer);
 begin
-  CheckBox1.Checked := false;
-  send(':Qw#');
+  CheckBox1.Checked := true;
+  send(':Qw#:Mt#');
 end;
 
 procedure TEsp32frm.Joystickex1JoyMove(Sender: TObject; XPos, YPos: Integer;
@@ -1820,6 +1577,10 @@ begin
         end;
 
     end;
+    if get_Slew() then
+      Label19.caption := 'slewing'
+    else
+      Label19.caption := 'normal';
 
     if CheckAlt.Checked then
     begin
@@ -1933,6 +1694,7 @@ begin
 end;
 
 procedure TEsp32frm.saveClick(Sender: TObject);
+
 var
   s: string;
   I: Integer;
@@ -1986,7 +1748,7 @@ begin
       for I := 0 to config_lines do
         s := s + lines[I] + #10;
 
-      s := s + '#'+#10;
+      s := s + '#' + #10;
       s := stringreplace(s, FormatSettings.DecimalSeparator, '.',
         [rfReplaceAll]);
       Memo1.lines.add(s);
@@ -2035,6 +1797,297 @@ begin
     for I := 0 to 5 do
       writeInteger('Focus2', 'focuspos' + inttostr(I), focuspos2[I]);
 
+  end;
+end;
+
+function TEsp32frm.readfilterWheel(): Boolean;
+var
+  cstring, str: string;
+  lines: Tstringlist;
+  cLines: Integer;
+begin
+  try
+    lines := Tstringlist.Create();
+  finally
+
+  end;
+  cLines := 0;
+  Memo1.lines.Clear;
+  if (ClientSocket1.Connected) or (ComPortBT_USB.Connected) or (checkBtSock)
+  then
+
+  begin
+    // Memo1.lines.Clear;
+    Timer1.Enabled := false;
+    send(':cD#');
+
+    if imode = 2 then
+    begin
+      recv(cstring, 200);
+      // cstring := stringreplace(cstring,#10,
+      // '', [rfReplaceAll]);
+      // cstring := stringreplace(cstring,#13,
+      // '', [rfReplaceAll]);
+      lines.Text := cstring;
+       memo1.lines.text:=cstring;
+    end
+    else
+      repeat
+
+        case imode of
+          1:
+            begin
+              readvln(cstring, #10);
+              cstring := stringreplace(cstring, #10, '', [rfReplaceAll])
+            end;
+          0:
+            begin
+              readvln(cstring, #10);
+              cstring := stringreplace(cstring, #10, '', [rfReplaceAll]);
+              // cstring := stringreplace(cstring, #13, '', [rfReplaceAll]);
+            end;
+        end;
+
+        cstring := stringreplace(cstring, '.',
+          '' + FormatSettings.DecimalSeparator, [rfReplaceAll]);
+        lines.add(cstring);
+        Memo1.lines.add(cstring)
+      until (inbuff = 0) or (cstring = '#');
+    result := (cstring = '#');
+    Label1.caption := inttostr(lines.Count) + lines[27];
+    Timer1.Enabled := true;
+    if (lines.Count >= 28) and (cstring = '#') then
+    begin
+      Edit0f.Text := lines[0];
+      Edit0V.Text := lines[1];
+      slotnames[0] := Edit0f.Text;
+      WButton1.caption := Edit0f.Text;
+
+      Edit1F.Text := lines[3];
+      Edit1v.Text := lines[4];
+      slotnames[1] := Edit1F.Text;
+      WButton2.caption := Edit1F.Text;
+
+      Edit2f.Text := lines[6];
+      Edit2v.Text := lines[7];
+      slotnames[2] := Edit2f.Text;
+      WButton3.caption := Edit2f.Text;
+
+      Edit3f.Text := lines[9];
+      Edit3v.Text := lines[10];
+      slotnames[3] := Edit3f.Text;
+      WButton4.caption := Edit3f.Text;
+
+      Edit4f.Text := lines[12];
+      Edit4v.Text := lines[13];
+      slotnames[4] := Edit4f.Text;
+      WButton5.caption := Edit4f.Text;
+
+      Edit5f.Text := lines[15];
+      Edit5v.Text := lines[16];
+      slotnames[5] := Edit5f.Text;
+      WButton6.caption := Edit5f.Text;
+
+      Edit6f.Text := lines[18];
+      Edit6v.Text := lines[19];
+      slotnames[6] := Edit6f.Text;
+      WButton7.caption := Edit6f.Text;
+
+      Edit7f.Text := lines[21];
+      Edit7v.Text := lines[22];
+      slotnames[7] := Edit7f.Text;
+      WButton8.caption := Edit7f.Text;
+
+      Edit8f.Text := lines[24];
+      Edit8v.Text := lines[25];
+      slotnames[8] := Edit8f.Text;
+      WButton9.caption := Edit8f.Text;
+
+    end;
+    lines.Destroy
+  end;
+end;
+
+function TEsp32frm.readmountConfig(): Boolean;
+var
+  cstring, str: string;
+  lines: Tstringlist;
+  cLines: Integer;
+begin
+  try
+    lines := Tstringlist.Create();
+  finally
+
+  end;
+  cLines := 0;
+  Memo1.lines.Clear;
+  if (ClientSocket1.Connected) or (ComPortBT_USB.Connected) or (checkBtSock)
+  then
+
+  begin
+    // Memo1.lines.Clear;
+    Timer1.Enabled := false;
+    send(':cA#');
+
+    if imode = 2 then
+    begin
+      recv(cstring, 200);
+      // cstring := stringreplace(cstring,#10,
+      // '', [rfReplaceAll]);
+      // cstring := stringreplace(cstring,#13,
+      // '', [rfReplaceAll]);
+      cstring := stringreplace(cstring, '.',
+        '' + FormatSettings.DecimalSeparator, [rfReplaceAll]);
+      lines.Text := cstring;
+      Memo1.lines.add(cstring);
+
+    end
+    else
+      repeat
+
+        case imode of
+          1:
+            begin
+              readvln(cstring, #13#10);
+              cstring := stringreplace(cstring, #13#10, '', [rfReplaceAll])
+            end;
+          0:
+            begin
+              readvln(cstring, #10);
+              cstring := stringreplace(cstring, #10, '', [rfReplaceAll]);
+              cstring := stringreplace(cstring, #13, '', [rfReplaceAll]);
+            end;
+        end;
+
+        cstring := stringreplace(cstring, '.',
+          '' + FormatSettings.DecimalSeparator, [rfReplaceAll]);
+        lines.add(cstring);
+        Memo1.lines.add(cstring)
+      until (inbuff = 0) or (cstring = '#');
+    result := (cstring = '#');
+    Label1.caption := inttostr(lines.Count) + lines[0];
+    Timer1.Enabled := true;
+    if lines.Count >= config_lines then
+    begin
+
+      NumberBoxcountaz.Text := lines[0];
+      NumberBoxcountalt.Text := lines[1];
+      NumberBoxspgaz.Text := lines[2];
+      NumberBoxspcaz.Text := lines[3];
+      NumberBoxspfaz.Text := lines[4];
+      NumberBoxspsaz.Text := lines[5];
+      NumberBoxspgalt.Text := lines[6];
+      NumberBoxspcalt.Text := lines[7];
+      NumberBoxspfalt.Text := lines[8];
+      NumberBoxspsalt.Text := lines[9];
+      NumberBoxpresc.Text := lines[10];
+      NumberBoxlong.Text := lines[11];
+      NumberBoxlat.Text := lines[12];
+      NumberBoxgmtoff.Text := lines[13];
+      NumberBoxrampaz.Text := lines[14];
+      NumberBoxrampalt.Text := lines[15];
+      NumberBoxbackpaz.Text := lines[16];
+      NumberBoxbackpalt.Text := lines[17];
+      ComboBoxEqmode.ItemIndex := lines[18].tointeger;
+      ComboBoxtrack.ItemIndex := strtoint(lines[19]);
+      CheckBoxflip.Checked := lines[20] = '1';
+      CheckBoxinvaz.Checked := lines[21] = '1';
+      CheckBoxinvalt.Checked := lines[22] = '1';
+      CheckBoxbackaz.Checked := lines[23] = '1';
+      CheckBoxbackalt.Checked := lines[24] = '1';
+      str := NumberBoxspgaz.Text;
+      guide_ra := str.ToDouble * (15.0 / 3600.0);
+      str := NumberBoxspgalt.Text;
+      guide_de := str.ToDouble * (15.0 / 3600.0);
+    end;
+    lines.Destroy
+  end;
+end;
+
+function TEsp32frm.readFocusConfig(): Boolean;
+var
+  cstring, str: string;
+  lines: Tstringlist;
+  cLines: Integer;
+begin
+  try
+    lines := Tstringlist.Create();
+  finally
+
+  end;
+  cLines := 0;
+  Memo1.lines.Clear;
+  if (ClientSocket1.Connected) or (ComPortBT_USB.Connected) or (checkBtSock)
+  then
+
+  begin
+    // Memo1.lines.Clear;
+    Timer1.Enabled := false;
+    send(':cF#');
+
+    if imode = 2 then
+    begin
+      recv(cstring, 200);
+      // cstring := stringreplace(cstring,#10,
+      // '', [rfReplaceAll]);
+      // cstring := stringreplace(cstring,#13,
+      // '', [rfReplaceAll]);
+      lines.Text := cstring;
+        Memo1.lines.text:=cstring;
+    end
+    else
+      repeat
+
+        case imode of
+          1:
+            begin
+              readvln(cstring, #10);
+              cstring := stringreplace(cstring, #10, '', [rfReplaceAll])
+            end;
+          0:
+            begin
+              readvln(cstring, #10);
+              cstring := stringreplace(cstring, #10, '', [rfReplaceAll]);
+              // cstring := stringreplace(cstring, #13, '', [rfReplaceAll]);
+            end;
+        end;
+
+        cstring := stringreplace(cstring, '.',
+          '' + FormatSettings.DecimalSeparator, [rfReplaceAll]);
+        lines.add(cstring);
+        Memo1.lines.add(cstring)
+      until (inbuff = 0) or (cstring = '#');
+    result := (cstring = '#')or (lines[11]= '#');
+    Label1.caption := inttostr(lines.Count) +' '+ lines[11];
+    Timer1.Enabled := true;
+
+    if (lines.Count >= 12)  or (cstring = '#')or (lines[11]= '#')  then
+    begin
+      NumberBoxFM.Text := lines[0];
+      NumberBoxFS.Text := lines[1];
+      NumberBoxFF.Text := lines[2];
+      NumberBoxFpwm.Text := lines[3];
+
+      NumberBoxAM.Text := lines[4];
+      NumberBoxAs.Text := lines[5];
+      NumberBoxAF.Text := lines[6];
+      NumberBoxApwm.Text := lines[7];
+      CheckBoxDCF.Checked := lines[8] = '1';
+      ComboAux.ItemIndex := lines[9].tointeger();
+      NumberBoxslots.value := lines[10].tointeger();
+      aux_device := lines[9].tointeger();
+
+      aux_max := strtoint(NumberBoxAM.Text);
+      GroupRotator.Visible := aux_device = 1;
+      GroupBoxfilter.Visible := aux_device = 2;
+      GroupBoxfocus2.Visible := aux_device = 0;
+      GroupBoxfocus2.left := GroupRotator.left;
+      GroupBoxfilter.left := GroupRotator.left;
+      GroupBoxfilter.top := GroupRotator.top;
+      GroupBoxfocus2.top := GroupRotator.top;
+
+    end;
+    lines.Destroy
   end;
 end;
 

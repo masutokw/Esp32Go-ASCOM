@@ -2,7 +2,7 @@ object Esp32frm: TEsp32frm
   Left = 0
   Top = 0
   AutoSize = True
-  Caption = 'Esp32go 3.4'
+  Caption = 'Esp32go 3.7'
   ClientHeight = 297
   ClientWidth = 425
   Color = clBtnFace
@@ -1044,6 +1044,7 @@ object Esp32frm: TEsp32frm
     0000000000000000000000000000000000000000000000000000000000000000
     00000000000000000000000000000000000000000000000000000000}
   Position = poOwnerFormCenter
+  OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
@@ -1256,7 +1257,7 @@ object Esp32frm: TEsp32frm
     Top = 0
     Width = 305
     Height = 207
-    ActivePage = TabWheel
+    ActivePage = TMC
     TabOrder = 3
     TabWidth = 43
     Visible = False
@@ -1509,6 +1510,13 @@ object Esp32frm: TEsp32frm
         Width = 31
         Height = 13
         Caption = 'Label6'
+      end
+      object Label19: TLabel
+        Left = 3
+        Top = 141
+        Width = 21
+        Height = 13
+        Caption = 'stop'
       end
       object ButtonHome: TButton
         Left = 7
@@ -2097,14 +2105,14 @@ object Esp32frm: TEsp32frm
         TabOrder = 33
         OnClick = saveClick
       end
-      object Button4: TButton
+      object Buttonreadconfig: TButton
         Left = 245
         Top = 155
         Width = 45
         Height = 25
         Caption = 'read'
         TabOrder = 34
-        OnClick = Button4Click
+        OnClick = ButtonreadconfigClick
       end
       object StaticText9: TStaticText
         Left = 0
@@ -2378,14 +2386,14 @@ object Esp32frm: TEsp32frm
         TabOrder = 11
         OnClick = Button5Click
       end
-      object Button6: TButton
+      object ButtonreadTMC: TButton
         Left = 233
-        Top = 92
+        Top = 93
         Width = 41
         Height = 17
         Caption = 'Read'
         TabOrder = 12
-        OnClick = Button6Click
+        OnClick = ButtonreadTMCClick
       end
       object CheckRASp: TCheckBox
         Left = 48

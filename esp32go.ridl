@@ -6,7 +6,7 @@
 // However, when applying changes via the Editor this file will be regenerated
 // and comments or formatting changes will be lost.
 // ************************************************************************ //
-// File generated on 19/05/2025 17:19:14 (- $Rev: 12980 $, 330255656).
+// File generated on 20/05/2025 13:19:38 (- $Rev: 12980 $, 402279593).
 
 [
   uuid(1E06C881-9ACE-461A-AE17-0A0981B24AB1),
@@ -510,12 +510,12 @@ library Esp32go
     HRESULT _stdcall CommandBool([in] BSTR command, [in, optional, defaultvalue(False)] VARIANT_BOOL raw);
     [id(0x000000D7)]
     HRESULT _stdcall CommandString([in] BSTR command, [in, optional, defaultvalue(False)] VARIANT_BOOL RAW);
-    [id(0x000000D8)]
-    HRESULT _stdcall Dispose(void);
     [propget, id(0x000000CB)]
     HRESULT _stdcall Position([out, retval] short* Value);
     [propput, id(0x000000CB)]
     HRESULT _stdcall Position([in] short Value);
+    [id(0x000000D8)]
+    HRESULT _stdcall Dispose(void);
   };
 
   [

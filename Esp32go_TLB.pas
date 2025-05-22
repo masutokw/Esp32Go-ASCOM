@@ -12,7 +12,7 @@ unit Esp32go_TLB;
 // ************************************************************************ //
 
 // $Rev: 98336 $
-// File generated on 19/05/2025 16:54:46 from Type Library described below.
+// File generated on 20/05/2025 10:44:36 from Type Library described below.
 
 // ************************************************************************  //
 // Type Lib: C:\Users\masut\Documents\Embarcadero\Studio\Projects\Esp32Go-ASCOM\esp32go (1)
@@ -648,9 +648,9 @@ type
     procedure CommandBlind(const Command: WideString; raw: WordBool); safecall;
     procedure CommandBool(const command: WideString; raw: WordBool); safecall;
     procedure CommandString(const command: WideString; RAW: WordBool); safecall;
-    procedure Dispose; safecall;
     function Get_Position: Smallint; safecall;
     procedure Set_Position(Value: Smallint); safecall;
+    procedure Dispose; safecall;
     property Connected: WordBool read Get_Connected write Set_Connected;
     property FocusOffsets: PSafeArray read Get_FocusOffsets;
     property Names: PSafeArray read Get_Names;
@@ -684,8 +684,8 @@ type
     procedure CommandBlind(const Command: WideString; raw: WordBool); dispid 213;
     procedure CommandBool(const command: WideString; raw: WordBool); dispid 214;
     procedure CommandString(const command: WideString; RAW: WordBool); dispid 215;
-    procedure Dispose; dispid 216;
     property Position: Smallint dispid 203;
+    procedure Dispose; dispid 216;
   end;
 
 // *********************************************************************//

@@ -448,8 +448,8 @@ end;
 
 function TTelescope.Get_Slewing: WordBool;
 begin
-
-end;
+ result:=get_Slew();
+ end;
 
 function TTelescope.Get_SlewSettleTime: SYSINT;
 begin

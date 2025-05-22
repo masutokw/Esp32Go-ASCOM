@@ -31,6 +31,7 @@ type
     procedure CommandBool(const Command: widestring; raw: WordBool); safecall;
     procedure CommandString(const Command: widestring; raw: WordBool); safecall;
     procedure Dispose; safecall;
+    //procedure Dispose; safecall;
 
     // property Connected: WordBool read Get_Connected write Set_Connected;
     // property FocusOffsets: PSafeArray read Get_FocusOffsets;
@@ -46,6 +47,7 @@ uses ComServ, sysutils, Dialogs, Controls, ShellAPI;
 function TFilterWheel.Get_Connected: WordBool;
 begin
   //sleep(500);
+  // unlock();
 
   Get_Connected := true;
 
@@ -53,11 +55,23 @@ end;
 
 Procedure TFilterWheel.Set_Connected(Value: WordBool);
 begin
+  if value then
+  begin
+  filter_init() ;
+  unlock();
+  end
+  else
+ begin
+ unlock();
+ freesafe();
+ end;
 end;
 
 function TFilterWheel.Get_FocusOffsets: PSafeArray;
 begin
-SafeArrayunlock(SafeArray);
+  filter_init() ;
+ //showmessage('offsets');
+  SafeArrayunlock(SafeArray);
   result:=SafeArray;
 
 end;
@@ -69,7 +83,7 @@ end;
 
 function TFilterWheel.Get_SupportedActions: OleVariant;
 var
-  capacity: Integer;
+ // capacity: Integer;
   item: Variant;
   dotNetArrayList: Variant;
 begin
@@ -84,20 +98,18 @@ end;
 
 procedure TFilterWheel.Set_Position(Value: Smallint);
 begin
-   if (value <= 8)and(value>=0 )  then  goto_slot(value)
-  else raise  EOLEexception.Create('Invalid Value 1',$80040404,'none','0',0);
+   if ((value <= 8) and (value>=0 ))  then  goto_slot(value)
+  else
+   raise EOLEexception.Create('Invalid Value 1', $80040404, 'none', '0', 0);
 
 end;
 
 function TFilterWheel.Get_Names: PSafeArray;
 begin
 
- // unlock();
-   SafeArrayUnlock(SafeArrayNames);
-     result:= SafeArrayNames;
-   //  showmessage('names '+v[2])  ;
- // result:= PSafeArray(TVarData(v).VArray)  ;
- //  SafeArrayunlock(result);
+ result:= PSafeArray(TVarData(v).VArray)  ;
+ //showmessage('names');
+
 end;
 
 procedure TFilterWheel.SetupDialog;
@@ -139,8 +151,8 @@ var
 
 begin
 
- // ProfileObject := CreateOLEObject('ASCOM.Utilities.Profile');
-  ProfileObject := CreateOleObject('DriverHelper.Profile');
+ ProfileObject := CreateOLEObject('ASCOM.Utilities.Profile');
+  //ProfileObject := CreateOleObject('DriverHelper.Profile');
   ProfileObject.DeviceType := 'FilterWheel';
   if (not ProfileObject.IsRegistered(DRIVER_ID)) then
   begin
@@ -174,12 +186,19 @@ end;
 
 procedure TFilterWheel.Dispose;
 begin
-{SafeArrayDestroy(SafeArray);
-  SafeArray:=nil;
-SafeArrayDestroy( SafeArrayNames);
- SafeArrayNames:=nil;   }
 
+{SafeArraylock(SafeArray);
+SafeArrayDestroy(SafeArray);
+  SafeArray:=nil;
+  SafeArraylock(SafeArrayNames);
+SafeArrayDestroy( SafeArrayNames);
+ SafeArrayNames:=nil;}
+    //    showmessage('dispose w');
+//unlock();
+//freesafe();
 end;
+
+
 
 initialization
 
@@ -187,5 +206,6 @@ CoInitializeex(nil, COINIT_APARTMENTTHREADED);
 RegisterThySelf;
 TAutoObjectFactory.Create(ComServer, TFilterWheel, Class_FilterWheel,
   cimultiInstance, tmApartment);
+  //
 
 end.
