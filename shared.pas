@@ -17,7 +17,7 @@ const
 var
 
   // fullconnect,
-  piersid: boolean;
+  piersid,slew: boolean;
   lastdec, lastar, lastaz, lastalt: Double;
   gmtoffset: Integer;
   imode: Integer;
@@ -89,7 +89,7 @@ function get_pierside(): boolean;
 function get_flip(): boolean;
 function get_parked(): boolean;
 function calc_lha(ra: Double): Double;
-function get_Slew(): boolean;
+function get_Slew(direct:boolean): boolean;
 
 Function get_focuspos(device: char): Integer;
 Function get_focusmoving(device: char): Integer;
@@ -244,6 +244,7 @@ begin
     track := tmp and 1;
     parked := ((tmp and 2) shr 1) = 1;
     piersid := ((tmp and 4) shr 2) = 1;
+    slew:=((tmp and 8) shr 3) = 1;
     focus := strtointdef(Copy(sl.Strings[4], 2, str1.length), 0);
   end;
   // readvln(str0, '#');
@@ -667,13 +668,18 @@ begin
   Result := (str = '1#');
 
 end;
-function get_Slew(): boolean;
+function get_Slew(direct:boolean): boolean;
 var
   str: string;
 begin
+if direct then begin
   send(':D#');
   readvln(str, '#');
-  Result := (str = '|#');
+ Result := (str = '|#');
+end
+else
+
+result:=slew;
 
 end;
 

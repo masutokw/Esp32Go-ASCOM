@@ -9,7 +9,7 @@ uses
   EnhEdits, CPortCtl, adpInstanceControl, System.Win.ScktComp, serial,
   Joystickex, JvComponentBase, JvHidControllerClass, HidUsage, Vcl.ComCtrls,
   System.Bluetooth, bluetools, tcptools, serialtools, lxutils, Vcl.NumberBox,
-  globalvar, Vcl.Samples.Spin, Vcl.Grids;
+  globalvar, Vcl.Samples.Spin, Vcl.Grids, mmsystem;
 
 type
   TEsp32frm = class(TForm)
@@ -68,8 +68,6 @@ type
     GroupBox10: TGroupBox;
     LabelAltitude: TLabel;
     LabelAzimuth: TLabel;
-    StaticText18: TStaticText;
-    StaticText33: TStaticText;
     LabelAR1: TLabel;
     LabelDec1: TLabel;
     GroupBox8: TGroupBox;
@@ -262,7 +260,12 @@ type
     ButtonSaveFilt: TButton;
     ButtonReadFilt: TButton;
     Label18: TLabel;
+    Lblwheel: TLabel;
+    Lblconfig: TLabel;
+    lbltmc: TLabel;
+    lblfocus: TLabel;
     Label19: TLabel;
+    lbltrack: TLabel;
 
     procedure FormCreate(Sender: TObject);
     procedure Button_NMouseDown(Sender: TObject; Button: TMouseButton;
@@ -441,7 +444,7 @@ begin
     lines.add('0');
 
     // Label17.Text := inttostr(lines.Count);
-    Memo1.lines.Clear;
+    // Memo1.lines.Clear;
     if true then
     begin
       s := ':cd';
@@ -451,7 +454,7 @@ begin
       s := s + '#' + #10;
       s := stringreplace(s, FormatSettings.DecimalSeparator, '.',
         [rfReplaceAll]);
-      Memo1.lines.add(s);
+      // Memo1.lines.add(s);
       send(s);
     end;
   end;
@@ -474,11 +477,9 @@ procedure TEsp32frm.ButtonReadFiltClick(Sender: TObject);
 begin
 
   if not readfilterWheel() then
-  begin
-    showmessage('filter not load');
-    readfilterWheel();
-  end;
-
+    Lblwheel.caption := 'Fail'
+  else
+    Lblwheel.caption := 'Read OK';
 end;
 
 procedure TEsp32frm.ButtonReconClick(Sender: TObject);
@@ -614,8 +615,9 @@ end;
 procedure TEsp32frm.ButtonreadconfigClick(Sender: TObject);
 begin
   if not readmountConfig() then
-
-    readmountConfig();
+    Lblconfig.caption := 'Config Read Fail'
+  else
+    Lblconfig.caption := 'Config Read OK';
 end;
 
 procedure TEsp32frm.Button5Click(Sender: TObject);
@@ -656,7 +658,7 @@ begin
     lines.add(Checkf2pol.Checked.tointeger.ToString);
 
     // Label17.Text := inttostr(lines.Count);
-    Memo1.lines.Clear;
+    // Memo1.lines.Clear;
     if true then
     begin
       s := ':ct';
@@ -666,7 +668,7 @@ begin
       s := s + '#' + #10;
       s := stringreplace(s, FormatSettings.DecimalSeparator, '.',
         [rfReplaceAll]);
-      Memo1.lines.add(s);
+      // Memo1.lines.add(s);
       send(s);
     end;
   end;
@@ -677,10 +679,10 @@ end;
 
 procedure TEsp32frm.ButtonreadTMCClick(Sender: TObject);
 begin
- if not readTMConfig() then begin
- showmessage('Error reading tmc config');
-   readTMConfig();
- end;
+  if readTMConfig() then
+    lbltmc.caption := 'TMC config read'
+  else
+    lbltmc.caption := 'TMC config fail'
 
 end;
 
@@ -696,7 +698,7 @@ begin
 
   end;
   cLines := 0;
-  Memo1.lines.Clear;
+  // Memo1.lines.Clear;
   if (ClientSocket1.Connected) or (ComPortBT_USB.Connected) or (checkBtSock)
   then
 
@@ -713,8 +715,7 @@ begin
       // cstring := stringreplace(cstring,#13,
       // '', [rfReplaceAll]);
       lines.Text := cstring;
-      Memo1.lines.text:=cstring;
-
+      // Memo1.lines.text:=cstring;
 
     end
     else
@@ -737,12 +738,12 @@ begin
         cstring := stringreplace(cstring, '.',
           '' + FormatSettings.DecimalSeparator, [rfReplaceAll]);
         lines.add(cstring);
-        Memo1.lines.add(cstring)
-      until (inbuff = 0) or (cstring = '#');
-       result:=(cstring = '#');
-    Label1.caption := inttostr(lines.Count) + lines[0];
+        // Memo1.lines.add(cstring)
+      until (inbuff = 0);
+    result := (lines.Count >= 20);
+    Label1.caption := inttostr(lines.Count);
     Timer1.Enabled := true;
-    if (lines.Count >= 20) and (cstring = '#') then
+    if (lines.Count >= 20) then
     begin
       NumberBoxraSt.Text := lines[0];
       NumberBoxRACur.Text := lines[1];
@@ -817,7 +818,7 @@ begin
     GroupBoxfilter.Visible := aux_device = 2;
 
     // Label17.Text := inttostr(lines.Count);
-    Memo1.lines.Clear;
+    // Memo1.lines.Clear;
     if true then
     begin
       s := ':cf';
@@ -827,7 +828,7 @@ begin
       s := s + '#' + #10;
       s := stringreplace(s, FormatSettings.DecimalSeparator, '.',
         [rfReplaceAll]);
-      Memo1.lines.add(s);
+      // Memo1.lines.add(s);
       send(s);
     end;
   end;
@@ -1123,8 +1124,7 @@ begin
       showmessage('No response');
     if fullconnect then
     begin
-      // showmessage('fullconnect');
-      // Timer1.Enabled := true;
+     // confload();
 
     end;
   end;
@@ -1141,24 +1141,62 @@ begin
     end;
     if get_flip() then
       Chkflip.Checked := true;
-    // Button4Click(self);
-    // Button6Click(self);
-    // ButtonAuxReadClick(self);
-    // ButtonReadFiltClick(self);
-    // showmessage('okread');
-    // Timer1.Enabled := true;
-    // filter_init();
-    // confload();
   end;
 
 end;
 
 procedure TEsp32frm.confload();
 begin
-  ButtonreadConfigClick(self);
-  //ButtonreadTMCClick(self);
- ButtonAuxReadClick(self);
-  ButtonReadFiltClick(self);
+
+  if fullconnect then
+  begin
+
+    Timer1.Enabled := false;
+    clearbuff(true, true);
+    if not readmountConfig() then
+      Lblconfig.caption := 'Config Read Fail'
+    else
+      Lblconfig.caption := 'Config Read OK';
+      clearbuff(true, true);
+    if readTMConfig() then
+      lbltmc.caption := 'TMC config read'
+    else
+      lbltmc.caption := 'TMC config fail';
+      clearbuff(true, true);
+    if readfocusconfig() then
+      Lblfocus.caption := 'focus config read'
+    else
+      Lblfocus.caption := 'focus config fail';
+
+      clearbuff(true, true);
+    if not readfilterWheel() then
+      Lblwheel.caption := 'Fail'
+    else
+      Lblwheel.caption := 'Read OK';
+ ;
+
+  { if readmountConfig() then
+    Memo1.lines.add('config load ok')
+    else
+    Memo1.lines.add('error config load');
+    if readTMConfig() then
+    Memo1.lines.add('tmc load ok')
+    else
+    Memo1.lines.add('error tmc load');
+    if readFocusConfig() then
+    Memo1.lines.add('focus load ok')
+    else
+    Memo1.lines.add('error Focus load');
+    if readfilterWheel() then
+    Memo1.lines.add('wheel load ok')
+    else
+    Memo1.lines.add('error wheel load'); }
+
+  // readmountConfig();
+  // readTMConfig();
+  // readFocusConfig() ;
+  // readfilterWheel() ;
+end;
 
 end;
 
@@ -1178,7 +1216,7 @@ procedure TEsp32frm.FormShow(Sender: TObject);
 begin
   if fullconnect then
   begin
-    // clearBuff(true,false);
+    clearbuff(true, false);
     confload();
     Timer1.Enabled := true;
   end;
@@ -1283,14 +1321,15 @@ procedure TEsp32frm.Joystickex1Button5_Change(Sender: TObject; pressed: Boolean;
   XPos, YPos: Integer);
 begin
   CheckBox1.Checked := false;
-  send(':Mh');
+  send(':Mh#');
 end;
 
 procedure TEsp32frm.Joystickex1Button6_Change(Sender: TObject; pressed: Boolean;
   XPos, YPos: Integer);
 begin
   CheckBox1.Checked := true;
-  send(':Qw#:Mt#');
+  send(':Qw#');
+  send(':Mt#');
 end;
 
 procedure TEsp32frm.Joystickex1JoyMove(Sender: TObject; XPos, YPos: Integer;
@@ -1312,6 +1351,7 @@ begin
     3:
       send('#:RG#');
   end;
+
   begin
     if (joyxstatus <> XPos) then
     begin
@@ -1372,9 +1412,9 @@ begin
   // Retrive the device and assign it to the list
   JvHidDeviceController.CheckOutByIndex(Dev, Idx);
   lstHidDevices.Items.Objects[DevID] := Dev;
-  Memo1.lines.add(HidDev.ProductName + Format('Device VID=%x PID=%x  %x %s %x',
-    [HidDev.Attributes.VendorID, HidDev.Attributes.ProductID, Idx, UsageText,
-    HidDev.LinkCollectionNodes[Idx].LinkUsage]));
+  // Memo1.lines.add(HidDev.ProductName + Format('Device VID=%x PID=%x  %x %s %x',
+  // [HidDev.Attributes.VendorID, HidDev.Attributes.ProductID, Idx, UsageText,
+  // HidDev.LinkCollectionNodes[Idx].LinkUsage]));
   // If this device is a joystick then set its OnData property to read  its input
   name := HidDev.ProductName;
   // IF trim(HidDev.ProductName) = 'Generic  USB  Joystick ' then
@@ -1382,7 +1422,7 @@ begin
   // if  HidDev.LinkCollectionNodes[Idx].LinkUsage= HID_USAGE_GENERIC_GAMEPAD
 
   begin
-    Dev.OnData := ReadJoysticks;
+    // Dev.OnData := ReadJoysticks;
 
   end;
 
@@ -1577,10 +1617,19 @@ begin
         end;
 
     end;
-    if get_Slew() then
-      Label19.caption := 'slewing'
+   // if  get_Slew() then
+    if  get_Slew(false) then
+      Label19.caption := 'Slewing'
     else
-      Label19.caption := 'normal';
+    begin
+      if Label19.caption = 'Slewing' then
+      begin
+         PlaySound('SYSTEMEXCLAMATION', 0, SND_ASYNC);
+      end;
+       Label19.caption := 'Normal';
+    end;
+    if track=1 then lbltrack.caption :='Track' else  lbltrack.caption :='No track' ;
+
 
     if CheckAlt.Checked then
     begin
@@ -1741,7 +1790,7 @@ begin
     lines.add(CheckBoxbackalt.Checked.tointeger.ToString);
     { lines.add(CheckBoxDCFocus.Checked.tointeger.ToString); }
     // Label17.Text := inttostr(lines.Count);
-    Memo1.lines.Clear;
+    // Memo1.lines.Clear;
     if lines.Count > config_lines then
     begin
       s := ':cs';
@@ -1751,7 +1800,7 @@ begin
       s := s + '#' + #10;
       s := stringreplace(s, FormatSettings.DecimalSeparator, '.',
         [rfReplaceAll]);
-      Memo1.lines.add(s);
+      // Memo1.lines.add(s);
       send(s);
     end;
   end;
@@ -1812,7 +1861,7 @@ begin
 
   end;
   cLines := 0;
-  Memo1.lines.Clear;
+  // Memo1.lines.Clear;
   if (ClientSocket1.Connected) or (ComPortBT_USB.Connected) or (checkBtSock)
   then
 
@@ -1829,7 +1878,7 @@ begin
       // cstring := stringreplace(cstring,#13,
       // '', [rfReplaceAll]);
       lines.Text := cstring;
-       memo1.lines.text:=cstring;
+      // memo1.lines.text:=cstring;
     end
     else
       repeat
@@ -1851,12 +1900,13 @@ begin
         cstring := stringreplace(cstring, '.',
           '' + FormatSettings.DecimalSeparator, [rfReplaceAll]);
         lines.add(cstring);
-        Memo1.lines.add(cstring)
-      until (inbuff = 0) or (cstring = '#');
-    result := (cstring = '#');
-    Label1.caption := inttostr(lines.Count) + lines[27];
+        // Memo1.lines.add(cstring)
+      until (inbuff = 0);
+
+    Label1.caption := inttostr(lines.Count);
     Timer1.Enabled := true;
-    if (lines.Count >= 28) and (cstring = '#') then
+    result := (lines.Count >= 28);
+    if (lines.Count >= 28) then
     begin
       Edit0f.Text := lines[0];
       Edit0V.Text := lines[1];
@@ -1920,7 +1970,7 @@ begin
 
   end;
   cLines := 0;
-  Memo1.lines.Clear;
+  // Memo1.lines.Clear;
   if (ClientSocket1.Connected) or (ComPortBT_USB.Connected) or (checkBtSock)
   then
 
@@ -1939,7 +1989,7 @@ begin
       cstring := stringreplace(cstring, '.',
         '' + FormatSettings.DecimalSeparator, [rfReplaceAll]);
       lines.Text := cstring;
-      Memo1.lines.add(cstring);
+      // Memo1.lines.add(cstring);
 
     end
     else
@@ -1962,10 +2012,10 @@ begin
         cstring := stringreplace(cstring, '.',
           '' + FormatSettings.DecimalSeparator, [rfReplaceAll]);
         lines.add(cstring);
-        Memo1.lines.add(cstring)
+        // Memo1.lines.add(cstring)
       until (inbuff = 0) or (cstring = '#');
-    result := (cstring = '#');
-    Label1.caption := inttostr(lines.Count) + lines[0];
+    result := lines.Count >= config_lines;
+    Label1.caption := inttostr(lines.Count);
     Timer1.Enabled := true;
     if lines.Count >= config_lines then
     begin
@@ -2016,7 +2066,7 @@ begin
 
   end;
   cLines := 0;
-  Memo1.lines.Clear;
+  // Memo1.lines.Clear;
   if (ClientSocket1.Connected) or (ComPortBT_USB.Connected) or (checkBtSock)
   then
 
@@ -2033,7 +2083,7 @@ begin
       // cstring := stringreplace(cstring,#13,
       // '', [rfReplaceAll]);
       lines.Text := cstring;
-        Memo1.lines.text:=cstring;
+      // Memo1.lines.text:=cstring;
     end
     else
       repeat
@@ -2055,13 +2105,13 @@ begin
         cstring := stringreplace(cstring, '.',
           '' + FormatSettings.DecimalSeparator, [rfReplaceAll]);
         lines.add(cstring);
-        Memo1.lines.add(cstring)
-      until (inbuff = 0) or (cstring = '#');
-    result := (cstring = '#')or (lines[11]= '#');
-    Label1.caption := inttostr(lines.Count) +' '+ lines[11];
+        // Memo1.lines.add(cstring)
+      until (inbuff = 0);
+    result := (lines.Count >= 12);
+    Label1.caption := inttostr(lines.Count);
     Timer1.Enabled := true;
 
-    if (lines.Count >= 12)  or (cstring = '#')or (lines[11]= '#')  then
+    if (lines.Count >= 12) then
     begin
       NumberBoxFM.Text := lines[0];
       NumberBoxFS.Text := lines[1];

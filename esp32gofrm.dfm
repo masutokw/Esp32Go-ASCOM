@@ -2,7 +2,7 @@ object Esp32frm: TEsp32frm
   Left = 0
   Top = 0
   AutoSize = True
-  Caption = 'Esp32go 3.7'
+  Caption = 'Esp32go 3.9'
   ClientHeight = 297
   ClientWidth = 425
   Color = clBtnFace
@@ -1257,7 +1257,7 @@ object Esp32frm: TEsp32frm
     Top = 0
     Width = 305
     Height = 207
-    ActivePage = TMC
+    ActivePage = TabSheet1
     TabOrder = 3
     TabWidth = 43
     Visible = False
@@ -1271,15 +1271,15 @@ object Esp32frm: TEsp32frm
       ImageIndex = 3
       ParentFont = False
       object Labelmsg: TLabel
-        Left = 174
-        Top = 67
+        Left = 3
+        Top = 75
         Width = 20
         Height = 14
         Caption = 'msg'
       end
       object GroupBox9: TGroupBox
-        Left = -4
-        Top = -3
+        Left = 3
+        Top = 2
         Width = 156
         Height = 74
         Caption = 'Position'
@@ -1331,16 +1331,16 @@ object Esp32frm: TEsp32frm
         end
       end
       object GroupBox10: TGroupBox
-        Left = 155
-        Top = -3
-        Width = 124
-        Height = 67
-        Caption = 'Local Coordinates'
+        Left = 164
+        Top = 2
+        Width = 130
+        Height = 74
+        Caption = 'AltAz '
         TabOrder = 1
         object LabelAltitude: TLabel
-          Left = 43
-          Top = 41
-          Width = 77
+          Left = 16
+          Top = 43
+          Width = 104
           Height = 19
           Hint = 'Altitude'
           Alignment = taRightJustify
@@ -1348,8 +1348,8 @@ object Esp32frm: TEsp32frm
           Caption = '+00'#176'00"00'#39
           Color = clBlack
           Font.Charset = ANSI_CHARSET
-          Font.Color = clTeal
-          Font.Height = -13
+          Font.Color = clAqua
+          Font.Height = -19
           Font.Name = 'Arial'
           Font.Style = [fsBold]
           ParentColor = False
@@ -1358,9 +1358,9 @@ object Esp32frm: TEsp32frm
           StyleElements = []
         end
         object LabelAzimuth: TLabel
-          Left = 44
+          Left = 3
           Top = 16
-          Width = 76
+          Width = 117
           Height = 19
           Hint = 'Azimuth'
           Alignment = taRightJustify
@@ -1369,8 +1369,8 @@ object Esp32frm: TEsp32frm
           Caption = '000'#186'00"00'#39
           Color = clBlack
           Font.Charset = ANSI_CHARSET
-          Font.Color = clTeal
-          Font.Height = -13
+          Font.Color = clAqua
+          Font.Height = -19
           Font.Name = 'Arial'
           Font.Style = [fsBold]
           ParentBiDiMode = False
@@ -1379,44 +1379,16 @@ object Esp32frm: TEsp32frm
           Transparent = False
           StyleElements = []
         end
-        object StaticText18: TStaticText
-          Left = 3
-          Top = 42
-          Width = 43
-          Height = 18
-          Caption = 'Altitude:'
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'Arial'
-          Font.Style = []
-          ParentFont = False
-          TabOrder = 0
-        end
-        object StaticText33: TStaticText
-          Left = 3
-          Top = 17
-          Width = 43
-          Height = 18
-          Caption = 'Azimuth'
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'Arial'
-          Font.Style = []
-          ParentFont = False
-          TabOrder = 1
-        end
       end
       object GroupBox5: TGroupBox
-        Left = -4
-        Top = 70
+        Left = 125
+        Top = 75
         Width = 169
-        Height = 44
+        Height = 40
         Caption = 'Align'
         TabOrder = 2
         object ButtonSync: TButton
-          Left = 86
+          Left = 84
           Top = 16
           Width = 36
           Height = 20
@@ -1434,7 +1406,7 @@ object Esp32frm: TEsp32frm
           OnClick = Buttonstar1Click
         end
         object Buttonstar2: TButton
-          Left = 46
+          Left = 45
           Top = 16
           Width = 36
           Height = 20
@@ -1453,22 +1425,36 @@ object Esp32frm: TEsp32frm
         end
       end
       object GroupBox11: TGroupBox
-        Left = 2
+        Left = 3
         Top = 112
-        Width = 85
-        Height = 69
+        Width = 291
+        Height = 65
         Caption = 'mount'
         TabOrder = 3
         object Label3: TLabel
-          Left = 45
-          Top = 20
+          Left = 79
+          Top = 40
           Width = 25
           Height = 14
           Caption = 'West'
         end
+        object Label19: TLabel
+          Left = 119
+          Top = 40
+          Width = 35
+          Height = 14
+          Caption = 'Unread'
+        end
+        object lbltrack: TLabel
+          Left = 175
+          Top = 40
+          Width = 35
+          Height = 14
+          Caption = 'Unread'
+        end
         object Chkflip: TCheckBox
           Left = 5
-          Top = 20
+          Top = 16
           Width = 40
           Height = 15
           Caption = 'Flip'
@@ -1476,8 +1462,8 @@ object Esp32frm: TEsp32frm
           OnClick = ChkflipClick
         end
         object btnw: TButton
-          Left = 6
-          Top = 41
+          Left = 3
+          Top = 37
           Width = 33
           Height = 25
           Caption = 'West'
@@ -1485,8 +1471,8 @@ object Esp32frm: TEsp32frm
           OnClick = btnwClick
         end
         object btnE: TButton
-          Left = 43
-          Top = 41
+          Left = 40
+          Top = 37
           Width = 33
           Height = 25
           Caption = 'East'
@@ -1507,16 +1493,9 @@ object Esp32frm: TEsp32frm
       object Label6: TLabel
         Left = 3
         Top = 104
-        Width = 31
+        Width = 15
         Height = 13
-        Caption = 'Label6'
-      end
-      object Label19: TLabel
-        Left = 3
-        Top = 141
-        Width = 21
-        Height = 13
-        Caption = 'stop'
+        Caption = 'joy'
       end
       object ButtonHome: TButton
         Left = 7
@@ -1762,7 +1741,7 @@ object Esp32frm: TEsp32frm
           OnMouseDown = ButtondisconnectMouseDown
         end
         object ButtonSave: TButton
-          Left = 114
+          Left = 111
           Top = 15
           Width = 48
           Height = 20
@@ -1793,6 +1772,13 @@ object Esp32frm: TEsp32frm
     object Align: TTabSheet
       Caption = 'Config'
       ImageIndex = 2
+      object Lblconfig: TLabel
+        Left = 211
+        Top = 125
+        Width = 32
+        Height = 15
+        Caption = 'unload'
+      end
       object NumberBoxcountaz: TNumberBox
         Left = 17
         Top = -1
@@ -2266,6 +2252,20 @@ object Esp32frm: TEsp32frm
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
+      end
+      object lbltmc: TLabel
+        Left = 208
+        Top = 12
+        Width = 27
+        Height = 20
+        Caption = 'unload'
+      end
+      object lblfocus: TLabel
+        Left = 208
+        Top = 69
+        Width = 32
+        Height = 17
+        Caption = 'unload'
       end
       object NumberBoxraSt: TNumberBox
         Left = 48
@@ -3403,6 +3403,13 @@ object Esp32frm: TEsp32frm
           Height = 13
           Caption = 'Slot'
         end
+        object Lblwheel: TLabel
+          Left = 160
+          Top = 160
+          Width = 32
+          Height = 13
+          Caption = 'unload'
+        end
         object Edit1F: TEdit
           Left = 8
           Top = 52
@@ -3615,6 +3622,7 @@ object Esp32frm: TEsp32frm
   end
   object Timer1: TTimer
     Enabled = False
+    Interval = 500
     OnTimer = Timer1Timer
     Left = 244
     Top = 222
@@ -3622,8 +3630,8 @@ object Esp32frm: TEsp32frm
   object adpInstanceControl1: TadpInstanceControl
     Enabled = True
     MaxInstances = 1
-    Left = 337
-    Top = 239
+    Left = 313
+    Top = 231
   end
   object Joystickex1: TJoystickex
     GamePort = Gameport1
@@ -3649,7 +3657,7 @@ object Esp32frm: TEsp32frm
   object JvHidDeviceController: TJvHidDeviceController
     OnEnumerate = JvHidDeviceControllerEnumerate
     OnDeviceChange = JvHidDeviceControllerDeviceChange
-    Left = 193
-    Top = 242
+    Left = 177
+    Top = 226
   end
 end
