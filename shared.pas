@@ -205,11 +205,13 @@ Function get_coords(var focus, count: Integer): string;
 var
   str, str1, coord_str: string;
 
-  n, tmp: Integer;
+  n, tmp,dl: Integer;
   sl: TStringList;
   c: char;
 
+
 begin
+dl:=0;
   sl := TStringList.Create();
   sl.delimiter := '#';
   send(':Gx#');
@@ -230,7 +232,7 @@ begin
     // str := str + str1;
   end;
   sl.DelimitedText := str;
-  if (sl.count > 4) and (str.length > 47) then
+  if (sl.count > 4) and (str.length >= 48) then
   begin
     ra := LX200Artoint(sl.Strings[0] + '#', true) / (3600.0 * 15.0);
     dec := LX200Dectoint(sl.Strings[1] + '#', true) / (3600.0);
@@ -240,12 +242,14 @@ begin
     // focus := strtoint(sl.Strings[5]);
 
     str1 := sl.Strings[4];
-    tmp := strtointdef(Copy(sl.Strings[4], 1, 1), 0);
+    if str.Length>48 then dl:=1;
+
+    tmp := strtointdef(Copy(sl.Strings[4], 1, 1+dl), 0);
     track := tmp and 1;
     parked := ((tmp and 2) shr 1) = 1;
     piersid := ((tmp and 4) shr 2) = 1;
     slew:=((tmp and 8) shr 3) = 1;
-    focus := strtointdef(Copy(sl.Strings[4], 2, str1.length), 0);
+    focus := strtointdef(Copy(sl.Strings[4], 2+dl, str1.length), 0);
   end;
   // readvln(str0, '#');
 

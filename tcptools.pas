@@ -20,7 +20,7 @@ function sendtcp(value: string): Integer;
 begin
   if ClientSocket1.connected then
   begin
-     clearbufftcp(true, true);
+    clearbufftcp(true, true);
     ClientSocket1.Socket.write(value);
     Result := value.length;
   end
@@ -70,9 +70,8 @@ var
 begin
   if ClientSocket1.connected then
   begin
-    str := ClientSocket1.Socket.readln(delimiter,1000);
-
-    if str.length > 0 then
+    str := ClientSocket1.Socket.readln(delimiter,1000,500);
+      if str.length > 0 then
       str := str + delimiter;
   end;
   value := str;

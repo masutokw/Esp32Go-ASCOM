@@ -2,7 +2,7 @@ object Esp32frm: TEsp32frm
   Left = 0
   Top = 0
   AutoSize = True
-  Caption = 'Esp32go 3.9'
+  Caption = 'Esp32go 3.10'
   ClientHeight = 297
   ClientWidth = 425
   Color = clBtnFace
@@ -1257,7 +1257,7 @@ object Esp32frm: TEsp32frm
     Top = 0
     Width = 305
     Height = 207
-    ActivePage = TabSheet1
+    ActivePage = Tabconfig
     TabOrder = 3
     TabWidth = 43
     Visible = False
@@ -1439,14 +1439,14 @@ object Esp32frm: TEsp32frm
           Caption = 'West'
         end
         object Label19: TLabel
-          Left = 119
+          Left = 110
           Top = 40
           Width = 35
           Height = 14
           Caption = 'Unread'
         end
         object lbltrack: TLabel
-          Left = 175
+          Left = 151
           Top = 40
           Width = 35
           Height = 14
@@ -1479,32 +1479,41 @@ object Esp32frm: TEsp32frm
           TabOrder = 2
           OnClick = btnEClick
         end
+        object ButtonHome: TButton
+          Left = 215
+          Top = 9
+          Width = 65
+          Height = 20
+          Caption = 'Reset home'
+          TabOrder = 3
+          OnClick = ButtonHomeClick
+        end
+        object ButtonSetHome: TButton
+          Left = 215
+          Top = 35
+          Width = 65
+          Height = 20
+          Caption = 'Set home'
+          TabOrder = 4
+          OnClick = ButtonSetHomeClick
+        end
       end
     end
     object Tabconfig: TTabSheet
       Caption = 'Settings'
       object Label2: TLabel
-        Left = 3
-        Top = 85
+        Left = 11
+        Top = 80
         Width = 31
         Height = 13
         Caption = 'Label2'
       end
       object Label6: TLabel
-        Left = 3
-        Top = 104
+        Left = 235
+        Top = 3
         Width = 15
         Height = 13
         Caption = 'joy'
-      end
-      object ButtonHome: TButton
-        Left = 7
-        Top = 59
-        Width = 65
-        Height = 20
-        Caption = 'Reset home'
-        TabOrder = 0
-        OnClick = ButtonHomeClick
       end
       object groupboxgeo: TGroupBox
         Left = 0
@@ -1512,7 +1521,7 @@ object Esp32frm: TEsp32frm
         Width = 210
         Height = 57
         Caption = 'Geo/time'
-        TabOrder = 1
+        TabOrder = 0
         object Label4: TLabel
           Left = 180
           Top = 35
@@ -1594,12 +1603,68 @@ object Esp32frm: TEsp32frm
         end
       end
       object TrackBar1: TTrackBar
-        Left = 90
+        Left = 133
         Top = 58
         Width = 161
         Height = 17
-        TabOrder = 2
+        TabOrder = 1
         OnChange = TrackBar1Change
+      end
+      object GroupBox12: TGroupBox
+        Left = 3
+        Top = 91
+        Width = 291
+        Height = 86
+        Caption = 'Home set'
+        TabOrder = 2
+        object ButtonHPolar: TButton
+          Left = 3
+          Top = 16
+          Width = 65
+          Height = 25
+          Caption = 'Polar'
+          TabOrder = 0
+          OnClick = ButtonHPolarClick
+        end
+        object ButtonHZenith: TButton
+          Tag = 1
+          Left = 3
+          Top = 40
+          Width = 65
+          Height = 25
+          Caption = 'Zenith'
+          TabOrder = 1
+          OnClick = ButtonHPolarClick
+        end
+        object ButtonHeast: TButton
+          Tag = 2
+          Left = 74
+          Top = 16
+          Width = 65
+          Height = 25
+          Caption = 'East'
+          TabOrder = 2
+          OnClick = ButtonHPolarClick
+        end
+        object Button10: TButton
+          Tag = 3
+          Left = 74
+          Top = 40
+          Width = 65
+          Height = 25
+          Caption = 'West'
+          TabOrder = 3
+          OnClick = ButtonHPolarClick
+        end
+        object Button4: TButton
+          Left = 167
+          Top = 41
+          Width = 65
+          Height = 20
+          Caption = 'Reset home'
+          TabOrder = 4
+          OnClick = ButtonHomeClick
+        end
       end
     end
     object cb: TTabSheet
@@ -1776,7 +1841,7 @@ object Esp32frm: TEsp32frm
         Left = 211
         Top = 125
         Width = 32
-        Height = 15
+        Height = 13
         Caption = 'unload'
       end
       object NumberBoxcountaz: TNumberBox
@@ -2256,15 +2321,15 @@ object Esp32frm: TEsp32frm
       object lbltmc: TLabel
         Left = 208
         Top = 12
-        Width = 27
-        Height = 20
+        Width = 32
+        Height = 13
         Caption = 'unload'
       end
       object lblfocus: TLabel
         Left = 208
         Top = 69
         Width = 32
-        Height = 17
+        Height = 13
         Caption = 'unload'
       end
       object NumberBoxraSt: TNumberBox

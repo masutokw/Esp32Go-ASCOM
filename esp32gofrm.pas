@@ -35,7 +35,6 @@ type
     PageControl1: TPageControl;
     Tabconfig: TTabSheet;
     cb: TTabSheet;
-    ButtonHome: TButton;
     groupboxgeo: TGroupBox;
     Label4: TLabel;
     FloatEditLong: TFloatEdit;
@@ -266,6 +265,14 @@ type
     lblfocus: TLabel;
     Label19: TLabel;
     lbltrack: TLabel;
+    ButtonHome: TButton;
+    ButtonSetHome: TButton;
+    GroupBox12: TGroupBox;
+    ButtonHPolar: TButton;
+    ButtonHZenith: TButton;
+    ButtonHeast: TButton;
+    Button10: TButton;
+    Button4: TButton;
 
     procedure FormCreate(Sender: TObject);
     procedure Button_NMouseDown(Sender: TObject; Button: TMouseButton;
@@ -362,6 +369,8 @@ type
     function readmountConfig(): Boolean;
     function readFocusConfig(): Boolean;
     function readTMConfig(): Boolean;
+    procedure ButtonSetHomeClick(Sender: TObject);
+    procedure ButtonHPolarClick(Sender: TObject);
 
   private
     { Private declarations }
@@ -461,6 +470,11 @@ begin
 
   lines.Destroy;
 
+end;
+
+procedure TEsp32frm.ButtonSetHomeClick(Sender: TObject);
+begin
+    send(':hS#');
 end;
 
 procedure TEsp32frm.Buttonstar1Click(Sender: TObject);
@@ -904,6 +918,18 @@ begin
   send(':pH#');
 end;
 
+procedure TEsp32frm.ButtonHPolarClick(Sender: TObject);
+var str:string;
+begin
+
+ str:=TButton(Sender).tag.ToString ;
+
+        send(':hH'+str+'#') ;
+
+
+
+end;
+
 procedure TEsp32frm.ButtonInMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 
@@ -1164,9 +1190,9 @@ begin
       lbltmc.caption := 'TMC config fail';
       clearbuff(true, true);
     if readfocusconfig() then
-      Lblfocus.caption := 'focus config read'
+      Lblfocus.caption := 'Focus config read'
     else
-      Lblfocus.caption := 'focus config fail';
+      Lblfocus.caption := 'Focus config fail';
 
       clearbuff(true, true);
     if not readfilterWheel() then
@@ -1587,7 +1613,8 @@ begin
     coors := get_coords(focus, Count);
     if coors.Length > 40 then
     begin
-      labelAR.caption := coors;
+
+      labelAR.caption := stringreplace(AnsiString( coors), '?', 'º', [rfReplaceAll]);
     end;
 
     LabelAR1.caption := DoubletoLXAR(ra, 0);
@@ -1624,7 +1651,7 @@ begin
     begin
       if Label19.caption = 'Slewing' then
       begin
-         PlaySound('SYSTEMEXCLAMATION', 0, SND_ASYNC);
+       //  PlaySound('SYSTEMEXCLAMATION', 0, SND_ASYNC);
       end;
        Label19.caption := 'Normal';
     end;
