@@ -59,7 +59,6 @@ type
     ButtonRecon: TButton;
     Buttondisconnect: TButton;
     ButtonSave: TButton;
-    Buttonbtconnect: TButton;
     CheckAlt: TCheckBox;
     CheckBox1: TCheckBox;
     TabSheet1: TTabSheet;
@@ -273,6 +272,8 @@ type
     ButtonHeast: TButton;
     Button10: TButton;
     Button4: TButton;
+    Buttonbtconnect: TButton;
+    BEs32Reset: TButton;
 
     procedure FormCreate(Sender: TObject);
     procedure Button_NMouseDown(Sender: TObject; Button: TMouseButton;
@@ -371,6 +372,8 @@ type
     function readTMConfig(): Boolean;
     procedure ButtonSetHomeClick(Sender: TObject);
     procedure ButtonHPolarClick(Sender: TObject);
+    procedure BEs32ResetClick(Sender: TObject);
+    procedure ButtondisconnectClick(Sender: TObject);
 
   private
     { Private declarations }
@@ -474,7 +477,7 @@ end;
 
 procedure TEsp32frm.ButtonSetHomeClick(Sender: TObject);
 begin
-    send(':hS#');
+  send(':hS#');
 end;
 
 procedure TEsp32frm.Buttonstar1Click(Sender: TObject);
@@ -565,6 +568,12 @@ begin
   end;
 end;
 
+procedure TEsp32frm.BEs32ResetClick(Sender: TObject);
+begin
+  send(':cRR#');
+  ButtondisconnectClick(self);
+end;
+
 procedure TEsp32frm.btnEClick(Sender: TObject);
 begin
   setpierside(false);
@@ -627,8 +636,11 @@ begin
 end;
 
 procedure TEsp32frm.ButtonreadconfigClick(Sender: TObject);
+ var confbool:boolean;
 begin
-  if not readmountConfig() then
+    confbool := readmountConfig();
+    save.Enabled :=  confbool;
+  if not confbool then
     Lblconfig.caption := 'Config Read Fail'
   else
     Lblconfig.caption := 'Config Read OK';
@@ -873,6 +885,27 @@ begin
   GroupBox8.Visible := not PageControl1.Visible;
 end;
 
+procedure TEsp32frm.ButtondisconnectClick(Sender: TObject);
+begin
+  case imode of
+
+    1:
+      ClientSocket1.disconnect();
+    0:
+      ComPortBT_USB.Connected := false;
+    2:
+      begin
+        if checkBtSock then
+        begin
+          FreeBtSock;
+          Label2.caption := 'bt not connected'
+        end;
+      end;
+  end;
+
+  fullconnect := false;
+end;
+
 procedure TEsp32frm.ButtondisconnectMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
@@ -919,14 +952,13 @@ begin
 end;
 
 procedure TEsp32frm.ButtonHPolarClick(Sender: TObject);
-var str:string;
+var
+  str: string;
 begin
 
- str:=TButton(Sender).tag.ToString ;
+  str := TButton(Sender).tag.ToString;
 
-        send(':hH'+str+'#') ;
-
-
+  send(':hH' + str + '#');
 
 end;
 
@@ -1150,7 +1182,7 @@ begin
       showmessage('No response');
     if fullconnect then
     begin
-     // confload();
+      // confload();
 
     end;
   end;
@@ -1172,6 +1204,8 @@ begin
 end;
 
 procedure TEsp32frm.confload();
+var
+  confbool: Boolean;
 begin
 
   if fullconnect then
@@ -1179,50 +1213,62 @@ begin
 
     Timer1.Enabled := false;
     clearbuff(true, true);
-    if not readmountConfig() then
+
+    confbool := readmountConfig();
+    save.Enabled :=  confbool;
+    if not confbool then
       Lblconfig.caption := 'Config Read Fail'
     else
       Lblconfig.caption := 'Config Read OK';
-      clearbuff(true, true);
-    if readTMConfig() then
+    clearbuff(true, true);
+
+    confbool := readtmConfig();
+    button5.Enabled :=  confbool;
+    if  confbool  then
       lbltmc.caption := 'TMC config read'
     else
       lbltmc.caption := 'TMC config fail';
-      clearbuff(true, true);
-    if readfocusconfig() then
-      Lblfocus.caption := 'Focus config read'
-    else
-      Lblfocus.caption := 'Focus config fail';
+    clearbuff(true, true);
 
-      clearbuff(true, true);
-    if not readfilterWheel() then
+    confbool := readFocusConfig();
+    buttonauxsave.Enabled:=confbool;
+
+    if confbool then
+      lblfocus.caption := 'Focus config read'
+    else
+      lblfocus.caption := 'Focus config fail';
+
+    clearbuff(true, true);
+
+    confbool := readfilterwheel();
+    buttonsavefilt.Enabled:=confbool;
+    if not confbool then
       Lblwheel.caption := 'Fail'
     else
-      Lblwheel.caption := 'Read OK';
- ;
+      Lblwheel.caption := 'Read OK';;
 
-  { if readmountConfig() then
-    Memo1.lines.add('config load ok')
-    else
-    Memo1.lines.add('error config load');
-    if readTMConfig() then
-    Memo1.lines.add('tmc load ok')
-    else
-    Memo1.lines.add('error tmc load');
-    if readFocusConfig() then
-    Memo1.lines.add('focus load ok')
-    else
-    Memo1.lines.add('error Focus load');
-    if readfilterWheel() then
-    Memo1.lines.add('wheel load ok')
-    else
-    Memo1.lines.add('error wheel load'); }
+    { if readmountConfig() then
+      Memo1.lines.add('config load ok')
+      else
+      Memo1.lines.add('error config load');
+      if readTMConfig() then
+      Memo1.lines.add('tmc load ok')
+      else
+      Memo1.lines.add('error tmc load');
+      if readFocusConfig() then
+      Memo1.lines.add('focus load ok')
+      else
+      Memo1.lines.add('error Focus load');
+      if readfilterWheel() then
+      Memo1.lines.add('wheel load ok')
+      else
+      Memo1.lines.add('error wheel load'); }
 
-  // readmountConfig();
-  // readTMConfig();
-  // readFocusConfig() ;
-  // readfilterWheel() ;
-end;
+    // readmountConfig();
+    // readTMConfig();
+    // readFocusConfig() ;
+    // readfilterWheel() ;
+  end;
 
 end;
 
@@ -1614,7 +1660,8 @@ begin
     if coors.Length > 40 then
     begin
 
-      labelAR.caption := stringreplace(AnsiString( coors), '?', 'º', [rfReplaceAll]);
+      labelAR.caption := stringreplace(AnsiString(coors), '?', 'º',
+        [rfReplaceAll]);
     end;
 
     LabelAR1.caption := DoubletoLXAR(ra, 0);
@@ -1644,19 +1691,21 @@ begin
         end;
 
     end;
-   // if  get_Slew() then
-    if  get_Slew(false) then
+    // if  get_Slew() then
+    if get_Slew(false) then
       Label19.caption := 'Slewing'
     else
     begin
       if Label19.caption = 'Slewing' then
       begin
-       //  PlaySound('SYSTEMEXCLAMATION', 0, SND_ASYNC);
+        // PlaySound('SYSTEMEXCLAMATION', 0, SND_ASYNC);
       end;
-       Label19.caption := 'Normal';
+      Label19.caption := 'Normal';
     end;
-    if track=1 then lbltrack.caption :='Track' else  lbltrack.caption :='No track' ;
-
+    if track = 1 then
+      lbltrack.caption := 'Track'
+    else
+      lbltrack.caption := 'No track';
 
     if CheckAlt.Checked then
     begin
@@ -1882,6 +1931,7 @@ var
   lines: Tstringlist;
   cLines: Integer;
 begin
+result:=false;
   try
     lines := Tstringlist.Create();
   finally
@@ -2078,7 +2128,8 @@ begin
       guide_de := str.ToDouble * (15.0 / 3600.0);
     end;
     lines.Destroy
-  end;
+  end else
+  result:=false;
 end;
 
 function TEsp32frm.readFocusConfig(): Boolean;
@@ -2087,6 +2138,7 @@ var
   lines: Tstringlist;
   cLines: Integer;
 begin
+result:=false;
   try
     lines := Tstringlist.Create();
   finally

@@ -2,7 +2,7 @@ object Esp32frm: TEsp32frm
   Left = 0
   Top = 0
   AutoSize = True
-  Caption = 'Esp32go 3.10'
+  Caption = 'Esp32go 3.11'
   ClientHeight = 297
   ClientWidth = 425
   Color = clBtnFace
@@ -1257,7 +1257,7 @@ object Esp32frm: TEsp32frm
     Top = 0
     Width = 305
     Height = 207
-    ActivePage = Tabconfig
+    ActivePage = TabWheel
     TabOrder = 3
     TabWidth = 43
     Visible = False
@@ -1657,8 +1657,8 @@ object Esp32frm: TEsp32frm
           OnClick = ButtonHPolarClick
         end
         object Button4: TButton
-          Left = 167
-          Top = 41
+          Left = 191
+          Top = 49
           Width = 65
           Height = 20
           Caption = 'Reset home'
@@ -1712,17 +1712,26 @@ object Esp32frm: TEsp32frm
       object GroupBox6: TGroupBox
         Left = 142
         Top = 0
-        Width = 147
+        Width = 155
         Height = 38
         Caption = 'BlueTooth'
         TabOrder = 2
         object cbxpaired: TComboBox
           Left = 3
           Top = 14
-          Width = 141
+          Width = 118
           Height = 21
           TabOrder = 0
           Text = 'cbxpaired'
+        end
+        object Buttonbtconnect: TButton
+          Left = 120
+          Top = 15
+          Width = 35
+          Height = 20
+          Caption = 'Paired'
+          TabOrder = 1
+          OnClick = ButtonbtconnectClick
         end
       end
       object RadioGroupcom: TRadioGroup
@@ -1780,8 +1789,8 @@ object Esp32frm: TEsp32frm
         Caption = 'Control'
         TabOrder = 5
         object Label1: TLabel
-          Left = 230
-          Top = 18
+          Left = 249
+          Top = 22
           Width = 31
           Height = 13
           Caption = 'Label1'
@@ -1797,16 +1806,17 @@ object Esp32frm: TEsp32frm
           OnClick = ButtonReconClick
         end
         object Buttondisconnect: TButton
-          Left = 57
+          Left = 49
           Top = 15
           Width = 60
           Height = 20
           Caption = 'Disconnect'
           TabOrder = 1
+          OnClick = ButtondisconnectClick
           OnMouseDown = ButtondisconnectMouseDown
         end
         object ButtonSave: TButton
-          Left = 111
+          Left = 107
           Top = 15
           Width = 48
           Height = 20
@@ -1814,14 +1824,14 @@ object Esp32frm: TEsp32frm
           TabOrder = 2
           OnClick = ButtonSaveClick
         end
-        object Buttonbtconnect: TButton
-          Left = 165
-          Top = 15
-          Width = 55
-          Height = 20
-          Caption = 'Paired'
+        object BEs32Reset: TButton
+          Left = 161
+          Top = 16
+          Width = 75
+          Height = 19
+          Caption = 'Reset Esp32'
           TabOrder = 3
-          OnClick = ButtonbtconnectClick
+          OnClick = BEs32ResetClick
         end
       end
       object Memo1: TMemo
@@ -2153,6 +2163,7 @@ object Esp32frm: TEsp32frm
         Width = 45
         Height = 25
         Caption = 'save'
+        Enabled = False
         TabOrder = 33
         OnClick = saveClick
       end
