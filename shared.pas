@@ -162,7 +162,7 @@ begin
   ComPortBT_USB.Timeouts.WriteTotalConstant := 100;
   ComPortBT_USB.TriggersOnRxChar := false;
 
-  ComPortBT_USB.SyncMethod := smWindowSync; // smNone;
+  ComPortBT_USB.SyncMethod :=  smWindowSync;
 end;
 
 procedure init_tcp(host: string; port: Integer);
@@ -264,6 +264,8 @@ dl:=0;
 
   Result := coord_str;
   sl.Free;
+ if imode=0 then clearbuff(false,true);
+
 end;
 
 

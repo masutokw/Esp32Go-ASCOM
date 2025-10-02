@@ -2,7 +2,7 @@ object Esp32frm: TEsp32frm
   Left = 0
   Top = 0
   AutoSize = True
-  Caption = 'Esp32go 3.11'
+  Caption = 'Esp32go 3.12'
   ClientHeight = 297
   ClientWidth = 425
   Color = clBtnFace
@@ -1257,7 +1257,7 @@ object Esp32frm: TEsp32frm
     Top = 0
     Width = 305
     Height = 207
-    ActivePage = TabWheel
+    ActivePage = Tabconfig
     TabOrder = 3
     TabWidth = 43
     Visible = False
@@ -1568,15 +1568,6 @@ object Esp32frm: TEsp32frm
           TabOrder = 2
           OnClick = Button3Click
         end
-        object Button2: TButton
-          Left = 144
-          Top = 12
-          Width = 52
-          Height = 21
-          Caption = 'Set Time'
-          TabOrder = 3
-          OnClick = Button2Click
-        end
         object LongEditgmt: TLongEdit
           Left = 146
           Top = 33
@@ -1587,7 +1578,7 @@ object Esp32frm: TEsp32frm
           ParentCtl3D = False
           ParentShowHint = False
           ShowHint = True
-          TabOrder = 4
+          TabOrder = 3
           Value = 0
           MinValue = -13
           MaxValue = 13
@@ -1598,7 +1589,7 @@ object Esp32frm: TEsp32frm
           Width = 50
           Height = 21
           Caption = 'Get Geo'
-          TabOrder = 5
+          TabOrder = 4
           OnClick = ButtongetgeoClick
         end
       end
@@ -1665,6 +1656,15 @@ object Esp32frm: TEsp32frm
           TabOrder = 4
           OnClick = ButtonHomeClick
         end
+      end
+      object Button2: TButton
+        Left = 232
+        Top = 107
+        Width = 52
+        Height = 21
+        Caption = 'Set Time'
+        TabOrder = 3
+        OnClick = Button2Click
       end
     end
     object cb: TTabSheet

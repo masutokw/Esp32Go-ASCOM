@@ -40,7 +40,6 @@ type
     FloatEditLong: TFloatEdit;
     FloatEditLat: TFloatEdit;
     Button3: TButton;
-    Button2: TButton;
     LongEditgmt: TLongEdit;
     Buttongetgeo: TButton;
     lstHidDevices: TListBox;
@@ -274,6 +273,7 @@ type
     Button4: TButton;
     Buttonbtconnect: TButton;
     BEs32Reset: TButton;
+    Button2: TButton;
 
     procedure FormCreate(Sender: TObject);
     procedure Button_NMouseDown(Sender: TObject; Button: TMouseButton;
@@ -374,6 +374,8 @@ type
     procedure ButtonHPolarClick(Sender: TObject);
     procedure BEs32ResetClick(Sender: TObject);
     procedure ButtondisconnectClick(Sender: TObject);
+
+
 
   private
     { Private declarations }
@@ -765,7 +767,9 @@ begin
           '' + FormatSettings.DecimalSeparator, [rfReplaceAll]);
         lines.add(cstring);
         // Memo1.lines.add(cstring)
-      until (inbuff = 0);
+        //  showmessage(cstring);
+      until (inbuff = 0) or (cstring='');
+     //   showmessage('No response tmc ');
     result := (lines.Count >= 20);
     Label1.caption := inttostr(lines.Count);
     Timer1.Enabled := true;
@@ -1178,11 +1182,13 @@ begin
   begin
 
     fullconnect := check_connection();
+
     if not(fullconnect) then
       showmessage('No response');
     if fullconnect then
     begin
-      // confload();
+
+       confload();
 
     end;
   end;
@@ -1215,6 +1221,7 @@ begin
     clearbuff(true, true);
 
     confbool := readmountConfig();
+
     save.Enabled :=  confbool;
     if not confbool then
       Lblconfig.caption := 'Config Read Fail'
@@ -1293,6 +1300,8 @@ begin
     Timer1.Enabled := true;
   end;
 end;
+
+
 
 procedure TEsp32frm.InButton2MouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
@@ -1641,6 +1650,8 @@ procedure TEsp32frm.LabelFocusCountDblClick(Sender: TObject);
 begin
   send(':FLS1+00000#');
 end;
+
+
 
 procedure TEsp32frm.Timer1Timer(Sender: TObject);
 var
@@ -2126,6 +2137,9 @@ begin
       guide_ra := str.ToDouble * (15.0 / 3600.0);
       str := NumberBoxspgalt.Text;
       guide_de := str.ToDouble * (15.0 / 3600.0);
+      gmtoffset :=NumberBoxgmtoff.ValueInt;
+      longi := NumberBoxlong.ValueFloat;
+      lat :=   NumberBoxlat.ValueFloat;
     end;
     lines.Destroy
   end else
